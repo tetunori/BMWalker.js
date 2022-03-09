@@ -4,6 +4,18 @@ class BMWalker {
   static typePigeon = 2;
   static typeBox = 3;
 
+  static maxSpeed = 2.0;
+  static minSpeed = -2.0;
+
+  static maxBodyStructure = 6.0; // Type A
+  static minBodyStructure = -6.0; // Type B
+  static maxWeight = 6.0; // Heavy
+  static minWeight = -6.0; // Light
+  static maxNervousness = 6.0; // Nervous
+  static minNervousness = -6.0; // Relaxed
+  static maxHappiness = 6.0; // Happy
+  static minHappiness = -6.0; // Sad
+
   // Constructor
   constructor(type = BMWalker.typeHuman) {
     this.type = type;
@@ -15,11 +27,19 @@ class BMWalker {
 
     this.speed = 1.0;
 
-    // Parameters
-    this.bs = 0;
+    // Walker Parameters
+    this.bodyStructure = 0;
     this.weight = 0;
-    this.nrvs = 0;
-    this.hp = 0;
+    this.nervousness = 0;
+    this.happiness = 0;
+
+    // Camera Parameters
+    this.azimuth = 0; // rad
+    this.angularVelocity = 0; // rad/sec
+    this.elevation = 0; // rad
+
+    // Translation Parameters
+    this.flagTranslation = false;
   }
 
   // API: Get markers
@@ -43,68 +63,67 @@ class BMWalker {
   }
 
   // API: Set speed
-  setSpeed( speed ){
-    const maxSpeed = 2.0;
-    const minSpeed = -2.0;
-    const clampedSpeed = this.clamp(minSpeed, maxSpeed, speed);
+  setSpeed(speed = 0) {
+    const clampedSpeed = this.clamp(BMWalker.minSpeed, BMWalker.maxSpeed, speed);
     this.speed = clampedSpeed;
   }
 
   // API: ...
-  setWalkerParam( bs = 0 , weight = 0, nrvs = 0, hp = 0 ){
-
+  setWalkerParam(bodyStructure, weight, nervousness, happiness) {
     // Body Structure Parameter
-    const maxBS = 6.0;  // Big body
-    const minBS = -6.0; // Small body
-    const clampedBS = this.clamp(minBS, maxBS, bs);
-    this.bs = clampedBS;
+    if (bodyStructure !== undefined) {
+      this.bodyStructure = this.clamp(
+        BMWalker.minBodyStructure,
+        BMWalker.maxBodyStructure,
+        bodyStructure
+      );
+    }
 
     // Weight Parameter
-    const maxWeight = 6.0;  // Heavy
-    const minWeight = -6.0; // Light
-    const clampedWeight = this.clamp(minWeight, maxWeight, weight);
-    this.weight = clampedWeight;
+    if (weight !== undefined) {
+      this.weight = this.clamp(BMWalker.minWeight, BMWalker.maxWeight, weight);
+    }
 
     // Nervousness Parameter
-    const maxNrvs = 6.0;  // Nervous
-    const minNrvs = -6.0; // Relaxed
-    const clampedNrvs = this.clamp(minNrvs, maxNrvs, nrvs);
-    this.nrvs = clampedNrvs;
+    if (nervousness !== undefined) {
+      this.nervousness = this.clamp(BMWalker.minNervousness, BMWalker.maxNervousness, nervousness);
+    }
 
     // Happiness Parameter
-    const maxHp = 6.0;  // Happy
-    const minHp = -6.0; // Sad
-    const clampedHp = this.clamp(minHp, maxHp, hp);
-    this.hp = clampedHp;
-
+    if (happiness !== undefined) {
+      this.happiness = this.clamp(BMWalker.minHappiness, BMWalker.maxHappiness, happiness);
+    }
   }
 
   // API: ...
-  setCameraParam( azimuth = 0 , angularVelocity = 0, elevation = 0 ){
-
+  setCameraParam(azimuth, angularVelocity, elevation) {
     // Camera azimuth(rotation) Parameter
-    this.azimuth = azimuth;
+    if (azimuth !== undefined) {
+      this.azimuth = azimuth;
+    }
 
     // Camera angular velocity(rotation speed) Parameter
-    this.angularVelocity = angularVelocity;
+    if (angularVelocity !== undefined) {
+      this.angularVelocity = angularVelocity;
+    }
 
     // Camera elevation Parameter
-    this.elevation = elevation;
-
+    if (elevation !== undefined) {
+      this.elevation = elevation;
+    }
   }
 
   // API: ...
-  setTranslationParam( en = false ){
-    this.isTranslationEnabled = en;
+  setTranslationParam(flagTranslation) {
+    if (flagTranslation !== undefined) {
+      this.flagTranslation = flagTranslation;
+    }
   }
 
   // Interval
-  clamp( min, max, val){
+  clamp(min, max, val) {
     return Math.min(max, Math.max(min, val));
   }
-
-
-
 }
 
 // Simple Time class
