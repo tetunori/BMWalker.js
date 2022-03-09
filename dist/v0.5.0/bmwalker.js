@@ -10,6 +10,16 @@ class BMWalker {
 
     this.tm = new BMWTimer();
     this.starttime = this.tm.getTimer();
+
+    this.mtrx = new BMWMatrix();
+
+    this.speed = 1.0;
+
+    // Parameters
+    this.bs = 0;
+    this.weight = 0;
+    this.nrvs = 0;
+    this.hp = 0;
   }
 
   // API: Get markers
@@ -23,14 +33,78 @@ class BMWalker {
 
     // get markers
     markers = [
-      { x: 0, y: 0 },
-      { x: 0, y: wh },
-      { x: wh / 2, y: wh },
-      { x: wh / 2, y: 0 },
+      { x: 0, y: 0, desc: '1' },
+      { x: 0, y: wh, desc: '2' },
+      { x: wh / 2, y: wh, desc: '3' },
+      { x: wh / 2, y: 0, desc: '4' },
     ];
 
     return markers;
   }
+
+  // API: Set speed
+  setSpeed( speed ){
+    const maxSpeed = 2.0;
+    const minSpeed = -2.0;
+    const clampedSpeed = this.clamp(minSpeed, maxSpeed, speed);
+    this.speed = clampedSpeed;
+  }
+
+  // API: ...
+  setWalkerParam( bs = 0 , weight = 0, nrvs = 0, hp = 0 ){
+
+    // Body Structure Parameter
+    const maxBS = 6.0;  // Big body
+    const minBS = -6.0; // Small body
+    const clampedBS = this.clamp(minBS, maxBS, bs);
+    this.bs = clampedBS;
+
+    // Weight Parameter
+    const maxWeight = 6.0;  // Heavy
+    const minWeight = -6.0; // Light
+    const clampedWeight = this.clamp(minWeight, maxWeight, weight);
+    this.weight = clampedWeight;
+
+    // Nervousness Parameter
+    const maxNrvs = 6.0;  // Nervous
+    const minNrvs = -6.0; // Relaxed
+    const clampedNrvs = this.clamp(minNrvs, maxNrvs, nrvs);
+    this.nrvs = clampedNrvs;
+
+    // Happiness Parameter
+    const maxHp = 6.0;  // Happy
+    const minHp = -6.0; // Sad
+    const clampedHp = this.clamp(minHp, maxHp, hp);
+    this.hp = clampedHp;
+
+  }
+
+  // API: ...
+  setCameraParam( azimuth = 0 , angularVelocity = 0, elevation = 0 ){
+
+    // Camera azimuth(rotation) Parameter
+    this.azimuth = azimuth;
+
+    // Camera angular velocity(rotation speed) Parameter
+    this.angularVelocity = angularVelocity;
+
+    // Camera elevation Parameter
+    this.elevation = elevation;
+
+  }
+
+  // API: ...
+  setTranslationParam( en = false ){
+    this.isTranslationEnabled = en;
+  }
+
+  // Interval
+  clamp( min, max, val){
+    return Math.min(max, Math.max(min, val));
+  }
+
+
+
 }
 
 // Simple Time class

@@ -4,13 +4,14 @@ let bmw;
 
 function setup() {
   createCanvas(W, W);
-  bmw = new BMWalker(BMWalker.typeHuman);
+  bmw = new BMWalker();
 }
 
 function draw() {
   background(220);
 
-  const markers = bmw.getMarkers(200);
+  const walkerHeight = 300;
+  const markers = bmw.getMarkers(walkerHeight);
 
   beginShape();
   {
@@ -18,5 +19,6 @@ function draw() {
   }
   endShape(CLOSE);
 
-  // noLoop();
+
+  noLoop();
 }
