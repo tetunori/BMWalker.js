@@ -13,12 +13,10 @@ function draw() {
   const walkerHeight = 300;
   const markers = bmw.getMarkers(walkerHeight);
 
-  beginShape();
-  {
-    markers.forEach((m) => vertex(m.x, m.y));
-  }
-  endShape(CLOSE);
-
-
-  noLoop();
+  // beginShape();
+  // {
+  //   markers.forEach((m) => vertex(m.x, m.y));
+  // }
+  // endShape(CLOSE);
+  // noLoop();
 }
