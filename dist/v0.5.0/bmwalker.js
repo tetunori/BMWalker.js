@@ -44,7 +44,7 @@ class BMWalker {
 
     ////
 
-    this.walker_size = 10;;
+    this.walker_size = 10;
 
     this.pixelsperdegree = 37;
 
@@ -2137,8 +2137,8 @@ class BMWalker {
 
     this.head = true;
     this.clavicles = true;
-    this.hipr = true;
-    this.hipl = true;
+    this.rhip = true;
+    this.lhip = true;
     this.belly = true;
 
     this.rsh = true;
@@ -2218,7 +2218,10 @@ class BMWalker {
     );
 
     matrix = this.mtrx.multmatrix(this.spinmatrix, matrix);
-    matrix = this.mtrx.multmatrix(this.mtrx.rotateY((this.camera_elevation * Math.PI) / 180), matrix);
+    matrix = this.mtrx.multmatrix(
+      this.mtrx.rotateY((this.camera_elevation * Math.PI) / 180),
+      matrix
+    );
 
     var vectors = new Array(this.nummarkers);
     var vector = new Array(4);
@@ -2276,10 +2279,10 @@ class BMWalker {
         this.le,
         this.lh,
         this.belly,
-        this.hipr,
+        this.rhip,
         this.rknee,
         this.rankle,
-        this.hipl,
+        this.lhip,
         this.lknee,
         this.lankle,
       ].forEach((e, i) => {
@@ -2289,12 +2292,25 @@ class BMWalker {
       });
 
       if (!invis[i]) {
-        // ★
-        // this.drawDot(xpos, ypos);
         // console.log(xpos, ypos);
-        circle(xpos + 200, ypos + 200, 10);
-        // this.dotShapes[i].x = xpos;
-        // this.dotShapes[i].y = ypos;
+        const descs = [
+          'Head',
+          'Clavicles',
+          'R-Shoulder',
+          'R-Elbow',
+          'R-Hand',
+          'L-Shoulder',
+          'L-Elbow',
+          'L-Hand',
+          'Belly',
+          'R-Hip',
+          'R-Knee',
+          'R-Ankle',
+          'L-Hip',
+          'L-Knee',
+          'L-Ankle',
+        ];
+        markers.push({ x: xpos, y: ypos, desc: descs[i] });
       }
     }
 
@@ -2305,16 +2321,13 @@ class BMWalker {
         // this.drawLineX(vectors, 1, 2, invis);
         // this.drawLineX(vectors, 2, 3, invis);
         // this.drawLineX(vectors, 3, 4, invis);
-
         // this.drawLineX(vectors, 1, 5, invis);
         // this.drawLineX(vectors, 5, 6, invis);
         // this.drawLineX(vectors, 6, 7, invis);
-
         // this.drawLineX(vectors, 1, 8, invis);
         // this.drawLineX(vectors, 8, 9, invis);
         // this.drawLineX(vectors, 9, 10, invis);
         // this.drawLineX(vectors, 10, 11, invis);
-
         // this.drawLineX(vectors, 8, 12, invis);
         // this.drawLineX(vectors, 12, 13, invis);
         // this.drawLineX(vectors, 13, 14, invis);
@@ -2324,12 +2337,12 @@ class BMWalker {
     ////
 
     // get markers
-    markers = [
-      { x: 0, y: 0, desc: '1' },
-      { x: 0, y: wh, desc: '2' },
-      { x: wh / 2, y: wh, desc: '3' },
-      { x: wh / 2, y: 0, desc: '4' },
-    ];
+    // markers = [
+    //   { x: 0, y: 0, desc: '1' },
+    //   { x: 0, y: wh, desc: '2' },
+    //   { x: wh / 2, y: wh, desc: '3' },
+    //   { x: wh / 2, y: 0, desc: '4' },
+    // ];
 
     return markers;
   }
@@ -2437,123 +2450,120 @@ class BMWalker {
     this.walkerzoff = -(this.walkerzmax + this.walkerzmin) / 2;
   } // end of calsize()
 
+  sample(i, walkertime, includeStructure) {
+    var phase = 0; //this.walker_scrambling_phases[i % this.nummarkers];
+    var genderval = this.walker_gender;
 
-sample (i, walkertime, includeStructure) {
-  var phase = 0; //this.walker_scrambling_phases[i % this.nummarkers];
-  var genderval = this.walker_gender;
+    var initialpos = this.meanwalker[this.walker_object][i];
 
-  var initialpos = this.meanwalker[this.walker_object][i];
+    if (includeStructure) {
+      if (this.walker_object == 0) {
+        initialpos +=
+          this.genderaxis[i] * genderval +
+          this.weightaxis[i] * this.walker_weight +
+          this.nervousaxis[i] * this.walker_nervousness +
+          this.happyaxis[i] * this.walker_happiness +
+          this.customaxis[i] * this.walker_customness;
+      }
 
-  if (includeStructure) {
-    if (this.walker_object == 0) {
-      initialpos +=
-        this.genderaxis[i] * genderval +
-        this.weightaxis[i] * this.walker_weight +
-        this.nervousaxis[i] * this.walker_nervousness +
-        this.happyaxis[i] * this.walker_happiness +
-        this.customaxis[i] * this.walker_customness;
+      // if (this.walker_scrambling > 0) {
+      //   if (
+      //     (i >= this.nummarkers * 2 && this.walker_scrambling_vert) ||
+      //     (i < this.nummarkers * 2 && this.walker_scrambling_horiz)
+      //   )
+      //     initialpos = this.scramblewalker[i];
+      // }
+
+      //invert or scale structure
+      if (i >= this.nummarkers * 2 && i < this.nummarkers * 3)
+        initialpos *= this.structure_vertical_scale;
+      else initialpos *= this.structure_horizontal_scale;
+    } else {
+      initialpos = 0;
     }
 
-    // if (this.walker_scrambling > 0) {
-    //   if (
-    //     (i >= this.nummarkers * 2 && this.walker_scrambling_vert) ||
-    //     (i < this.nummarkers * 2 && this.walker_scrambling_horiz)
-    //   )
-    //     initialpos = this.scramblewalker[i];
-    // }
+    //motion!
+    var motionpos = 0;
+    if (this.walker_object == 0) {
+      motionpos =
+        (this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1)] +
+          this.genderaxis[i + (this.nummarkers * 3 + 1)] * genderval +
+          this.weightaxis[i + (this.nummarkers * 3 + 1)] * this.walker_weight +
+          this.nervousaxis[i + (this.nummarkers * 3 + 1)] * this.walker_nervousness +
+          this.happyaxis[i + (this.nummarkers * 3 + 1)] * this.walker_happiness +
+          this.customaxis[i + (this.nummarkers * 3 + 1)] * this.walker_customness) *
+          Math.sin(walkertime + phase) +
+        (this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 2] +
+          this.genderaxis[i + (this.nummarkers * 3 + 1) * 2] * genderval +
+          this.weightaxis[i + (this.nummarkers * 3 + 1) * 2] * this.walker_weight +
+          this.nervousaxis[i + (this.nummarkers * 3 + 1) * 2] * this.walker_nervousness +
+          this.happyaxis[i + (this.nummarkers * 3 + 1) * 2] * this.walker_happiness +
+          this.customaxis[i + (this.nummarkers * 3 + 1) * 2] * this.walker_customness) *
+          Math.cos(walkertime + phase) +
+        (this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 3] +
+          this.genderaxis[i + (this.nummarkers * 3 + 1) * 3] * genderval +
+          this.weightaxis[i + (this.nummarkers * 3 + 1) * 3] * this.walker_weight +
+          this.nervousaxis[i + (this.nummarkers * 3 + 1) * 3] * this.walker_nervousness +
+          this.happyaxis[i + (this.nummarkers * 3 + 1) * 3] * this.walker_happiness +
+          this.customaxis[i + (this.nummarkers * 3 + 1) * 3] * this.walker_customness) *
+          Math.sin(2 * (walkertime + phase)) +
+        (this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 4] +
+          this.genderaxis[i + (this.nummarkers * 3 + 1) * 4] * genderval +
+          this.weightaxis[i + (this.nummarkers * 3 + 1) * 4] * this.walker_weight +
+          this.nervousaxis[i + (this.nummarkers * 3 + 1) * 4] * this.walker_nervousness +
+          this.happyaxis[i + (this.nummarkers * 3 + 1) * 4] * this.walker_happiness +
+          this.customaxis[i + (this.nummarkers * 3 + 1) * 4] * this.walker_customness) *
+          Math.cos(2 * (walkertime + phase));
+    } else {
+      motionpos =
+        this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1)] *
+          Math.sin(walkertime + phase) +
+        this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 2] *
+          Math.cos(walkertime + phase) +
+        this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 3] *
+          Math.sin(2 * (walkertime + phase)) +
+        this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 4] *
+          Math.cos(2 * (walkertime + phase));
+    }
 
-    //invert or scale structure
     if (i >= this.nummarkers * 2 && i < this.nummarkers * 3)
-      initialpos *= this.structure_vertical_scale;
-    else initialpos *= this.structure_horizontal_scale;
-  } else {
-    initialpos = 0;
+      motionpos *= this.motion_vertical_scale;
+    else motionpos *= this.motion_horizontal_scale;
+    return initialpos + motionpos;
   }
 
-  //motion!
-  var motionpos = 0;
-  if (this.walker_object == 0) {
-    motionpos =
-      (this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1)] +
-        this.genderaxis[i + (this.nummarkers * 3 + 1)] * genderval +
-        this.weightaxis[i + (this.nummarkers * 3 + 1)] * this.walker_weight +
-        this.nervousaxis[i + (this.nummarkers * 3 + 1)] * this.walker_nervousness +
-        this.happyaxis[i + (this.nummarkers * 3 + 1)] * this.walker_happiness +
-        this.customaxis[i + (this.nummarkers * 3 + 1)] * this.walker_customness) *
-        Math.sin(walkertime + phase) +
-      (this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 2] +
-        this.genderaxis[i + (this.nummarkers * 3 + 1) * 2] * genderval +
-        this.weightaxis[i + (this.nummarkers * 3 + 1) * 2] * this.walker_weight +
-        this.nervousaxis[i + (this.nummarkers * 3 + 1) * 2] * this.walker_nervousness +
-        this.happyaxis[i + (this.nummarkers * 3 + 1) * 2] * this.walker_happiness +
-        this.customaxis[i + (this.nummarkers * 3 + 1) * 2] * this.walker_customness) *
-        Math.cos(walkertime + phase) +
-      (this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 3] +
-        this.genderaxis[i + (this.nummarkers * 3 + 1) * 3] * genderval +
-        this.weightaxis[i + (this.nummarkers * 3 + 1) * 3] * this.walker_weight +
-        this.nervousaxis[i + (this.nummarkers * 3 + 1) * 3] * this.walker_nervousness +
-        this.happyaxis[i + (this.nummarkers * 3 + 1) * 3] * this.walker_happiness +
-        this.customaxis[i + (this.nummarkers * 3 + 1) * 3] * this.walker_customness) *
-        Math.sin(2 * (walkertime + phase)) +
-      (this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 4] +
-        this.genderaxis[i + (this.nummarkers * 3 + 1) * 4] * genderval +
-        this.weightaxis[i + (this.nummarkers * 3 + 1) * 4] * this.walker_weight +
-        this.nervousaxis[i + (this.nummarkers * 3 + 1) * 4] * this.walker_nervousness +
-        this.happyaxis[i + (this.nummarkers * 3 + 1) * 4] * this.walker_happiness +
-        this.customaxis[i + (this.nummarkers * 3 + 1) * 4] * this.walker_customness) *
-        Math.cos(2 * (walkertime + phase));
-  } else {
-    motionpos =
-      this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1)] *
-        Math.sin(walkertime + phase) +
-      this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 2] *
-        Math.cos(walkertime + phase) +
-      this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 3] *
-        Math.sin(2 * (walkertime + phase)) +
-      this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 4] *
-        Math.cos(2 * (walkertime + phase));
+  getFrequency() {
+    var speed = this.meanwalker[this.walker_object][this.nummarkers * 3];
+    if (this.walker_object == 0) {
+      speed += this.walker_gender * this.genderaxis[this.nummarkers * 3];
+      speed += this.walker_weight * this.weightaxis[this.nummarkers * 3];
+      speed += this.walker_nervousness * this.nervousaxis[this.nummarkers * 3];
+      speed += this.walker_happiness * this.happyaxis[this.nummarkers * 3];
+    }
+    //console.log(speed)
+    return speed / this.walker_speed;
   }
 
-  if (i >= this.nummarkers * 2 && i < this.nummarkers * 3) motionpos *= this.motion_vertical_scale;
-  else motionpos *= this.motion_horizontal_scale;
-  return initialpos + motionpos;
-};
+  calcTranslationSpeed() {
+    var tspeed = this.meanwalker[this.walker_object][(this.nummarkers * 3 + 1) * 3 - 1];
+    //tspeed*120 = 1356.168
+    if (this.walker_object == 0) {
+      tspeed += this.walker_gender * this.genderaxis[(this.nummarkers * 3 + 1) * 3 - 1];
+      tspeed += this.walker_weight * this.weightaxis[(this.nummarkers * 3 + 1) * 3 - 1];
+      tspeed += this.walker_nervousness * this.nervousaxis[(this.nummarkers * 3 + 1) * 3 - 1];
+      tspeed += this.walker_happiness * this.happyaxis[(this.nummarkers * 3 + 1) * 3 - 1];
+    }
 
-
-
-getFrequency () {
-  var speed = this.meanwalker[this.walker_object][this.nummarkers * 3];
-  if (this.walker_object == 0) {
-    speed += this.walker_gender * this.genderaxis[this.nummarkers * 3];
-    speed += this.walker_weight * this.weightaxis[this.nummarkers * 3];
-    speed += this.walker_nervousness * this.nervousaxis[this.nummarkers * 3];
-    speed += this.walker_happiness * this.happyaxis[this.nummarkers * 3];
-  }
-  //console.log(speed)
-  return speed / this.walker_speed;
-};
-
-calcTranslationSpeed () {
-  var tspeed = this.meanwalker[this.walker_object][(this.nummarkers * 3 + 1) * 3 - 1];
-  //tspeed*120 = 1356.168
-  if (this.walker_object == 0) {
-    tspeed += this.walker_gender * this.genderaxis[(this.nummarkers * 3 + 1) * 3 - 1];
-    tspeed += this.walker_weight * this.weightaxis[(this.nummarkers * 3 + 1) * 3 - 1];
-    tspeed += this.walker_nervousness * this.nervousaxis[(this.nummarkers * 3 + 1) * 3 - 1];
-    tspeed += this.walker_happiness * this.happyaxis[(this.nummarkers * 3 + 1) * 3 - 1];
+    return tspeed * 120;
   }
 
-  return tspeed * 120;
-};
-
-getTranslationSpeed () {
-  return this.walker_speed * (this.walker_translation_speed / 120);
-};
-
+  getTranslationSpeed() {
+    return this.walker_speed * (this.walker_translation_speed / 120);
+  }
 
   calcTime(curtime) {
-  return ((curtime * 2 * Math.PI) / 1000) * (120 / this.getFrequency());
-};
+    return ((curtime * 2 * Math.PI) / 1000) * (120 / this.getFrequency());
+  }
 }
 
 // Simple Time class
