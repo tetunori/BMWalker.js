@@ -2347,6 +2347,43 @@ class BMWalker {
     return markers;
   }
 
+  // API: Get Indices of markers that make up the line.
+  getLineMarkerIndices() {
+    return [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [1, 5],
+      [5, 6],
+      [6, 7],
+      [1, 8],
+      [8, 9],
+      [9, 10],
+      [10, 11],
+      [8, 12],
+      [12, 13],
+      [13, 14],
+    ];
+  }
+
+  // API: Get markers that make up the line.
+  getLineMarkers(wh) {
+    const markers = this.getMarkers(wh);
+
+    const lineMarkers = [];
+
+    const idxsArray = this.getLineMarkerIndices();
+    idxsArray.forEach((idxs) => {
+      const i0 = idxs[0];
+      const i1 = idxs[1];
+
+      lineMarkers.push([{x:markers[i0].x, y: markers[i0].y}, {x:markers[i1].x, y: markers[i1].y}]);
+    });
+
+    return lineMarkers;
+  }
+
   // API: Set speed
   setSpeed(speed = 0) {
     const clampedSpeed = this.clamp(BMWalker.minSpeed, BMWalker.maxSpeed, speed);
