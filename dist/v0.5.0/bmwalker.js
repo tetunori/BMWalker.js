@@ -2385,8 +2385,12 @@ class BMWalker {
   }
 
   // API: Set speed
-  setSpeed(speed = 0) {
+  setSpeed(speed = 1.0) {
     const freq = this.getFrequency();
+    // avoid 0 divisor
+    if (speed === 0) {
+      speed += 0.001;
+    }
     this.speed = this.clamp(BMWalker.minSpeed, BMWalker.maxSpeed, speed);
 
     this.init();
@@ -2402,7 +2406,7 @@ class BMWalker {
 
   // API: ...
   setWalkerParam(bodyStructure, weight, nervousness, happiness) {
-        const freq = this.getFrequency();
+    const freq = this.getFrequency();
 
     // Body Structure Parameter
     if (bodyStructure !== undefined) {
@@ -2436,7 +2440,6 @@ class BMWalker {
     }
     const t = this.tm.getTimer();
     this.starttime = t - (t - this.starttime) / difffreq;
-
   }
 
   // API: ...

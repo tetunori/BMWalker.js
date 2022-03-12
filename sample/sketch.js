@@ -3,49 +3,78 @@ const W = 720;
 let bmw;
 
 let dgui;
+
 const walkerSettingsDefault = {
   speed: 1.0,
-  bodyStructure: 0,
-  weight: 0,
-  nervousness: 0,
-  happiness: 0,
+  bodyStructure: 0.0,
+  weight: 0.0,
+  nervousness: 0.0,
+  happiness: 0.0,
 };
 let walkerSettings = new Object();
 let walkerFolder;
+
+const cameraSettingsDefault = {
+  azimuth: 0.0,
+  angularVelocity: 0.0,
+  elevation: 0.0,
+};
+let cameraSettings = new Object();
+let cameraFolder;
+
 const utilities = {
-  reset: () =>{ initializeSettings()}
-}
+  reset: () => {
+    initializeSettings();
+  },
+};
 
 function setup() {
   createCanvas(W, W);
   bmw = new BMWalker();
   dgui = new dat.GUI();
   walkerFolder = dgui.addFolder('Walker');
+  cameraFolder = dgui.addFolder('Camera');
 
   initializeSettings();
-
-  walkerFolder.add(walkerSettings, 'speed', BMWalker.minSpeed, BMWalker.maxSpeed);
+  const step = 0.1;
+  walkerFolder.add(walkerSettings, 'speed', BMWalker.minSpeed, BMWalker.maxSpeed, step);
   walkerFolder.add(
     walkerSettings,
     'bodyStructure',
     BMWalker.minBodyStructure,
-    BMWalker.maxBodyStructure
+    BMWalker.maxBodyStructure,
+    step
   );
-  walkerFolder.add(walkerSettings, 'weight', BMWalker.minWeight, BMWalker.maxWeight);
-  walkerFolder.add(walkerSettings, 'nervousness', BMWalker.minNervousness, BMWalker.maxNervousness);
-  walkerFolder.add(walkerSettings, 'happiness', BMWalker.minHappiness, BMWalker.maxHappiness);
+  walkerFolder.add(walkerSettings, 'weight', BMWalker.minWeight, BMWalker.maxWeight, step);
+  walkerFolder.add(
+    walkerSettings,
+    'nervousness',
+    BMWalker.minNervousness,
+    BMWalker.maxNervousness,
+    step
+  );
+  walkerFolder.add(walkerSettings, 'happiness', BMWalker.minHappiness, BMWalker.maxHappiness, step);
   walkerFolder.open();
+
+  cameraFolder.add(cameraSettings, 'azimuth', -PI, PI, step);
+  cameraFolder.add(cameraSettings, 'angularVelocity', -TAU, TAU, step);
+  cameraFolder.add(cameraSettings, 'elevation', -PI, PI, step);
+  cameraFolder.open();
+
   dgui.add(utilities, 'reset');
 }
 
 const initializeSettings = () => {
-  walkerSettings.speed = walkerSettingsDefault.speed,
-  walkerSettings.bodyStructure = walkerSettingsDefault.bodyStructure,
-  walkerSettings.weight = walkerSettingsDefault.weight,
-  walkerSettings.nervousness = walkerSettingsDefault.nervousness,
-  walkerSettings.happiness = walkerSettingsDefault.happiness,
+  walkerSettings.speed = walkerSettingsDefault.speed;
+  walkerSettings.bodyStructure = walkerSettingsDefault.bodyStructure;
+  walkerSettings.weight = walkerSettingsDefault.weight;
+  walkerSettings.nervousness = walkerSettingsDefault.nervousness;
+  walkerSettings.happiness = walkerSettingsDefault.happiness;
+  cameraSettings.azimuth = cameraSettingsDefault.azimuth;
+  cameraSettings.angularVelocity = cameraSettingsDefault.angularVelocity;
+  cameraSettings.elevation = cameraSettingsDefault.elevation;
   dgui.updateDisplay();
-}
+};
 
 function draw() {
   background(220);
