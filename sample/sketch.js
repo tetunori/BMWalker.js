@@ -91,6 +91,12 @@ function draw() {
     walkerSettings.happiness
   );
 
+  bmw.setCameraParam(
+    cameraSettings.azimuth,
+    cameraSettings.angularVelocity,
+    cameraSettings.elevation,
+  );
+
   const walkerHeight = 300;
   const markers = bmw.getMarkers(walkerHeight);
   translate(200, 200);

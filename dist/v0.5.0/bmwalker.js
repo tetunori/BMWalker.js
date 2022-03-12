@@ -2066,10 +2066,10 @@ class BMWalker {
     this.happiness = 0;
 
     //camera iables
-    this.camera_azimuth = 0;
-    this.camera_elevation = 0;
+    // this.azimuth = 0;
+    // this.elevation = 0;
     this.camera_distance = 1000;
-    this.camera_angvelocity = 0;
+    // this.angularVelocity = 0;
     this.walker_xaxis = 0;
     this.walker_yaxis = 0;
     this.walker_zaxis = 1;
@@ -2205,8 +2205,8 @@ class BMWalker {
     matrix = this.mtrx.multmatrix(this.mtrx.translate(this.translation_pos, 0, 0), matrix);
     matrix = this.mtrx.multmatrix(
       this.mtrx.rotateaxis(
-        (this.camera_azimuth * Math.PI) / 180 +
-          (curtime * this.camera_angvelocity * Math.PI) / 180 / 1000,
+        (this.azimuth * Math.PI) / 180 +
+          (curtime * this.angularVelocity * Math.PI) / 180 / 1000,
         0,
         0,
         1
@@ -2216,7 +2216,7 @@ class BMWalker {
 
     matrix = this.mtrx.multmatrix(this.spinmatrix, matrix);
     matrix = this.mtrx.multmatrix(
-      this.mtrx.rotateY((this.camera_elevation * Math.PI) / 180),
+      this.mtrx.rotateY((this.elevation * Math.PI) / 180),
       matrix
     );
 
@@ -2444,6 +2444,7 @@ class BMWalker {
 
   // API: ...
   setCameraParam(azimuth, angularVelocity, elevation) {
+
     // Camera azimuth(rotation) Parameter
     if (azimuth !== undefined) {
       this.azimuth = azimuth;
