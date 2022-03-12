@@ -3,20 +3,27 @@ const W = 720;
 let bmw;
 
 let dgui;
-const walkerSettings = {
+const walkerSettingsDefault = {
   speed: 1.0,
   bodyStructure: 0,
   weight: 0,
   nervousness: 0,
   happiness: 0,
 };
+let walkerSettings = new Object();
+let walkerFolder;
+const utilities = {
+  reset: () =>{ initializeSettings()}
+}
 
 function setup() {
   createCanvas(W, W);
   bmw = new BMWalker();
-
   dgui = new dat.GUI();
-  const walkerFolder = dgui.addFolder('Walker');
+  walkerFolder = dgui.addFolder('Walker');
+
+  initializeSettings();
+
   walkerFolder.add(walkerSettings, 'speed', BMWalker.minSpeed, BMWalker.maxSpeed);
   walkerFolder.add(
     walkerSettings,
@@ -28,6 +35,16 @@ function setup() {
   walkerFolder.add(walkerSettings, 'nervousness', BMWalker.minNervousness, BMWalker.maxNervousness);
   walkerFolder.add(walkerSettings, 'happiness', BMWalker.minHappiness, BMWalker.maxHappiness);
   walkerFolder.open();
+  dgui.add(utilities, 'reset');
+}
+
+const initializeSettings = () => {
+  walkerSettings.speed = walkerSettingsDefault.speed,
+  walkerSettings.bodyStructure = walkerSettingsDefault.bodyStructure,
+  walkerSettings.weight = walkerSettingsDefault.weight,
+  walkerSettings.nervousness = walkerSettingsDefault.nervousness,
+  walkerSettings.happiness = walkerSettingsDefault.happiness,
+  dgui.updateDisplay();
 }
 
 function draw() {
