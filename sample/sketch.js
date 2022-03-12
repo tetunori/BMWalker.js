@@ -2,19 +2,48 @@ const W = 720;
 
 let bmw;
 
+let dgui;
+const walkerSettings = {
+  speed: 1.0,
+  bodyStructure: 0,
+  weight: 0,
+  nervousness: 0,
+  happiness: 0,
+};
+
 function setup() {
   createCanvas(W, W);
   bmw = new BMWalker();
-  
+
+  dgui = new dat.GUI();
+  const walkerFolder = dgui.addFolder('Walker');
+  walkerFolder.add(walkerSettings, 'speed', BMWalker.minSpeed, BMWalker.maxSpeed);
+  walkerFolder.add(
+    walkerSettings,
+    'bodyStructure',
+    BMWalker.minBodyStructure,
+    BMWalker.maxBodyStructure
+  );
+  walkerFolder.add(walkerSettings, 'weight', BMWalker.minWeight, BMWalker.maxWeight);
+  walkerFolder.add(walkerSettings, 'nervousness', BMWalker.minNervousness, BMWalker.maxNervousness);
+  walkerFolder.add(walkerSettings, 'happiness', BMWalker.minHappiness, BMWalker.maxHappiness);
+  walkerFolder.open();
 }
 
 function draw() {
   background(220);
 
-  const spd = map(mouseX, 0, width, -2, 2 )
-  if(mouseIsPressed){
-    bmw.setSpeed(spd)
-  }
+  // const spd = map(mouseX, 0, width, -2, 2 )
+  // if(mouseIsPressed){
+  bmw.setSpeed(walkerSettings.speed);
+  // }
+
+  bmw.setWalkerParam(
+    walkerSettings.bodyStructure,
+    walkerSettings.weight,
+    walkerSettings.nervousness,
+    walkerSettings.happiness
+  );
 
   const walkerHeight = 300;
   const markers = bmw.getMarkers(walkerHeight);
@@ -42,7 +71,6 @@ function draw() {
 
     // console.log(m.desc);
   });
-
 
   // beginShape();
   // {
