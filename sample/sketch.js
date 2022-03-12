@@ -28,6 +28,16 @@ const translationSettingsDefault = {
 let translationSettings = new Object();
 let translationFolder;
 
+const canvasSettingsDefault = {
+  dot: true,
+  dotSize: 6,
+  description: false,
+  line: false,
+  invert: false,
+};
+let canvasSettings = new Object();
+let canvasFolder;
+
 const utilities = {
   reset: () => {
     initializeSettings();
@@ -36,11 +46,13 @@ const utilities = {
 
 function setup() {
   createCanvas(W, W);
+  textAlign(CENTER, CENTER);
   bmw = new BMWalker();
-  dgui = new dat.GUI({closeOnTop: true});
+  dgui = new dat.GUI({ closeOnTop: true });
   walkerFolder = dgui.addFolder('Walker');
   cameraFolder = dgui.addFolder('Camera');
   translationFolder = dgui.addFolder('Translation');
+  canvasFolder = dgui.addFolder('Canvas');
 
   initializeSettings();
   const step = 0.1;
@@ -68,13 +80,19 @@ function setup() {
   cameraFolder.add(cameraSettings, 'elevation', -PI, PI, step);
   cameraFolder.open();
 
-  translationFolder.add(translationSettings, 'flagTranslation').onFinishChange(function(){
-    if(translationSettings.flagTranslation){
+  translationFolder.add(translationSettings, 'flagTranslation').onFinishChange(function () {
+    if (translationSettings.flagTranslation) {
       bmw.resetTimer();
     }
   });
   translationFolder.open();
 
+  canvasFolder.add(canvasSettings, 'dot');
+  canvasFolder.add(canvasSettings, 'dotSize', 0, 30, 1);
+  canvasFolder.add(canvasSettings, 'description');
+  canvasFolder.add(canvasSettings, 'line');
+  canvasFolder.add(canvasSettings, 'invert');
+  canvasFolder.open();
 
   dgui.add(utilities, 'reset');
 }
@@ -89,12 +107,15 @@ const initializeSettings = () => {
   cameraSettings.angularVelocity = cameraSettingsDefault.angularVelocity;
   cameraSettings.elevation = cameraSettingsDefault.elevation;
   translationSettings.flagTranslation = translationSettingsDefault.flagTranslation;
+  canvasSettings.dot = canvasSettingsDefault.dot;
+  canvasSettings.description = canvasSettingsDefault.description;
+  canvasSettings.dotSize = canvasSettingsDefault.dotSize;
+  canvasSettings.line = canvasSettingsDefault.line;
+  canvasSettings.invert = canvasSettingsDefault.invert;
   dgui.updateDisplay();
 };
 
 function draw() {
-  background(220);
-
   // const spd = map(mouseX, 0, width, -2, 2 )
   // if(mouseIsPressed){
   bmw.setSpeed(walkerSettings.speed);
@@ -110,12 +131,10 @@ function draw() {
   bmw.setCameraParam(
     cameraSettings.azimuth,
     cameraSettings.angularVelocity,
-    cameraSettings.elevation,
+    cameraSettings.elevation
   );
 
-  bmw.setTranslationParam(
-    translationSettings.flagTranslation,
-  );
+  bmw.setTranslationParam(translationSettings.flagTranslation);
 
   const walkerHeight = 300;
   const markers = bmw.getMarkers(walkerHeight);
@@ -129,25 +148,43 @@ function draw() {
   //   line(markers[i0].x, markers[i0].y, markers[i1].x, markers[i1].y);
   // });
 
-  const lineMarkers = bmw.getLineMarkers(walkerHeight);
-  lineMarkers.forEach((m) => {
-    line(m[0].x, m[0].y, m[1].x, m[1].y);
-  });
+  // Choose colors
+  let lineColor = 30;
+  let bgColor = 220;
+  if (canvasSettings.invert) {
+    bgColor = 30;
+    lineColor = 255;
+  }
+  background(bgColor);
+  stroke(lineColor);
 
-  markers.forEach((m, i) => {
-    circle(m.x, m.y, 6);
+  // Draw lines first
+  if (canvasSettings.line) {
+    const lineMarkers = bmw.getLineMarkers(walkerHeight);
+    lineMarkers.forEach((m) => {
+      line(m[0].x, m[0].y, m[1].x, m[1].y);
+    });
+  }
 
-    textAlign(CENTER, CENTER);
-    // text(i, m.x, m.y);
-    text(m.desc, m.x, m.y + 20);
+  // Draw dots next.
+  if (canvasSettings.dot) {
+    markers.forEach((m, i) => {
+      circle(m.x, m.y, canvasSettings.dotSize);
+      // text(i, m.x, m.y);
+      // console.log(m.desc);
+    });
+  }
 
-    // console.log(m.desc);
-  });
-
-  // beginShape();
-  // {
-  //   markers.forEach((m) => vertex(m.x, m.y));
-  // }
-  // endShape(CLOSE);
-  // noLoop();
+  // Draw descriptions of each dots.
+  if (canvasSettings.description) {
+    push();
+    {
+      noStroke();
+      fill(lineColor);
+      markers.forEach((m) => {
+        text(m.desc, m.x, m.y + 20);
+      });
+    }
+    pop();
+  }
 }
