@@ -18,8 +18,7 @@ class BMWalker {
 
   // Constructor
   constructor(type = BMWalker.typeHuman) {
-    // this.type = type;
-    this.walker_object = type; // 0: human, 1: cat?, 2: pigeon, 3: box(maybe for debug).
+    this.type = type; // 0: human, 1: cat?, 2: pigeon, 3: box(maybe for debug).
 
     this.tm = new BMWTimer();
     this.starttime = this.tm.getTimer();
@@ -66,7 +65,6 @@ class BMWalker {
     this.top = 0;
     this.bottom = 0;
     this.spinmatrix = this.mtrx.newIdentMatrix();
-    this.walker_colour = '#ffffff';
     this.dotsize = 3;
 
     this.motion_vertical_scale = 1;
@@ -2083,7 +2081,7 @@ class BMWalker {
 
     //general stuff
     // this.walker_initphase = 0;
-    this.walker_speed = 1;
+    // this.walker_speed = 1;
     this.walker_sticks = true;
 
     // this.walker_scrambling = 0;
@@ -2165,7 +2163,7 @@ class BMWalker {
     let markers = [];
 
     if (tmsec === undefined) {
-      tmsec = this.tm.getTimer();
+      tmsec = this.tm.getTimer() - this.starttime;
     }
     // console.log(tmsec);
 
@@ -2178,13 +2176,13 @@ class BMWalker {
     var i;
 
     var walkertime = 0;
-    if (this.walker_speed != 0) {
+    if (this.speed != 0) {
       walkertime = this.calcTime(curtime);
       //console.log(walkertime)
     }
 
     //translation calculation  // ちょっとよくわかっていない
-    if (this.translation && this.walker_object == 0) {
+    if (this.translation && this.type == 0) {
       this.translation_pos = Math.round((this.getTranslationSpeed() * 120 * curtime) / 1000);
       this.translation_pos =
         (this.translation_pos % (this.translation_end - this.translation_start)) +
@@ -2315,7 +2313,7 @@ class BMWalker {
     }
 
     if (this.walker_sticks) {
-      if (this.walker_object == 0) {
+      if (this.type == 0) {
         // ★
         // this.drawLineX(vectors, 0, 1, invis);
         // this.drawLineX(vectors, 1, 2, invis);
@@ -2378,7 +2376,10 @@ class BMWalker {
       const i0 = idxs[0];
       const i1 = idxs[1];
 
-      lineMarkers.push([{x:markers[i0].x, y: markers[i0].y}, {x:markers[i1].x, y: markers[i1].y}]);
+      lineMarkers.push([
+        { x: markers[i0].x, y: markers[i0].y },
+        { x: markers[i1].x, y: markers[i1].y },
+      ]);
     });
 
     return lineMarkers;
@@ -2386,8 +2387,18 @@ class BMWalker {
 
   // API: Set speed
   setSpeed(speed = 0) {
-    const clampedSpeed = this.clamp(BMWalker.minSpeed, BMWalker.maxSpeed, speed);
-    this.speed = clampedSpeed;
+    const freq = this.getFrequency();
+    this.speed = this.clamp(BMWalker.minSpeed, BMWalker.maxSpeed, speed);
+
+    this.init();
+    let difffreq = freq / this.getFrequency();
+    // avoid 0 divisor
+    if (abs(difffreq) < 0.005) {
+      difffreq += 0.01;
+    }
+    const t = this.tm.getTimer();
+    this.starttime = t - (t - this.starttime) / difffreq;
+    // console.log(freq, difffreq, t, this.starttime);
   }
 
   // API: ...
@@ -2442,13 +2453,13 @@ class BMWalker {
     }
   }
 
-  // Interval
+  // Internal
   clamp(min, max, val) {
     return Math.min(max, Math.max(min, val));
   }
 
   init() {
-    this.nummarkers = (this.meanwalker[this.walker_object].length / 5 - 1) / 3;
+    this.nummarkers = (this.meanwalker[this.type].length / 5 - 1) / 3;
     this.markers = new Array(this.nummarkers * 3);
     this.recalc_angle();
     this.calcsize();
@@ -2467,16 +2478,16 @@ class BMWalker {
 
     // Calc min/max of x, y, z.
     for (n = 0; n < this.nummarkers; n++) {
-      this.walkerxmin = Math.min(this.walkerxmin, this.meanwalker[this.walker_object][n]);
-      this.walkerxmax = Math.max(this.walkerxmax, this.meanwalker[this.walker_object][n]);
+      this.walkerxmin = Math.min(this.walkerxmin, this.meanwalker[this.type][n]);
+      this.walkerxmax = Math.max(this.walkerxmax, this.meanwalker[this.type][n]);
     }
     for (n = this.nummarkers; n < this.nummarkers * 2; n++) {
-      this.walkerymin = Math.min(this.walkerymin, this.meanwalker[this.walker_object][n]);
-      this.walkerymax = Math.max(this.walkerymax, this.meanwalker[this.walker_object][n]);
+      this.walkerymin = Math.min(this.walkerymin, this.meanwalker[this.type][n]);
+      this.walkerymax = Math.max(this.walkerymax, this.meanwalker[this.type][n]);
     }
     for (n = this.nummarkers * 2; n < this.nummarkers * 3; n++) {
-      this.walkerzmin = Math.min(this.walkerzmin, this.meanwalker[this.walker_object][n]);
-      this.walkerzmax = Math.max(this.walkerzmax, this.meanwalker[this.walker_object][n]);
+      this.walkerzmin = Math.min(this.walkerzmin, this.meanwalker[this.type][n]);
+      this.walkerzmax = Math.max(this.walkerzmax, this.meanwalker[this.type][n]);
     }
 
     // The walker height in mm. Used later on to scale it to the desired size in degrees.
@@ -2491,10 +2502,10 @@ class BMWalker {
     var phase = 0; //this.walker_scrambling_phases[i % this.nummarkers];
     var genderval = this.walker_gender;
 
-    var initialpos = this.meanwalker[this.walker_object][i];
+    var initialpos = this.meanwalker[this.type][i];
 
     if (includeStructure) {
-      if (this.walker_object == 0) {
+      if (this.type == 0) {
         initialpos +=
           this.genderaxis[i] * genderval +
           this.weightaxis[i] * this.walker_weight +
@@ -2521,30 +2532,30 @@ class BMWalker {
 
     //motion!
     var motionpos = 0;
-    if (this.walker_object == 0) {
+    if (this.type == 0) {
       motionpos =
-        (this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1)] +
+        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1)] +
           this.genderaxis[i + (this.nummarkers * 3 + 1)] * genderval +
           this.weightaxis[i + (this.nummarkers * 3 + 1)] * this.walker_weight +
           this.nervousaxis[i + (this.nummarkers * 3 + 1)] * this.walker_nervousness +
           this.happyaxis[i + (this.nummarkers * 3 + 1)] * this.walker_happiness +
           this.customaxis[i + (this.nummarkers * 3 + 1)] * this.walker_customness) *
           Math.sin(walkertime + phase) +
-        (this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 2] +
+        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 2] +
           this.genderaxis[i + (this.nummarkers * 3 + 1) * 2] * genderval +
           this.weightaxis[i + (this.nummarkers * 3 + 1) * 2] * this.walker_weight +
           this.nervousaxis[i + (this.nummarkers * 3 + 1) * 2] * this.walker_nervousness +
           this.happyaxis[i + (this.nummarkers * 3 + 1) * 2] * this.walker_happiness +
           this.customaxis[i + (this.nummarkers * 3 + 1) * 2] * this.walker_customness) *
           Math.cos(walkertime + phase) +
-        (this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 3] +
+        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 3] +
           this.genderaxis[i + (this.nummarkers * 3 + 1) * 3] * genderval +
           this.weightaxis[i + (this.nummarkers * 3 + 1) * 3] * this.walker_weight +
           this.nervousaxis[i + (this.nummarkers * 3 + 1) * 3] * this.walker_nervousness +
           this.happyaxis[i + (this.nummarkers * 3 + 1) * 3] * this.walker_happiness +
           this.customaxis[i + (this.nummarkers * 3 + 1) * 3] * this.walker_customness) *
           Math.sin(2 * (walkertime + phase)) +
-        (this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 4] +
+        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 4] +
           this.genderaxis[i + (this.nummarkers * 3 + 1) * 4] * genderval +
           this.weightaxis[i + (this.nummarkers * 3 + 1) * 4] * this.walker_weight +
           this.nervousaxis[i + (this.nummarkers * 3 + 1) * 4] * this.walker_nervousness +
@@ -2553,13 +2564,12 @@ class BMWalker {
           Math.cos(2 * (walkertime + phase));
     } else {
       motionpos =
-        this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1)] *
-          Math.sin(walkertime + phase) +
-        this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 2] *
+        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1)] * Math.sin(walkertime + phase) +
+        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 2] *
           Math.cos(walkertime + phase) +
-        this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 3] *
+        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 3] *
           Math.sin(2 * (walkertime + phase)) +
-        this.meanwalker[this.walker_object][i + (this.nummarkers * 3 + 1) * 4] *
+        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 4] *
           Math.cos(2 * (walkertime + phase));
     }
 
@@ -2570,21 +2580,21 @@ class BMWalker {
   }
 
   getFrequency() {
-    var speed = this.meanwalker[this.walker_object][this.nummarkers * 3];
-    if (this.walker_object == 0) {
+    var speed = this.meanwalker[this.type][this.nummarkers * 3];
+    if (this.type == 0) {
       speed += this.walker_gender * this.genderaxis[this.nummarkers * 3];
       speed += this.walker_weight * this.weightaxis[this.nummarkers * 3];
       speed += this.walker_nervousness * this.nervousaxis[this.nummarkers * 3];
       speed += this.walker_happiness * this.happyaxis[this.nummarkers * 3];
     }
     //console.log(speed)
-    return speed / this.walker_speed;
+    return speed / this.speed;
   }
 
   calcTranslationSpeed() {
-    var tspeed = this.meanwalker[this.walker_object][(this.nummarkers * 3 + 1) * 3 - 1];
+    var tspeed = this.meanwalker[this.type][(this.nummarkers * 3 + 1) * 3 - 1];
     //tspeed*120 = 1356.168
-    if (this.walker_object == 0) {
+    if (this.type == 0) {
       tspeed += this.walker_gender * this.genderaxis[(this.nummarkers * 3 + 1) * 3 - 1];
       tspeed += this.walker_weight * this.weightaxis[(this.nummarkers * 3 + 1) * 3 - 1];
       tspeed += this.walker_nervousness * this.nervousaxis[(this.nummarkers * 3 + 1) * 3 - 1];
@@ -2595,7 +2605,7 @@ class BMWalker {
   }
 
   getTranslationSpeed() {
-    return this.walker_speed * (this.walker_translation_speed / 120);
+    return this.speed * (this.walker_translation_speed / 120);
   }
 
   calcTime(curtime) {

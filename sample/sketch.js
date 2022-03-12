@@ -5,10 +5,16 @@ let bmw;
 function setup() {
   createCanvas(W, W);
   bmw = new BMWalker();
+  
 }
 
 function draw() {
   background(220);
+
+  const spd = map(mouseX, 0, width, -2, 2 )
+  if(mouseIsPressed){
+    bmw.setSpeed(spd)
+  }
 
   const walkerHeight = 300;
   const markers = bmw.getMarkers(walkerHeight);
@@ -28,7 +34,7 @@ function draw() {
   });
 
   markers.forEach((m, i) => {
-    circle(m.x, m.y, 10);
+    circle(m.x, m.y, 6);
 
     textAlign(CENTER, CENTER);
     // text(i, m.x, m.y);
