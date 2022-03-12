@@ -56,23 +56,23 @@ function setup() {
 
   initializeSettings();
   const step = 0.1;
-  walkerFolder.add(walkerSettings, 'speed', BMWalker.minSpeed, BMWalker.maxSpeed, step);
+  walkerFolder.add(walkerSettings, 'speed', bmw.minSpeed, bmw.maxSpeed, step);
   walkerFolder.add(
     walkerSettings,
     'bodyStructure',
-    BMWalker.minBodyStructure,
-    BMWalker.maxBodyStructure,
+    bmw.minBodyStructure,
+    bmw.maxBodyStructure,
     step
   );
-  walkerFolder.add(walkerSettings, 'weight', BMWalker.minWeight, BMWalker.maxWeight, step);
+  walkerFolder.add(walkerSettings, 'weight', bmw.minWeight, bmw.maxWeight, step);
   walkerFolder.add(
     walkerSettings,
     'nervousness',
-    BMWalker.minNervousness,
-    BMWalker.maxNervousness,
+    bmw.minNervousness,
+    bmw.maxNervousness,
     step
   );
-  walkerFolder.add(walkerSettings, 'happiness', BMWalker.minHappiness, BMWalker.maxHappiness, step);
+  walkerFolder.add(walkerSettings, 'happiness', bmw.minHappiness, bmw.maxHappiness, step);
   walkerFolder.open();
 
   cameraFolder.add(cameraSettings, 'azimuth', -PI, PI, step);

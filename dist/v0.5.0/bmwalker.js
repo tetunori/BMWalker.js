@@ -1,29 +1,31 @@
 class BMWalker {
-  static typeHuman = 0;
-  static typeCat = 1;
-  static typePigeon = 2;
-  static typeBox = 3;
-
-  static maxSpeed = 2.0;
-  static minSpeed = -2.0;
-
-  static maxBodyStructure = 6.0; // Type A
-  static minBodyStructure = -6.0; // Type B
-  static maxWeight = 6.0; // Heavy
-  static minWeight = -6.0; // Light
-  static maxNervousness = 6.0; // Nervous
-  static minNervousness = -6.0; // Relaxed
-  static maxHappiness = 6.0; // Happy
-  static minHappiness = -6.0; // Sad
 
   // Constructor
-  constructor(type = BMWalker.typeHuman) {
+  constructor(type = 0) {
+    this.typeHuman = 0;
+    this.typeCat = 1;
+    this.typePigeon = 2;
+    this.typeBox = 3;
+
     this.type = type; // 0: human, 1: cat?, 2: pigeon, 3: box(maybe for debug).
 
     this.tm = new BMWTimer();
     this.starttime = this.tm.getTimer();
 
     this.mtrx = new BMWMatrix();
+
+
+    this.maxSpeed = 2.0;
+    this.minSpeed = -2.0;
+
+    this.maxBodyStructure = 6.0; // Type A
+    this.minBodyStructure = -6.0; // Type B
+    this.maxWeight = 6.0; // Heavy
+    this.minWeight = -6.0; // Light
+    this.maxNervousness = 6.0; // Nervous
+    this.minNervousness = -6.0; // Relaxed
+    this.maxHappiness = 6.0; // Happy
+    this.minHappiness = -6.0; // Sad
 
     this.speed = 1.0;
 
@@ -2383,7 +2385,7 @@ class BMWalker {
     if (speed === 0) {
       speed += 0.001;
     }
-    this.speed = this.clamp(BMWalker.minSpeed, BMWalker.maxSpeed, speed);
+    this.speed = this.clamp(this.minSpeed, this.maxSpeed, speed);
 
     this.init();
     let difffreq = freq / this.getFrequency();
@@ -2403,25 +2405,25 @@ class BMWalker {
     // Body Structure Parameter
     if (bodyStructure !== undefined) {
       this.bodyStructure = this.clamp(
-        BMWalker.minBodyStructure,
-        BMWalker.maxBodyStructure,
+        this.minBodyStructure,
+        this.maxBodyStructure,
         bodyStructure
       );
     }
 
     // Weight Parameter
     if (weight !== undefined) {
-      this.weight = this.clamp(BMWalker.minWeight, BMWalker.maxWeight, weight);
+      this.weight = this.clamp(this.minWeight, this.maxWeight, weight);
     }
 
     // Nervousness Parameter
     if (nervousness !== undefined) {
-      this.nervousness = this.clamp(BMWalker.minNervousness, BMWalker.maxNervousness, nervousness);
+      this.nervousness = this.clamp(this.minNervousness, this.maxNervousness, nervousness);
     }
 
     // Happiness Parameter
     if (happiness !== undefined) {
-      this.happiness = this.clamp(BMWalker.minHappiness, BMWalker.maxHappiness, happiness);
+      this.happiness = this.clamp(this.minHappiness, this.maxHappiness, happiness);
     }
 
     this.init();
