@@ -2205,8 +2205,8 @@ class BMWalker {
     matrix = this.mtrx.multmatrix(this.mtrx.translate(this.translation_pos, 0, 0), matrix);
     matrix = this.mtrx.multmatrix(
       this.mtrx.rotateaxis(
-        (this.azimuth * Math.PI) / 180 +
-          (curtime * this.angularVelocity * Math.PI) / 180 / 1000,
+        this.azimuth +
+          curtime * this.angularVelocity / 1000,
         0,
         0,
         1
@@ -2216,7 +2216,7 @@ class BMWalker {
 
     matrix = this.mtrx.multmatrix(this.spinmatrix, matrix);
     matrix = this.mtrx.multmatrix(
-      this.mtrx.rotateY((this.elevation * Math.PI) / 180),
+      this.mtrx.rotateY(this.elevation),
       matrix
     );
 
