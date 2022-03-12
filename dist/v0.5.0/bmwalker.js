@@ -2269,19 +2269,19 @@ class BMWalker {
       [
         this.head,
         this.clavicles,
-        this.rsh,
-        this.re,
-        this.rh,
         this.lsh,
         this.le,
         this.lh,
+        this.rsh,
+        this.re,
+        this.rh,
         this.belly,
-        this.rhip,
-        this.rknee,
-        this.rankle,
         this.lhip,
         this.lknee,
         this.lankle,
+        this.rhip,
+        this.rknee,
+        this.rankle,
       ].forEach((e, i) => {
         if (!e) {
           invis[i] = true;
@@ -2293,19 +2293,19 @@ class BMWalker {
         const descs = [
           'Head',
           'Clavicles',
-          'R-Shoulder',
-          'R-Elbow',
-          'R-Hand',
           'L-Shoulder',
           'L-Elbow',
           'L-Hand',
+          'R-Shoulder',
+          'R-Elbow',
+          'R-Hand',
           'Belly',
-          'R-Hip',
-          'R-Knee',
-          'R-Ankle',
           'L-Hip',
           'L-Knee',
           'L-Ankle',
+          'R-Hip',
+          'R-Knee',
+          'R-Ankle',
         ];
         markers.push({ x: xpos, y: ypos, desc: descs[i] });
       }

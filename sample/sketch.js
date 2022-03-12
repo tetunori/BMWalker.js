@@ -31,7 +31,7 @@ const utilities = {
 function setup() {
   createCanvas(W, W);
   bmw = new BMWalker();
-  dgui = new dat.GUI();
+  dgui = new dat.GUI({closeOnTop: true});
   walkerFolder = dgui.addFolder('Walker');
   cameraFolder = dgui.addFolder('Camera');
 
@@ -96,6 +96,8 @@ function draw() {
     cameraSettings.angularVelocity,
     cameraSettings.elevation,
   );
+
+  
 
   const walkerHeight = 300;
   const markers = bmw.getMarkers(walkerHeight);
