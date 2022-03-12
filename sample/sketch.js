@@ -68,8 +68,13 @@ function setup() {
   cameraFolder.add(cameraSettings, 'elevation', -PI, PI, step);
   cameraFolder.open();
 
-  translationFolder.add(translationSettings, 'flagTranslation');
+  translationFolder.add(translationSettings, 'flagTranslation').onFinishChange(function(){
+    if(translationSettings.flagTranslation){
+      bmw.resetTimer();
+    }
+  });
   translationFolder.open();
+
 
   dgui.add(utilities, 'reset');
 }

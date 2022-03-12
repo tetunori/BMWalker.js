@@ -48,7 +48,7 @@ class BMWalker {
     this.pixelsperdegree = 37;
 
     // this.flagTranslation = false;
-    this.translation_start = -1000;
+    this.translation_start = 0;//-1000;
     this.translation_end = 1000;
     this.translation_pos = 0;
 
@@ -2184,9 +2184,9 @@ class BMWalker {
     if (this.flagTranslation && this.type == 0) {
       this.translation_pos = Math.round((this.getTranslationSpeed() * 120 * curtime) / 1000);
 
-      this.translation_pos =
-        (this.translation_pos % (this.translation_end - this.translation_start)) +
-        this.translation_start;
+      // this.translation_pos =
+      //   (this.translation_pos % (this.translation_end - this.translation_start)) +
+      //   this.translation_start;
     } else {
       this.translation_pos = 0;
     }
@@ -2457,6 +2457,12 @@ class BMWalker {
     if (flagTranslation !== undefined) {
       this.flagTranslation = flagTranslation;
     }
+  }
+
+  // API: ...
+  resetTimer() {
+    this.starttime = this.tm.getTimer();
+    this.init();
   }
 
   // Internal
