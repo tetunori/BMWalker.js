@@ -22,6 +22,12 @@ const cameraSettingsDefault = {
 let cameraSettings = new Object();
 let cameraFolder;
 
+const translationSettingsDefault = {
+  flagTranslation: false,
+};
+let translationSettings = new Object();
+let translationFolder;
+
 const utilities = {
   reset: () => {
     initializeSettings();
@@ -34,6 +40,7 @@ function setup() {
   dgui = new dat.GUI({closeOnTop: true});
   walkerFolder = dgui.addFolder('Walker');
   cameraFolder = dgui.addFolder('Camera');
+  translationFolder = dgui.addFolder('Translation');
 
   initializeSettings();
   const step = 0.1;
@@ -61,6 +68,9 @@ function setup() {
   cameraFolder.add(cameraSettings, 'elevation', -PI, PI, step);
   cameraFolder.open();
 
+  translationFolder.add(translationSettings, 'flagTranslation');
+  translationFolder.open();
+
   dgui.add(utilities, 'reset');
 }
 
@@ -73,6 +83,7 @@ const initializeSettings = () => {
   cameraSettings.azimuth = cameraSettingsDefault.azimuth;
   cameraSettings.angularVelocity = cameraSettingsDefault.angularVelocity;
   cameraSettings.elevation = cameraSettingsDefault.elevation;
+  translationSettings.flagTranslation = translationSettingsDefault.flagTranslation;
   dgui.updateDisplay();
 };
 
@@ -97,7 +108,9 @@ function draw() {
     cameraSettings.elevation,
   );
 
-  
+  bmw.setTranslationParam(
+    translationSettings.flagTranslation,
+  );
 
   const walkerHeight = 300;
   const markers = bmw.getMarkers(walkerHeight);

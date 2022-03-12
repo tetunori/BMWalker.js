@@ -47,7 +47,7 @@ class BMWalker {
 
     this.pixelsperdegree = 37;
 
-    this.translation = false;
+    // this.flagTranslation = false;
     this.translation_start = -1000;
     this.translation_end = 1000;
     this.translation_pos = 0;
@@ -2181,8 +2181,9 @@ class BMWalker {
     }
 
     //translation calculation  // ちょっとよくわかっていない
-    if (this.translation && this.type == 0) {
+    if (this.flagTranslation && this.type == 0) {
       this.translation_pos = Math.round((this.getTranslationSpeed() * 120 * curtime) / 1000);
+
       this.translation_pos =
         (this.translation_pos % (this.translation_end - this.translation_start)) +
         this.translation_start;
@@ -2204,21 +2205,12 @@ class BMWalker {
 
     matrix = this.mtrx.multmatrix(this.mtrx.translate(this.translation_pos, 0, 0), matrix);
     matrix = this.mtrx.multmatrix(
-      this.mtrx.rotateaxis(
-        this.azimuth +
-          curtime * this.angularVelocity / 1000,
-        0,
-        0,
-        1
-      ),
+      this.mtrx.rotateaxis(this.azimuth + (curtime * this.angularVelocity) / 1000, 0, 0, 1),
       matrix
     );
 
     matrix = this.mtrx.multmatrix(this.spinmatrix, matrix);
-    matrix = this.mtrx.multmatrix(
-      this.mtrx.rotateY(this.elevation),
-      matrix
-    );
+    matrix = this.mtrx.multmatrix(this.mtrx.rotateY(this.elevation), matrix);
 
     var vectors = new Array(this.nummarkers);
     var vector = new Array(4);
@@ -2444,7 +2436,6 @@ class BMWalker {
 
   // API: ...
   setCameraParam(azimuth, angularVelocity, elevation) {
-
     // Camera azimuth(rotation) Parameter
     if (azimuth !== undefined) {
       this.azimuth = azimuth;
@@ -2478,6 +2469,7 @@ class BMWalker {
     this.markers = new Array(this.nummarkers * 3);
     this.recalc_angle();
     this.calcsize();
+    this.walker_translation_speed = this.calcTranslationSpeed();
   }
 
   recalc_angle() {
@@ -2804,8 +2796,11 @@ class BMWMatrix {
     //console.log(angle)
 
     if (Math.abs(angle) < 0.0001) return [0, 0, 1, 0];
-    if (angle > 180) {
-      angle = -(360 - angle);
+    // if (angle > 180) {
+    //   angle = -(360 - angle);
+    // }
+    if (angle > PI) {
+      angle = -(TAU - angle);
     }
 
     //cross product
