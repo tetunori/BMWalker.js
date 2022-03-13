@@ -1,19 +1,17 @@
+const BMW_TYPE_HUMAN = 0;
+const BMW_TYPE_CAT = 1;
+const BMW_TYPE_PIGEON = 2;
+const BMW_TYPE_BOX = 3; // (maybe for debug)
+
 class BMWalker {
-
   // Constructor
-  constructor(type = 0) {
-    this.typeHuman = 0;
-    this.typeCat = 1;
-    this.typePigeon = 2;
-    this.typeBox = 3;
-
-    this.type = type; // 0: human, 1: cat?, 2: pigeon, 3: box(maybe for debug).
+  constructor(type = BMW_TYPE_HUMAN) {
+    this.type = type;
 
     this.tm = new BMWTimer();
     this.starttime = this.tm.getTimer();
 
     this.mtrx = new BMWMatrix();
-
 
     this.maxSpeed = 2.0;
     this.minSpeed = -2.0;
@@ -43,14 +41,12 @@ class BMWalker {
     // Translation Parameters
     this.flagTranslation = false;
 
-    ////
-
     this.walker_size = 10;
 
     this.pixelsperdegree = 37;
 
     // this.flagTranslation = false;
-    this.translation_start = 0;//-1000;
+    this.translation_start = 0; //-1000;
     this.translation_end = 1000;
     this.translation_pos = 0;
 
@@ -77,8 +73,761 @@ class BMWalker {
     // this.dotShapes = [];
     // this.linesdrawn = false;
 
-    this.meanwalker = new Array(4);
+    const walkerData = new BMWData();
+    this.meanwalker = walkerData.meanwalker;
+    this.bodyStructureaxis = walkerData.bodyStructureaxis;
+    this.weightaxis = walkerData.weightaxis;
+    this.nervousaxis = walkerData.nervousaxis;
+    this.happyaxis = walkerData.happyaxis;
 
+    this.bodyStructure = 0;
+    this.weight = 0;
+    this.nervousness = 0;
+    this.happiness = 0;
+
+    //camera iables
+    // this.azimuth = 0;
+    // this.elevation = 0;
+    this.camera_distance = 1000;
+    // this.angularVelocity = 0;
+    this.walker_xaxis = 0;
+    this.walker_yaxis = 0;
+    this.walker_zaxis = 1;
+
+    this.walker_rot_xaxis = 0;
+    this.walker_rot_yaxis = 0;
+    this.walker_rot_zaxis = 0;
+
+    //general stuff
+    // this.walker_initphase = 0;
+    // this.walker_speed = 1;
+    this.walker_sticks = true;
+
+    // this.walker_scrambling = 0;
+    // this.flicker_ontime = 100;
+    // this.flicker_duration = 1;
+    // this.flicker_randomness = 0;
+    this.camera_perspective = 0;
+    // this.walker_scrambling_horiz = true;
+    // this.walker_scrambling_vert = true;
+    // this.walker_scrambling_phase = 0;
+
+    // this.markers_invisible = null;
+
+    //fun stuff
+    this.walker_translation_speed = 0;
+
+    //--------------INTERNAL IABLES--------------------
+
+    this.walkerxmin = 0;
+    this.walkerymin = 0;
+    this.walkerzmin = 0;
+    this.walkerxmax = 0;
+    this.walkerymax = 0;
+    this.walkerzmax = 0;
+    this.walkerxoff = 0;
+    this.walkeryoff = 0;
+    this.walkerzoff = 0;
+    this.walkersizefactor = 0;
+
+    this.axisrot = 0;
+    this.nummarkers = 0;
+    // this.durationstd = 0;
+    // this.dotsonratio = 0;
+    // this.dotduration = 0;
+    // this.durationon = 0;
+    // this.durationoff = 0;
+
+    //arrays of stuff
+    // this.scramblewalker = [];
+    // this.scramblewalkerinit = [];
+    this.catwalker = [];
+    this.pigeonwalker = [];
+    // this.walker_scrambling_phases = [];
+
+    //flicker stuff
+    // this.dottime = [];
+    // this.dotstats = [];
+
+    //marker stuff
+    this.markers = [];
+
+    this.head = true;
+    this.clavicles = true;
+    this.rhip = true;
+    this.lhip = true;
+    this.belly = true;
+
+    this.rsh = true;
+    this.re = true;
+    this.rh = true;
+
+    this.lsh = true;
+    this.le = true;
+    this.lh = true;
+
+    this.rknee = true;
+    this.lknee = true;
+
+    this.rankle = true;
+    this.lankle = true;
+
+    ////
+
+    this.init();
+  }
+
+  // API: Get markers
+  getMarkers(wh, tmsec = undefined) {
+    let markers = [];
+
+    if (tmsec === undefined) {
+      tmsec = this.tm.getTimer() - this.starttime;
+    }
+    // console.log(tmsec);
+
+    const curtime = tmsec;
+
+    /////
+
+    const invis = new Array(this.nummarkers);
+    invis.fill(false);
+    var i;
+
+    var walkertime = 0;
+    if (this.speed != 0) {
+      walkertime = this.calcTime(curtime);
+      //console.log(walkertime)
+    }
+
+    //translation calculation  // ちょっとよくわかっていない
+    if (this.flagTranslation && this.type === BMW_TYPE_HUMAN) {
+      this.translation_pos = Math.round((this.getTranslationSpeed() * 120 * curtime) / 1000);
+
+      // this.translation_pos =
+      //   (this.translation_pos % (this.translation_end - this.translation_start)) +
+      //   this.translation_start;
+    } else {
+      this.translation_pos = 0;
+    }
+
+    //CALCULATE MARKER POSITIONS
+    for (i = 0; i < this.nummarkers * 3 + 1; i++) {
+      this.markers[i] = this.sample(i, walkertime, true);
+    }
+    //draw walker, rotating by azimuth, axisrot, elevation and spinmatrix
+    var matrix = this.mtrx.rotateaxis(
+      -this.axisrot,
+      this.walker_rot_xaxis,
+      this.walker_rot_yaxis,
+      this.walker_rot_zaxis
+    );
+
+    matrix = this.mtrx.multmatrix(this.mtrx.translate(this.translation_pos, 0, 0), matrix);
+    matrix = this.mtrx.multmatrix(
+      this.mtrx.rotateaxis(this.azimuth + (curtime * this.angularVelocity) / 1000, 0, 0, 1),
+      matrix
+    );
+
+    matrix = this.mtrx.multmatrix(this.spinmatrix, matrix);
+    matrix = this.mtrx.multmatrix(this.mtrx.rotateY(this.elevation), matrix);
+
+    var vectors = new Array(this.nummarkers);
+    var vector = new Array(4);
+    var v2 = new Array(4);
+    var v3 = new Array(4);
+
+    for (i = 0; i < this.nummarkers; i++) {
+      vector[0] = this.markers[i] + this.walkerxoff + this.data_offset_x;
+      vector[1] =
+        this.markers[i + this.nummarkers] +
+        this.walkeryoff * this.structure_vertical_scale +
+        this.data_offset_y;
+      vector[2] = this.markers[i + this.nummarkers * 2] + this.walkerzoff + this.data_offset_z;
+      vector[3] = 1;
+
+      v2 = this.mtrx.multmatrixvector(matrix, vector);
+      v2[0] -= this.camera_distance;
+      v2[3] = 1;
+
+      if (this.camera_perspective > 0) {
+        var persp = this.mtrx.perspective(this.camera_distance);
+        v3 = this.mtrx.multmatrixvector(persp, v2);
+        v3[0] = v3[0] / v3[3];
+        v3[1] = v3[1] / v3[3];
+        v3[2] = v3[2] / v3[3];
+
+        if (v2[0] > 0 || v3[3] == 0) {
+          invis[i] = true;
+        }
+      } else {
+        v3 = v2;
+      }
+      // this.currentmatrix[i] = v3;
+
+      // console.log(v3)
+      //nudge up
+      var xpos =
+        this.offsety + (v3[1] / this.walkersizefactor) * this.walker_size * this.pixelsperdegree;
+      var ypos =
+        this.offsetz - (v3[2] / this.walkersizefactor) * this.walker_size * this.pixelsperdegree;
+      vectors[i] = v3;
+
+      // if(this.markers_invisible[i])
+      // {
+      //   invis[i] = 1;
+      // }
+
+      [
+        this.head,
+        this.clavicles,
+        this.lsh,
+        this.le,
+        this.lh,
+        this.rsh,
+        this.re,
+        this.rh,
+        this.belly,
+        this.lhip,
+        this.lknee,
+        this.lankle,
+        this.rhip,
+        this.rknee,
+        this.rankle,
+      ].forEach((e, i) => {
+        if (!e) {
+          invis[i] = true;
+        }
+      });
+
+      if (!invis[i]) {
+        // console.log(xpos, ypos);
+        const descs = [
+          'Head',
+          'Clavicles',
+          'L-Shoulder',
+          'L-Elbow',
+          'L-Hand',
+          'R-Shoulder',
+          'R-Elbow',
+          'R-Hand',
+          'Belly',
+          'L-Hip',
+          'L-Knee',
+          'L-Ankle',
+          'R-Hip',
+          'R-Knee',
+          'R-Ankle',
+        ];
+        markers.push({ x: xpos, y: ypos, desc: descs[i] });
+      }
+    }
+
+    if (this.walker_sticks) {
+      if (this.type === BMW_TYPE_HUMAN) {
+        // ★
+        // this.drawLineX(vectors, 0, 1, invis);
+        // this.drawLineX(vectors, 1, 2, invis);
+        // this.drawLineX(vectors, 2, 3, invis);
+        // this.drawLineX(vectors, 3, 4, invis);
+        // this.drawLineX(vectors, 1, 5, invis);
+        // this.drawLineX(vectors, 5, 6, invis);
+        // this.drawLineX(vectors, 6, 7, invis);
+        // this.drawLineX(vectors, 1, 8, invis);
+        // this.drawLineX(vectors, 8, 9, invis);
+        // this.drawLineX(vectors, 9, 10, invis);
+        // this.drawLineX(vectors, 10, 11, invis);
+        // this.drawLineX(vectors, 8, 12, invis);
+        // this.drawLineX(vectors, 12, 13, invis);
+        // this.drawLineX(vectors, 13, 14, invis);
+      }
+    } // temporary
+
+    ////
+
+    // get markers
+    // markers = [
+    //   { x: 0, y: 0, desc: '1' },
+    //   { x: 0, y: wh, desc: '2' },
+    //   { x: wh / 2, y: wh, desc: '3' },
+    //   { x: wh / 2, y: 0, desc: '4' },
+    // ];
+
+    return markers;
+  }
+
+  // API: Get Indices of markers that make up the line.
+  getLineMarkerIndices() {
+    return [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [1, 5],
+      [5, 6],
+      [6, 7],
+      [1, 8],
+      [8, 9],
+      [9, 10],
+      [10, 11],
+      [8, 12],
+      [12, 13],
+      [13, 14],
+    ];
+  }
+
+  // API: Get markers that make up the line.
+  getLineMarkers(wh) {
+    const markers = this.getMarkers(wh);
+
+    const lineMarkers = [];
+
+    const idxsArray = this.getLineMarkerIndices();
+    idxsArray.forEach((idxs) => {
+      const i0 = idxs[0];
+      const i1 = idxs[1];
+
+      lineMarkers.push([
+        { x: markers[i0].x, y: markers[i0].y },
+        { x: markers[i1].x, y: markers[i1].y },
+      ]);
+    });
+
+    return lineMarkers;
+  }
+
+  // API: Set speed
+  setSpeed(speed = 1.0) {
+    const freq = this.getFrequency();
+    // avoid 0 divisor
+    if (speed === 0) {
+      speed += 0.001;
+    }
+    this.speed = this.clamp(this.minSpeed, this.maxSpeed, speed);
+
+    this.init();
+    let difffreq = freq / this.getFrequency();
+    // avoid 0 divisor
+    if (abs(difffreq) < 0.005) {
+      difffreq += 0.01;
+    }
+    const t = this.tm.getTimer();
+    this.starttime = t - (t - this.starttime) / difffreq;
+    // console.log(freq, difffreq, t, this.starttime);
+  }
+
+  // API: ...
+  setWalkerParam(bodyStructure, weight, nervousness, happiness) {
+    const freq = this.getFrequency();
+
+    // Body Structure Parameter
+    if (bodyStructure !== undefined) {
+      this.bodyStructure = this.clamp(this.minBodyStructure, this.maxBodyStructure, bodyStructure);
+    }
+
+    // Weight Parameter
+    if (weight !== undefined) {
+      this.weight = this.clamp(this.minWeight, this.maxWeight, weight);
+    }
+
+    // Nervousness Parameter
+    if (nervousness !== undefined) {
+      this.nervousness = this.clamp(this.minNervousness, this.maxNervousness, nervousness);
+    }
+
+    // Happiness Parameter
+    if (happiness !== undefined) {
+      this.happiness = this.clamp(this.minHappiness, this.maxHappiness, happiness);
+    }
+
+    this.init();
+    let difffreq = freq / this.getFrequency();
+    // avoid 0 divisor
+    if (abs(difffreq) < 0.005) {
+      difffreq += 0.01;
+    }
+    const t = this.tm.getTimer();
+    this.starttime = t - (t - this.starttime) / difffreq;
+  }
+
+  // API: ...
+  setCameraParam(azimuth, angularVelocity, elevation) {
+    // Camera azimuth(rotation) Parameter
+    if (azimuth !== undefined) {
+      this.azimuth = azimuth;
+    }
+
+    // Camera angular velocity(rotation speed) Parameter
+    if (angularVelocity !== undefined) {
+      this.angularVelocity = angularVelocity;
+    }
+
+    // Camera elevation Parameter
+    if (elevation !== undefined) {
+      this.elevation = elevation;
+    }
+  }
+
+  // API: ...
+  setTranslationParam(flagTranslation) {
+    if (flagTranslation !== undefined) {
+      this.flagTranslation = flagTranslation;
+    }
+  }
+
+  // API: ...
+  resetTimer() {
+    this.starttime = this.tm.getTimer();
+    this.init();
+  }
+
+  // Internal
+  clamp(min, max, val) {
+    return Math.min(max, Math.max(min, val));
+  }
+
+  init() {
+    this.nummarkers = (this.meanwalker[this.type].length / 5 - 1) / 3;
+    this.markers = new Array(this.nummarkers * 3);
+    this.recalc_angle();
+    this.calcsize();
+    this.walker_translation_speed = this.calcTranslationSpeed();
+  }
+
+  recalc_angle() {
+    var res = this.mtrx.angleBetween(0, 0, 1, 0, 0, 1);
+    this.walker_rot_xaxis = res[0];
+    this.walker_rot_yaxis = res[1];
+    this.walker_rot_zaxis = res[2];
+    this.axisrot = res[3];
+  }
+
+  calcsize() {
+    let n;
+
+    // Calc min/max of x, y, z.
+    for (n = 0; n < this.nummarkers; n++) {
+      this.walkerxmin = Math.min(this.walkerxmin, this.meanwalker[this.type][n]);
+      this.walkerxmax = Math.max(this.walkerxmax, this.meanwalker[this.type][n]);
+    }
+    for (n = this.nummarkers; n < this.nummarkers * 2; n++) {
+      this.walkerymin = Math.min(this.walkerymin, this.meanwalker[this.type][n]);
+      this.walkerymax = Math.max(this.walkerymax, this.meanwalker[this.type][n]);
+    }
+    for (n = this.nummarkers * 2; n < this.nummarkers * 3; n++) {
+      this.walkerzmin = Math.min(this.walkerzmin, this.meanwalker[this.type][n]);
+      this.walkerzmax = Math.max(this.walkerzmax, this.meanwalker[this.type][n]);
+    }
+
+    // The walker height in mm. Used later on to scale it to the desired size in degrees.
+    this.walkersizefactor = this.walkerzmax - this.walkerzmin;
+
+    this.walkerxoff = -(this.walkerxmax + this.walkerxmin) / 2;
+    this.walkeryoff = -(this.walkerymax + this.walkerymin) / 2;
+    this.walkerzoff = -(this.walkerzmax + this.walkerzmin) / 2;
+  } // end of calsize()
+
+  sample(i, walkertime, includeStructure) {
+    var phase = 0; //this.walker_scrambling_phases[i % this.nummarkers];
+    var bodyStructureval = this.bodyStructure;
+
+    var initialpos = this.meanwalker[this.type][i];
+
+    if (includeStructure) {
+      if (this.type === BMW_TYPE_HUMAN) {
+        initialpos +=
+          this.bodyStructureaxis[i] * bodyStructureval +
+          this.weightaxis[i] * this.weight +
+          this.nervousaxis[i] * this.nervousness +
+          this.happyaxis[i] * this.happiness;
+      }
+
+      // if (this.walker_scrambling > 0) {
+      //   if (
+      //     (i >= this.nummarkers * 2 && this.walker_scrambling_vert) ||
+      //     (i < this.nummarkers * 2 && this.walker_scrambling_horiz)
+      //   )
+      //     initialpos = this.scramblewalker[i];
+      // }
+
+      //invert or scale structure
+      if (i >= this.nummarkers * 2 && i < this.nummarkers * 3)
+        initialpos *= this.structure_vertical_scale;
+      else initialpos *= this.structure_horizontal_scale;
+    } else {
+      initialpos = 0;
+    }
+
+    //motion!
+    var motionpos = 0;
+    if (this.type === BMW_TYPE_HUMAN) {
+      motionpos =
+        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1)] +
+          this.bodyStructureaxis[i + (this.nummarkers * 3 + 1)] * bodyStructureval +
+          this.weightaxis[i + (this.nummarkers * 3 + 1)] * this.weight +
+          this.nervousaxis[i + (this.nummarkers * 3 + 1)] * this.nervousness +
+          this.happyaxis[i + (this.nummarkers * 3 + 1)] * this.happiness) *
+          Math.sin(walkertime + phase) +
+        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 2] +
+          this.bodyStructureaxis[i + (this.nummarkers * 3 + 1) * 2] * bodyStructureval +
+          this.weightaxis[i + (this.nummarkers * 3 + 1) * 2] * this.weight +
+          this.nervousaxis[i + (this.nummarkers * 3 + 1) * 2] * this.nervousness +
+          this.happyaxis[i + (this.nummarkers * 3 + 1) * 2] * this.happiness) *
+          Math.cos(walkertime + phase) +
+        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 3] +
+          this.bodyStructureaxis[i + (this.nummarkers * 3 + 1) * 3] * bodyStructureval +
+          this.weightaxis[i + (this.nummarkers * 3 + 1) * 3] * this.weight +
+          this.nervousaxis[i + (this.nummarkers * 3 + 1) * 3] * this.nervousness +
+          this.happyaxis[i + (this.nummarkers * 3 + 1) * 3] * this.happiness) *
+          Math.sin(2 * (walkertime + phase)) +
+        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 4] +
+          this.bodyStructureaxis[i + (this.nummarkers * 3 + 1) * 4] * bodyStructureval +
+          this.weightaxis[i + (this.nummarkers * 3 + 1) * 4] * this.weight +
+          this.nervousaxis[i + (this.nummarkers * 3 + 1) * 4] * this.nervousness +
+          this.happyaxis[i + (this.nummarkers * 3 + 1) * 4] * this.happiness) *
+          Math.cos(2 * (walkertime + phase));
+    } else {
+      motionpos =
+        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1)] * Math.sin(walkertime + phase) +
+        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 2] *
+          Math.cos(walkertime + phase) +
+        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 3] *
+          Math.sin(2 * (walkertime + phase)) +
+        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 4] *
+          Math.cos(2 * (walkertime + phase));
+    }
+
+    if (i >= this.nummarkers * 2 && i < this.nummarkers * 3)
+      motionpos *= this.motion_vertical_scale;
+    else motionpos *= this.motion_horizontal_scale;
+    return initialpos + motionpos;
+  }
+
+  getFrequency() {
+    var speed = this.meanwalker[this.type][this.nummarkers * 3];
+    if (this.type === BMW_TYPE_HUMAN) {
+      speed += this.bodyStructure * this.bodyStructureaxis[this.nummarkers * 3];
+      speed += this.weight * this.weightaxis[this.nummarkers * 3];
+      speed += this.nervousness * this.nervousaxis[this.nummarkers * 3];
+      speed += this.happiness * this.happyaxis[this.nummarkers * 3];
+    }
+    //console.log(speed)
+    return speed / this.speed;
+  }
+
+  calcTranslationSpeed() {
+    var tspeed = this.meanwalker[this.type][(this.nummarkers * 3 + 1) * 3 - 1];
+    //tspeed*120 = 1356.168
+    if (this.type === BMW_TYPE_HUMAN) {
+      tspeed += this.bodyStructure * this.bodyStructureaxis[(this.nummarkers * 3 + 1) * 3 - 1];
+      tspeed += this.weight * this.weightaxis[(this.nummarkers * 3 + 1) * 3 - 1];
+      tspeed += this.nervousness * this.nervousaxis[(this.nummarkers * 3 + 1) * 3 - 1];
+      tspeed += this.happiness * this.happyaxis[(this.nummarkers * 3 + 1) * 3 - 1];
+    }
+
+    return tspeed * 120;
+  }
+
+  getTranslationSpeed() {
+    return this.speed * (this.walker_translation_speed / 120);
+  }
+
+  calcTime(curtime) {
+    return ((curtime * 2 * Math.PI) / 1000) * (120 / this.getFrequency());
+  }
+}
+
+// Simple Timer class
+class BMWTimer {
+  // Constructor
+  constructor() {
+    const d = new Date().valueOf();
+    this.time = d;
+    this.start = d;
+
+    const precision = 10; // 10msec
+    setInterval(
+      function () {
+        this.time += precision;
+      }.bind(this),
+      precision
+    );
+  }
+
+  getTimer() {
+    return this.time - this.start;
+  }
+}
+
+//// Matrix calculation
+class BMWMatrix {
+  constructor() {}
+
+  newMatrix() {
+    const m = [new Array(4), new Array(4), new Array(4), new Array(4)];
+    return m;
+  }
+
+  // Identity matrix
+  newIdentMatrix() {
+    const m = [
+      [1, 0, 0, 0],
+      [0, 1, 0, 0],
+      [0, 0, 1, 0],
+      [0, 0, 0, 1],
+    ];
+    return m;
+  }
+
+  rotateY(angle) {
+    const m = [
+      [Math.cos(angle), 0, Math.sin(angle), 0],
+      [0, 1, 0, 0],
+      [-Math.sin(angle), 0, Math.cos(angle), 0],
+      [0, 0, 0, 1],
+    ];
+    return m;
+  }
+
+  rotateX(angle) {
+    const m = [
+      [1, 0, 0, 0],
+      [0, Math.cos(angle), -Math.sin(angle), 0],
+      [0, Math.sin(angle), Math.cos(angle), 0],
+      [0, 0, 0, 1],
+    ];
+    return m;
+  }
+
+  rotateZ(angle) {
+    const m = [
+      [Math.cos(angle), Math.sin(angle), 0, 0],
+      [-Math.sin(angle), Math.cos(angle), 0, 0],
+      [0, 0, 1, 0],
+      [0, 0, 0, 1],
+    ];
+    return m;
+  }
+
+  perspective(zfar) {
+    const znear = 1;
+    const f = zfar;
+    const m = [
+      [(zfar + znear) / (znear - zfar), (2 * zfar * znear) / (znear - zfar), 0, 0],
+      [0, f, 0, 0],
+      [0, 0, f, 0],
+      [-1, 0, 0, 0],
+    ];
+    return m;
+  }
+
+  translate(tx, ty, tz) {
+    const m = [
+      [1, 0, 0, tx],
+      [0, 1, 0, ty],
+      [0, 0, 1, tz],
+      [0, 0, 0, 1],
+    ];
+    return m;
+  }
+
+  rotateaxis(angle, rx, ry, rz) {
+    const c = Math.cos(angle);
+    const s = Math.sin(angle);
+
+    const len = Math.sqrt(rx * rx + ry * ry + rz * rz);
+    rx = rx / len;
+    ry = ry / len;
+    rz = rz / len;
+    const m = [
+      [rx * rx * (1 - c) + c, rx * ry * (1 - c) - rz * s, rx * rz * (1 - c) + ry * s, 0],
+      [ry * rx * (1 - c) + rz * s, ry * ry * (1 - c) + c, ry * rz * (1 - c) - rx * s, 0],
+      [rz * rx * (1 - c) - ry * s, rz * ry * (1 - c) + rx * s, rz * rz * (1 - c) + c, 0],
+      [0, 0, 0, 1],
+    ];
+    return m;
+  }
+
+  multmatrix(m1, m2) {
+    const m3 = this.newMatrix();
+    let r = 0;
+    let c = 0;
+
+    for (r = 0; r < 4; r++) {
+      for (c = 0; c < 4; c++) {
+        m3[r][c] = 0;
+      }
+    }
+
+    for (r = 0; r < 4; r++) {
+      for (c = 0; c < 4; c++) {
+        for (let i = 0; i < 4; i++) {
+          m3[r][c] += m1[r][i] * m2[i][c];
+        }
+      }
+    }
+    return m3;
+  }
+
+  multmatrixvector(m, v) {
+    const v2 = new Array(4);
+
+    for (let i = 0; i < 4; i++) {
+      v2[i] = 0;
+    }
+
+    for (let r = 0; r < 4; r++) {
+      for (let i = 0; i < 4; i++) {
+        v2[r] += m[r][i] * v[i];
+      }
+    }
+    return v2;
+  }
+
+  multvectormatrix(v, m) {
+    const v2 = new Array(4);
+
+    for (let i = 0; i < 4; i++) {
+      v2[i] = 0;
+    }
+
+    for (let r = 0; r < 4; r++) {
+      for (i = 0; i < 4; i++) {
+        v2[r] += m[i][r] * v[i];
+      }
+    }
+    return v2;
+  }
+
+  dotProd(x1, y1, z1, x2, y2, z2) {
+    return x1 * x2 + y1 * y2 + z1 * z2;
+  }
+
+  angleBetween(x1, y1, z1, x2, y2, z2) {
+    const axislen1 = Math.sqrt(x1 * x1 + y1 * y1 + z1 * z1);
+    const axislen2 = Math.sqrt(x2 * x2 + y2 * y2 + z2 * z2);
+
+    const angle = Math.acos(this.dotProd(x1, y1, z1, x2, y2, z2) / (axislen1 * axislen2));
+
+    if (Math.abs(angle) < 0.0001) return [0, 0, 1, 0];
+    if (angle > PI) {
+      angle = -(TAU - angle);
+    }
+
+    //cross product
+    const x3 = y1 * z2 - z1 * y2;
+    const y3 = z1 * x2 - x1 * z2;
+    const z3 = x1 * y2 - y1 * x2;
+
+    return [x3, y3, z3, angle];
+  }
+}
+
+// Walker data class
+class BMWData {
+  // Constructor
+  constructor() {
+    this.meanwalker = new Array(4);
     this.meanwalker[0] = new Array(
       -10.7519,
       -3.7275,
@@ -311,10 +1060,7 @@ class BMWalker {
       -12.1435,
       0.0
     );
-    //new Array(1.726 , 2.005 , -94.530 , -60.218 , -215.354 , -178.508 , -224.202 , -88.733 , 99.665 , 56.943 , 217.556 , 178.477 , 224.215 , -0.549 , 84.935 , 21.781 , 8.999 , -5.082 , -59.490 , 44.959 , -18.623 , -75.620 , 89.449 , -3.941 , -58.375 , 51.061 , -7.152 , -74.107 , -12.411 , 91.005 , 1528.710 , 985.683 , 891.514 , 149.834 , 877.506 , 1366.224 , 1094.033 , 491.494 , 892.284 , 150.152 , 869.144 , 1358.911 , 1088.976 , 1338.648 , 486.922 , 151.917 , -7.834 , -8.728 , -10.485 , 8.823 , -6.398 , -11.529 , -29.581 , 3.141 , -10.471 , 7.963 , -1.749 , -10.822 , -26.338 , -11.434 , 2.714 , -1.204 , -1.204 , -0.610 , -224.377 , 130.364 , 15.316 , 76.716 , -135.130 , -1.592 , 223.096 , -111.221 , -17.185 , -66.873 , -0.893 , 135.672 , 0.125 , 0.111 , 2.010 , 2.522 , 24.437 , 1.910 , -7.495 , -27.132 , -1.817 , -1.820 , -19.912 , -1.758 , 7.271 , 0.101 , 26.942 , 1.000 , -18.000 , -10.452 , -13.867 , 11.957 , -16.807 , -16.822 , -15.854 , 7.390 , -13.815 , 12.199 , -14.376 , -16.489 , -15.652 , -16.336 , 8.316 , -0.106 , 0.254 , 3.735 , 106.567 , 2.763 , 2.078 , 3.912 , 6.409 , -2.962 , -105.080 , -5.609 , -2.554 , -5.643 , -0.201 , -6.388 , -0.149 , -0.062 , 3.053 , -60.341 , -2.756 , -2.889 , -2.703 , -0.598 , -3.218 , 60.146 , 2.519 , 2.494 , 2.987 , -0.156 , 0.209 , 0.000 , 0.046 , 0.033 , 0.055 , -0.635 , -3.920 , 0.290 , -3.754 , -1.561 , 0.004 , 0.501 , 2.669 , 0.047 , 3.451 , 0.174 , 1.499 , -2.588 , -8.995 , -8.631 , 24.202 , 3.746 , -4.648 , -0.393 , 15.827 , -8.544 , 22.933 , 4.141 , -4.423 , -0.441 , -4.807 , 15.536 , 10.376 , 10.363 , 10.352 , -1.143 , 10.841 , 10.963 , 10.178 , 13.693 , 10.328 , -0.244 , 12.358 , 10.996 , 10.423 , 10.705 , 13.584 , 0.000 , 0.077 , -0.060 , -0.111 , -2.006 , -4.330 , -0.392 , -1.071 , -4.761 , -0.182 , 1.447 , 3.448 , 0.352 , 0.268 , -0.022 , 4.766 , 4.100 , 11.302 , 12.601 , -40.721 , -1.334 , 5.840 , 2.062 , 24.543 , 12.606 , -38.794 , -0.624 , 5.376 , 2.142 , 5.993 , 24.622 , 5.895 , 6.029 , 5.942 , 31.323 , -6.916 , 5.265 , 1.709 , -1.390 , 5.809 , 30.685 , -4.154 , 5.579 , 2.859 , 5.664 , -1.871 , 0.000);
-
-    // do not work
-    //meanwalker[1] = new Array(267.556, 263.007, 236.843, 285.999, 270.438, 81.342, 66.526, 115.695, 92.808, 356.992, 197.715, 8.959, 267.556, 263.007, 236.843, 81.342, 66.526, 115.695, 0.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, 1.000, -302.029, -286.731, -230.495, -182.329, -151.317, -301.606, -254.734, -222.982, -148.529, -209.737, -147.599, -139.610, -302.029, -286.731, -230.495, -301.606, -254.734, -222.982, 70.857, 22.689, 7.547, 8.046, 2.845, 3.135, -33.592, -25.853, -17.601, -1.558, 0.714, 2.456, -0.235, -22.689, -7.547, -8.046, 33.592, 25.853, 17.601, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, -3.413, -4.884, -2.216, 4.898, 5.943, -6.651, -2.041, -2.663, 0.849, -1.312, 1.877, 4.495, 3.413, 4.884, 2.216, 6.651, 2.041, 2.663, 10.000, 80.946, 73.030, 32.385, 8.504, 0.598, 75.381, 44.785, 26.443, 0.168, -1.295, -0.564, -0.877, -80.946, -73.030, -32.385, -75.381, -44.785, -26.443, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.859, -1.711, -13.161, 3.015, 0.926, -2.000, -14.766, -0.345, 1.165, 0.045, 0.287, -0.131, -0.859, 1.711, 13.161, 2.000, 14.766, 0.345, 0.000, -21.478, -16.859, 0.445, 2.550, 3.536, -14.571, -8.079, -0.346, 3.344, 1.847, 3.655, 2.393, -21.478, -16.859, 0.445, -14.571, -8.079, -0.346, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, -0.833, -3.858, -2.506, -5.752, -4.966, 1.416, 7.193, -1.683, 3.183, -6.335, -4.296, -2.479, -0.833, -3.858, -2.506, 1.416, 7.193, -1.683, 0.000, 11.453, 3.750, 7.972, 0.411, -0.879, -13.512, -4.831, -6.610, -0.980, 0.530, -0.472, 0.296, 11.453, 3.750, 7.972, -13.512, -4.831, -6.610, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, 0.000, -1.338, -0.565, -1.681, -2.684, -2.563, -2.135, -3.581, -0.781, -3.581, 2.570, -0.821, -1.336, -1.338, -0.565, -1.681, -2.135, -3.581, -0.781, 0.000);
+    
     this.meanwalker[1] = new Array(
       89.06,
       84.511,
@@ -897,8 +1643,7 @@ class BMWalker {
     );
 
     //other walker specific arrays
-    //genderaxis = new Array(-1.761 , 3.101 , 15.554 , -10.890 , 0.140 , -11.879 , -53.728 , -7.792 , -7.286 , 12.263 , 6.722 , 6.259 , 42.381 , -1.987 , 16.096 , 9.313 , -8.788 , -23.958 , -9.823 , 4.593 , 14.493 , 14.567 , -9.453 , -25.881 , -13.347 , 9.539 , 16.845 , 17.577 , 11.485 , -5.951 , -6.514 , -15.535 , -16.653 , -0.567 , 3.603 , -10.439 , 19.717 , 0.656 , -14.694 , -1.573 , 5.143 , -6.725 , 20.406 , -2.512 , -0.952 , -1.661 , -4.374 , -2.028 , 1.072 , -3.339 , 1.674 , -3.027 , 4.505 , -0.276 , 0.863 , 3.869 , 0.366 , -2.633 , 4.221 , -2.766 , 6.381 , -2.748 , -0.594 , -0.422 , -1.917 , 41.063 , -0.035 , 23.356 , 15.194 , -1.044 , -2.209 , -11.437 , -2.629 , -3.133 , -1.487 , -17.967 , 0.682 , 0.421 , -2.718 , -0.425 , 9.086 , -2.025 , -4.643 , -2.916 , 3.802 , 0.351 , -3.585 , 2.615 , 3.073 , 0.354 , 6.239 , 0.000 , -16.618 , 2.045 , 6.457 , 2.824 , 1.057 , -12.167 , -5.935 , 10.421 , 5.995 , 2.144 , 5.344 , -11.987 , -4.824 , -11.339 , 13.456 , 0.903 , -0.422 , -1.871, 7.938 , 14.551 , 2.694 , 8.102 , -3.086 , 0.818 , -7.110 , -10.642 , 0.166 , -6.192 , 1.434 , -7.183 , 1.373 , 1.059 , -3.496 , -11.658 , -5.931 , -5.401 , -7.533 , -4.079 , 5.898 , 7.236 , 9.018 , 7.181 , 10.932 , 0.891 , 4.266 , 0.000 , -0.064 , -0.423 , -0.472 , 0.399 , 2.122 , -0.301 , 5.041 , -0.594 , -0.359 , -0.253 , 0.417 , -0.280 , -3.264 , -0.296 , 1.397 , -5.532 , 5.373 , 5.473 , -10.038 , -4.924 , -3.460 , -1.754 , -1.409 , 5.409 , -7.736 , -4.998 , -3.741 , -2.489 , -2.961 , -2.191 , 3.803 , 4.191 , 4.161 , 3.679 , 1.110 , 3.214 , 2.870 , 4.345 , 4.086 , 1.896 , 4.371 , 3.318 , 4.122 , 3.227 , 2.940 , 0.000 , -0.006 , -0.054 , 0.189 , -0.214 , -2.855 , 0.030 , -2.279 , -3.651 , 0.318 , -1.483 , 0.460 , 0.030 , -0.559 , 0.058 , 3.450 , 0.810 , -0.783 , -0.345 , 4.973 , 1.023 , 0.415 , 3.673 , 12.443 , 0.099 , 6.975 , -3.641 , 0.669 , 0.987 , 0.206 , 7.330 , -0.476 , -0.763 , -1.318 , 6.140 , -8.381 , -0.583 , -4.079 , 5.511 , -0.765 , 2.881 , -5.096 , -0.444 , -0.567 , -0.307 , 4.824 , 0.000);
-    this.genderaxis = new Array(
+    this.bodyStructureaxis = new Array(
       10.8623,
       3.8778,
       3.9664,
@@ -1130,7 +1875,7 @@ class BMWalker {
       -0.3387,
       0.0
     );
-    //weightaxis = new Array(-3.557 , 2.058 , 2.420 , -10.008 , -7.623 , -7.510 , -24.112 , -7.792 , 2.740 , 5.952 , 10.814 , 10.674 , 17.714 , 1.244 , 5.862 , -7.616 , -1.018 , 8.418 , -11.658 , -5.197 , -2.763 , -0.619 , -9.047 , 7.603 , -8.826 , 10.007 , 1.939 , 6.282 , -3.122 , 10.368 , 1.781 , -11.934 , -11.726 , -2.454 , 5.448 , -6.645 , 6.250 , 2.032 , -11.780 , -7.404 , 0.448 , -5.697 , 2.954 , 0.856 , -2.735 , 13.654 , -6.567 , -3.571 , -4.603 , -0.382 , 1.474 , -7.039 , 0.256 , 2.609 , -4.767 , -0.089 , 4.732 , -6.406 , 0.968 , -6.673 , 3.225 , -0.076 , -0.607 , 2.168 , 38.654 , -5.442 , 3.680 , 3.617 , 12.533 , -3.403 , -38.677 , 17.927 , -4.637 , 5.863 , -0.425 , -13.285 , 0.039 , -0.288 , 0.537 , -1.235 , -4.787 , -2.121 , -2.216 , 6.308 , -1.002 , 2.732 , 5.603 , 1.593 , -1.087 , -0.264 , -0.121 , 0.000 , -4.396 , -3.167 , -2.400 , -4.737 , -4.983 , -4.954 , -5.458 , 1.244 , -2.600 , -3.242 , -3.807 , -4.775 , -5.236 , -4.885 , 5.260 , 1.088 , 0.141 , 0.876 , -18.270 , 3.705 , 1.955 , 3.608 , -6.450 , -0.799 , 15.084 , -3.502 , -0.582 , -2.683 , 0.707 , -3.005 , -0.003 , 0.083 , -0.139 , 4.619 , -0.339 , -0.203 , -0.121 , -2.270 , 0.476 , -5.171 , 0.491 , 0.466 , 1.279 , 0.062 , 0.340 , 0.000 , 0.035 , 0.240 , 0.290 , 2.460 , -1.018 , 0.007 , 0.297 , -0.826 , 0.201 , -2.670 , 0.269 , -0.021 , -1.144 , 0.004 , 1.632 , 0.776 , 2.459 , 3.238 , 1.500 , 4.525 , 1.249 , 3.572 , 4.333 , 3.233 , 1.634 , 3.092 , 1.095 , 2.336 , 1.372 , 4.268 , -5.578 , -5.599 , -5.686 , 2.285 , -6.114 , -5.892 , -6.169 , -4.326 , -5.740 , 1.651 , -4.788 , -5.954 , -5.803 , -5.780 , -4.806 , 0.000 , 0.518 , -0.026 , 0.150 , 3.305 , -2.629 , 0.117 , -3.694 , -0.920 , 0.180 , -2.527 , 2.535 , 0.421 , 3.360 , 0.256 , 2.341 , 0.718 , -0.967 , -0.894 , -0.733 , -0.241 , 0.776 , 0.865 , -5.980 , -0.904 , -3.065 , 2.567 , 0.443 , 1.788 , 0.405 , -11.257 , -2.877 , -2.897 , -3.019 , -2.356 , -1.131 , -2.707 , -2.212 , -3.531 , -2.662 , -2.191 , 0.754 , -2.783 , -1.390 , -2.829 , -4.388 , 0.000);
+
     this.weightaxis = new Array(
       6.973,
       1.7219,
@@ -1363,7 +2108,6 @@ class BMWalker {
       -0.746,
       0.0
     );
-    //nervousaxis = new Array(-2.287 , 2.908 , -16.651 , 5.744 , 14.554 , -33.851 , -20.618 , 9.088 , 25.190 , -19.420 , 9.773 , 27.284 , -6.213 , -2.409 , -2.146 , 4.020 , -1.084 , 3.827 , 29.288 , 29.115 , -16.231 , -10.515 , 12.662 , 0.258 , 31.078 , -7.317 , -9.473 , -40.609 , -12.230 , -6.967 , 12.955 , 39.596 , 38.175 , 8.914 , -31.218 , -28.038 , -39.623 , 14.060 , 40.087 , 0.767 , -14.678 , -17.046 , -6.624 , 6.314 , -6.487 , 37.435 , 4.840 , -1.573 , -2.283 , 4.341 , 13.433 , -3.273 , 1.866 , 0.639 , -2.534 , 7.995 , -3.446 , -2.084 , -13.153 , -2.749 , 2.835 , -2.930 , -3.446 , -4.662 , -29.192 , -10.719 , 4.237 , 7.290 , -20.091 , -2.371 , 20.000 , 8.858 , -9.948 , 3.162 , -2.977 , 22.105 , -0.843 , -0.815 , 0.602 , -10.290 , 8.431 , 0.328 , 4.564 , -7.348 , -2.205 , 8.903 , -5.180 , -4.243 , -4.616 , -0.797 , -3.384 , 0.000 , 3.143 , 2.198 , 1.778 , 6.803 , 1.117 , 4.080 , -5.675 , 5.129 , 1.673 , 7.182 , 6.798 , 4.107 , 3.658 , 3.637 , 2.433 , -2.698 , -4.001 , -3.555 , 17.976 , 66.514 , -0.269 , 33.184 , 4.939 , -4.625 , -25.991 , -23.518 , -4.901 , -11.346 , -2.794 , -11.076 , 1.433 , 1.510 , 2.955 , 1.983 , 14.310 , 1.577 , -5.809 , 5.433 , 0.024 , -0.233 , -5.113 , 1.855 , 3.111 , 1.495 , -1.437 , 0.000 , -1.292 , -1.089 , -1.282 , -0.954 , 0.120 , -0.445 , -0.658 , 0.057 , -1.321 , 3.068 , 2.974 , -0.881 , 3.162 , -0.750 , 1.399 , -2.486 , -0.341 , 1.460 , 16.072 , 4.979 , -3.699 , 1.362 , 12.895 , 0.774 , 0.454 , 6.029 , -3.401 , -1.118 , -3.024 , 5.399 , 0.837 , 1.328 , 1.213 , -1.793 , 17.039 , 1.779 , 6.626 , 0.916 , 1.067 , 3.723 , 8.428 , 1.527 , 0.936 , 1.160 , -0.359 , 0.000 , 0.981 , 0.385 , 0.352 , -4.928 , -6.175 , 0.786 , -2.188 , -3.641 , 0.442 , 2.902 , 3.946 , 1.048 , 2.034 , 0.922 , 2.114 , 5.139 , 6.255 , 5.356 , -11.575 , -4.892 , 6.041 , 0.654 , -3.698 , 6.280 , -20.902 , 2.919 , 7.282 , 7.308 , 6.329 , -6.835 , 5.397 , 5.082 , 5.311 , 3.978 , 3.084 , 4.996 , 7.487 , 2.356 , 5.127 , 3.372 , 9.868 , 5.948 , 9.372 , 4.924 , -0.740 , 0.000);
     this.nervousaxis = new Array(
       -1.0613,
       -0.821,
@@ -1596,7 +2340,6 @@ class BMWalker {
       0.6399,
       0.0
     );
-    //happyaxis = new Array(-8.219 , -1.906 , -7.623 , 0.408 , -19.081 , 8.870 , 0.108 , -4.284 , 2.965 , 11.059 , 16.140 , -8.834 , 15.464 , -0.262 , 8.591 , -9.201 , -13.472 , -17.290 , 9.633 , 1.238 , 9.669 , 8.260 , 22.596 , -21.118 , 11.766 , 4.971 , 5.895 , -6.484 , 9.623 , -22.325 , 11.800 , -17.346 , -16.952 , 8.816 , 8.040 , 2.651 , 4.087 , -22.935 , -13.564 , 4.358 , 7.398 , 3.804 , 5.470 , -7.469 , -7.214 , -29.394 , 8.923 , -1.849 , -4.309 , -2.973 , -15.982 , 7.090 , -7.383 , -4.195 , -4.546 , -2.323 , -10.124 , 5.763 , 5.803 , 5.974 , -5.615 , -1.781 , -1.338 , -5.520 , -94.922 , 1.745 , -6.901 , -13.356 , -50.887 , 2.196 , 95.403 , 58.875 , 5.099 , 36.130 , -0.985 , 34.842 , 0.521 , 0.520 , 3.960 , 7.504 , 10.885 , 4.785 , 8.205 , -16.561 , -3.277 , -11.076 , 1.402 , -4.160 , -10.744 , 0.532 , 2.105 , 0.000 , -0.122 , -2.000 , -4.699 , -1.435 , -5.409 , -1.381 , -2.620 , -0.636 , -4.523 , -2.745 , -1.900 , -1.964 , -4.528 , -1.761 , -5.267 , -0.206 , 2.383 , 4.330 , 32.135 , -15.557 , 1.202 , -8.912 , 31.165 , -0.652 , -33.659 , 4.719 , -0.126 , 3.644 , 0.744 , -17.364 , -1.496 , -1.591 , 0.685 , -6.186 , -0.021 , 0.669 , 3.462 , 9.436 , -4.017 , -2.361 , -4.384 , -3.470 , -6.332 , -1.449 , -9.257 , 0.000 , 0.649 , 0.231 , 0.247 , 2.660 , 4.590 , 0.884 , 2.743 , 2.244 , 0.240 , -3.296 , -3.773 , 0.790 , 0.053 , 0.820 , -1.213 , -2.176 , -4.631 , -5.130 , 3.443 , -7.171 , -3.780 , -8.636 , -17.643 , -5.361 , 4.425 , -1.559 , -3.585 , -4.384 , -3.887 , -14.685 , 13.628 , 13.678 , 13.790 , -10.930 , 14.037 , 13.683 , 13.533 , 7.234 , 13.949 , -12.307 , 15.431 , 13.946 , 13.199 , 13.549 , 6.375 , 0.000 , 0.396 , 0.579 , 0.130 , -0.731 , -0.065 , 0.428 , 2.272 , -0.187 , 0.149 , 1.066 , -4.061 , -0.095 , -3.388 , 0.204 , -1.565 , 2.444 , -0.486 , -0.133 , -2.218 , 2.183 , 2.915 , 2.997 , 2.169 , -0.273 , 2.272 , -0.831 , 1.643 , 2.072 , 2.533 , 14.253 , 8.068 , 7.919 , 8.262 , 2.336 , 7.908 , 8.625 , 9.178 , 0.537 , 7.357 , -2.985 , 16.442 , 8.388 , 12.084 , 8.269 , 4.261 , 0.000);
     this.happyaxis = new Array(
       -8.6794,
       -1.7747,
@@ -1829,993 +2572,5 @@ class BMWalker {
       -0.113,
       0.0
     );
-    this.customaxis = new Array(
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    );
-
-    this.bodyStructure = 0;
-    this.weight = 0;
-    this.nervousness = 0;
-    this.happiness = 0;
-
-    //camera iables
-    // this.azimuth = 0;
-    // this.elevation = 0;
-    this.camera_distance = 1000;
-    // this.angularVelocity = 0;
-    this.walker_xaxis = 0;
-    this.walker_yaxis = 0;
-    this.walker_zaxis = 1;
-
-    this.walker_rot_xaxis = 0;
-    this.walker_rot_yaxis = 0;
-    this.walker_rot_zaxis = 0;
-
-    //general stuff
-    // this.walker_initphase = 0;
-    // this.walker_speed = 1;
-    this.walker_sticks = true;
-
-    // this.walker_scrambling = 0;
-    // this.flicker_ontime = 100;
-    // this.flicker_duration = 1;
-    // this.flicker_randomness = 0;
-    this.camera_perspective = 0;
-    // this.walker_scrambling_horiz = true;
-    // this.walker_scrambling_vert = true;
-    // this.walker_scrambling_phase = 0;
-
-    // this.markers_invisible = null;
-
-    //fun stuff
-    this.walker_translation_speed = 0;
-
-    //--------------INTERNAL IABLES--------------------
-
-    this.walkerxmin = 0;
-    this.walkerymin = 0;
-    this.walkerzmin = 0;
-    this.walkerxmax = 0;
-    this.walkerymax = 0;
-    this.walkerzmax = 0;
-    this.walkerxoff = 0;
-    this.walkeryoff = 0;
-    this.walkerzoff = 0;
-    this.walkersizefactor = 0;
-
-    this.axisrot = 0;
-    this.nummarkers = 0;
-    // this.durationstd = 0;
-    // this.dotsonratio = 0;
-    // this.dotduration = 0;
-    // this.durationon = 0;
-    // this.durationoff = 0;
-
-    //arrays of stuff
-    // this.scramblewalker = [];
-    // this.scramblewalkerinit = [];
-    this.catwalker = [];
-    this.pigeonwalker = [];
-    // this.walker_scrambling_phases = [];
-
-    //flicker stuff
-    // this.dottime = [];
-    // this.dotstats = [];
-
-    //marker stuff
-    this.markers = [];
-
-    this.head = true;
-    this.clavicles = true;
-    this.rhip = true;
-    this.lhip = true;
-    this.belly = true;
-
-    this.rsh = true;
-    this.re = true;
-    this.rh = true;
-
-    this.lsh = true;
-    this.le = true;
-    this.lh = true;
-
-    this.rknee = true;
-    this.lknee = true;
-
-    this.rankle = true;
-    this.lankle = true;
-
-    ////
-
-    this.init();
-  }
-
-  // API: Get markers
-  getMarkers(wh, tmsec = undefined) {
-    let markers = [];
-
-    if (tmsec === undefined) {
-      tmsec = this.tm.getTimer() - this.starttime;
-    }
-    // console.log(tmsec);
-
-    const curtime = tmsec;
-
-    /////
-
-    const invis = new Array(this.nummarkers);
-    invis.fill(false);
-    var i;
-
-    var walkertime = 0;
-    if (this.speed != 0) {
-      walkertime = this.calcTime(curtime);
-      //console.log(walkertime)
-    }
-
-    //translation calculation  // ちょっとよくわかっていない
-    if (this.flagTranslation && this.type == 0) {
-      this.translation_pos = Math.round((this.getTranslationSpeed() * 120 * curtime) / 1000);
-
-      // this.translation_pos =
-      //   (this.translation_pos % (this.translation_end - this.translation_start)) +
-      //   this.translation_start;
-    } else {
-      this.translation_pos = 0;
-    }
-
-    //CALCULATE MARKER POSITIONS
-    for (i = 0; i < this.nummarkers * 3 + 1; i++) {
-      this.markers[i] = this.sample(i, walkertime, true);
-    }
-    //draw walker, rotating by azimuth, axisrot, elevation and spinmatrix
-    var matrix = this.mtrx.rotateaxis(
-      -this.axisrot,
-      this.walker_rot_xaxis,
-      this.walker_rot_yaxis,
-      this.walker_rot_zaxis
-    );
-
-    matrix = this.mtrx.multmatrix(this.mtrx.translate(this.translation_pos, 0, 0), matrix);
-    matrix = this.mtrx.multmatrix(
-      this.mtrx.rotateaxis(this.azimuth + (curtime * this.angularVelocity) / 1000, 0, 0, 1),
-      matrix
-    );
-
-    matrix = this.mtrx.multmatrix(this.spinmatrix, matrix);
-    matrix = this.mtrx.multmatrix(this.mtrx.rotateY(this.elevation), matrix);
-
-    var vectors = new Array(this.nummarkers);
-    var vector = new Array(4);
-    var v2 = new Array(4);
-    var v3 = new Array(4);
-
-    for (i = 0; i < this.nummarkers; i++) {
-      vector[0] = this.markers[i] + this.walkerxoff + this.data_offset_x;
-      vector[1] =
-        this.markers[i + this.nummarkers] +
-        this.walkeryoff * this.structure_vertical_scale +
-        this.data_offset_y;
-      vector[2] = this.markers[i + this.nummarkers * 2] + this.walkerzoff + this.data_offset_z;
-      vector[3] = 1;
-
-      v2 = this.mtrx.multmatrixvector(matrix, vector);
-      v2[0] -= this.camera_distance;
-      v2[3] = 1;
-
-      if (this.camera_perspective > 0) {
-        var persp = this.mtrx.perspective(this.camera_distance);
-        v3 = this.mtrx.multmatrixvector(persp, v2);
-        v3[0] = v3[0] / v3[3];
-        v3[1] = v3[1] / v3[3];
-        v3[2] = v3[2] / v3[3];
-
-        if (v2[0] > 0 || v3[3] == 0) {
-          invis[i] = true;
-        }
-      } else {
-        v3 = v2;
-      }
-      // this.currentmatrix[i] = v3;
-
-      // console.log(v3)
-      //nudge up
-      var xpos =
-        this.offsety + (v3[1] / this.walkersizefactor) * this.walker_size * this.pixelsperdegree;
-      var ypos =
-        this.offsetz - (v3[2] / this.walkersizefactor) * this.walker_size * this.pixelsperdegree;
-      vectors[i] = v3;
-
-      // if(this.markers_invisible[i])
-      // {
-      //   invis[i] = 1;
-      // }
-
-      [
-        this.head,
-        this.clavicles,
-        this.lsh,
-        this.le,
-        this.lh,
-        this.rsh,
-        this.re,
-        this.rh,
-        this.belly,
-        this.lhip,
-        this.lknee,
-        this.lankle,
-        this.rhip,
-        this.rknee,
-        this.rankle,
-      ].forEach((e, i) => {
-        if (!e) {
-          invis[i] = true;
-        }
-      });
-
-      if (!invis[i]) {
-        // console.log(xpos, ypos);
-        const descs = [
-          'Head',
-          'Clavicles',
-          'L-Shoulder',
-          'L-Elbow',
-          'L-Hand',
-          'R-Shoulder',
-          'R-Elbow',
-          'R-Hand',
-          'Belly',
-          'L-Hip',
-          'L-Knee',
-          'L-Ankle',
-          'R-Hip',
-          'R-Knee',
-          'R-Ankle',
-        ];
-        markers.push({ x: xpos, y: ypos, desc: descs[i] });
-      }
-    }
-
-    if (this.walker_sticks) {
-      if (this.type == 0) {
-        // ★
-        // this.drawLineX(vectors, 0, 1, invis);
-        // this.drawLineX(vectors, 1, 2, invis);
-        // this.drawLineX(vectors, 2, 3, invis);
-        // this.drawLineX(vectors, 3, 4, invis);
-        // this.drawLineX(vectors, 1, 5, invis);
-        // this.drawLineX(vectors, 5, 6, invis);
-        // this.drawLineX(vectors, 6, 7, invis);
-        // this.drawLineX(vectors, 1, 8, invis);
-        // this.drawLineX(vectors, 8, 9, invis);
-        // this.drawLineX(vectors, 9, 10, invis);
-        // this.drawLineX(vectors, 10, 11, invis);
-        // this.drawLineX(vectors, 8, 12, invis);
-        // this.drawLineX(vectors, 12, 13, invis);
-        // this.drawLineX(vectors, 13, 14, invis);
-      }
-    } // temporary
-
-    ////
-
-    // get markers
-    // markers = [
-    //   { x: 0, y: 0, desc: '1' },
-    //   { x: 0, y: wh, desc: '2' },
-    //   { x: wh / 2, y: wh, desc: '3' },
-    //   { x: wh / 2, y: 0, desc: '4' },
-    // ];
-
-    return markers;
-  }
-
-  // API: Get Indices of markers that make up the line.
-  getLineMarkerIndices() {
-    return [
-      [0, 1],
-      [1, 2],
-      [2, 3],
-      [3, 4],
-      [1, 5],
-      [5, 6],
-      [6, 7],
-      [1, 8],
-      [8, 9],
-      [9, 10],
-      [10, 11],
-      [8, 12],
-      [12, 13],
-      [13, 14],
-    ];
-  }
-
-  // API: Get markers that make up the line.
-  getLineMarkers(wh) {
-    const markers = this.getMarkers(wh);
-
-    const lineMarkers = [];
-
-    const idxsArray = this.getLineMarkerIndices();
-    idxsArray.forEach((idxs) => {
-      const i0 = idxs[0];
-      const i1 = idxs[1];
-
-      lineMarkers.push([
-        { x: markers[i0].x, y: markers[i0].y },
-        { x: markers[i1].x, y: markers[i1].y },
-      ]);
-    });
-
-    return lineMarkers;
-  }
-
-  // API: Set speed
-  setSpeed(speed = 1.0) {
-    const freq = this.getFrequency();
-    // avoid 0 divisor
-    if (speed === 0) {
-      speed += 0.001;
-    }
-    this.speed = this.clamp(this.minSpeed, this.maxSpeed, speed);
-
-    this.init();
-    let difffreq = freq / this.getFrequency();
-    // avoid 0 divisor
-    if (abs(difffreq) < 0.005) {
-      difffreq += 0.01;
-    }
-    const t = this.tm.getTimer();
-    this.starttime = t - (t - this.starttime) / difffreq;
-    // console.log(freq, difffreq, t, this.starttime);
-  }
-
-  // API: ...
-  setWalkerParam(bodyStructure, weight, nervousness, happiness) {
-    const freq = this.getFrequency();
-
-    // Body Structure Parameter
-    if (bodyStructure !== undefined) {
-      this.bodyStructure = this.clamp(
-        this.minBodyStructure,
-        this.maxBodyStructure,
-        bodyStructure
-      );
-    }
-
-    // Weight Parameter
-    if (weight !== undefined) {
-      this.weight = this.clamp(this.minWeight, this.maxWeight, weight);
-    }
-
-    // Nervousness Parameter
-    if (nervousness !== undefined) {
-      this.nervousness = this.clamp(this.minNervousness, this.maxNervousness, nervousness);
-    }
-
-    // Happiness Parameter
-    if (happiness !== undefined) {
-      this.happiness = this.clamp(this.minHappiness, this.maxHappiness, happiness);
-    }
-
-    this.init();
-    let difffreq = freq / this.getFrequency();
-    // avoid 0 divisor
-    if (abs(difffreq) < 0.005) {
-      difffreq += 0.01;
-    }
-    const t = this.tm.getTimer();
-    this.starttime = t - (t - this.starttime) / difffreq;
-  }
-
-  // API: ...
-  setCameraParam(azimuth, angularVelocity, elevation) {
-    // Camera azimuth(rotation) Parameter
-    if (azimuth !== undefined) {
-      this.azimuth = azimuth;
-    }
-
-    // Camera angular velocity(rotation speed) Parameter
-    if (angularVelocity !== undefined) {
-      this.angularVelocity = angularVelocity;
-    }
-
-    // Camera elevation Parameter
-    if (elevation !== undefined) {
-      this.elevation = elevation;
-    }
-  }
-
-  // API: ...
-  setTranslationParam(flagTranslation) {
-    if (flagTranslation !== undefined) {
-      this.flagTranslation = flagTranslation;
-    }
-  }
-
-  // API: ...
-  resetTimer() {
-    this.starttime = this.tm.getTimer();
-    this.init();
-  }
-
-  // Internal
-  clamp(min, max, val) {
-    return Math.min(max, Math.max(min, val));
-  }
-
-  init() {
-    this.nummarkers = (this.meanwalker[this.type].length / 5 - 1) / 3;
-    this.markers = new Array(this.nummarkers * 3);
-    this.recalc_angle();
-    this.calcsize();
-    this.walker_translation_speed = this.calcTranslationSpeed();
-  }
-
-  recalc_angle() {
-    var res = this.mtrx.angleBetween(0, 0, 1, 0, 0, 1);
-    this.walker_rot_xaxis = res[0];
-    this.walker_rot_yaxis = res[1];
-    this.walker_rot_zaxis = res[2];
-    this.axisrot = res[3];
-  }
-
-  calcsize() {
-    let n;
-
-    // Calc min/max of x, y, z.
-    for (n = 0; n < this.nummarkers; n++) {
-      this.walkerxmin = Math.min(this.walkerxmin, this.meanwalker[this.type][n]);
-      this.walkerxmax = Math.max(this.walkerxmax, this.meanwalker[this.type][n]);
-    }
-    for (n = this.nummarkers; n < this.nummarkers * 2; n++) {
-      this.walkerymin = Math.min(this.walkerymin, this.meanwalker[this.type][n]);
-      this.walkerymax = Math.max(this.walkerymax, this.meanwalker[this.type][n]);
-    }
-    for (n = this.nummarkers * 2; n < this.nummarkers * 3; n++) {
-      this.walkerzmin = Math.min(this.walkerzmin, this.meanwalker[this.type][n]);
-      this.walkerzmax = Math.max(this.walkerzmax, this.meanwalker[this.type][n]);
-    }
-
-    // The walker height in mm. Used later on to scale it to the desired size in degrees.
-    this.walkersizefactor = this.walkerzmax - this.walkerzmin;
-
-    this.walkerxoff = -(this.walkerxmax + this.walkerxmin) / 2;
-    this.walkeryoff = -(this.walkerymax + this.walkerymin) / 2;
-    this.walkerzoff = -(this.walkerzmax + this.walkerzmin) / 2;
-  } // end of calsize()
-
-  sample(i, walkertime, includeStructure) {
-    var phase = 0; //this.walker_scrambling_phases[i % this.nummarkers];
-    var genderval = this.bodyStructure;
-
-    var initialpos = this.meanwalker[this.type][i];
-
-    if (includeStructure) {
-      if (this.type == 0) {
-        initialpos +=
-          this.genderaxis[i] * genderval +
-          this.weightaxis[i] * this.weight +
-          this.nervousaxis[i] * this.nervousness +
-          this.happyaxis[i] * this.happiness;
-      }
-
-      // if (this.walker_scrambling > 0) {
-      //   if (
-      //     (i >= this.nummarkers * 2 && this.walker_scrambling_vert) ||
-      //     (i < this.nummarkers * 2 && this.walker_scrambling_horiz)
-      //   )
-      //     initialpos = this.scramblewalker[i];
-      // }
-
-      //invert or scale structure
-      if (i >= this.nummarkers * 2 && i < this.nummarkers * 3)
-        initialpos *= this.structure_vertical_scale;
-      else initialpos *= this.structure_horizontal_scale;
-    } else {
-      initialpos = 0;
-    }
-
-    //motion!
-    var motionpos = 0;
-    if (this.type == 0) {
-      motionpos =
-        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1)] +
-          this.genderaxis[i + (this.nummarkers * 3 + 1)] * genderval +
-          this.weightaxis[i + (this.nummarkers * 3 + 1)] * this.weight +
-          this.nervousaxis[i + (this.nummarkers * 3 + 1)] * this.nervousness +
-          this.happyaxis[i + (this.nummarkers * 3 + 1)] * this.happiness) *
-          Math.sin(walkertime + phase) +
-        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 2] +
-          this.genderaxis[i + (this.nummarkers * 3 + 1) * 2] * genderval +
-          this.weightaxis[i + (this.nummarkers * 3 + 1) * 2] * this.weight +
-          this.nervousaxis[i + (this.nummarkers * 3 + 1) * 2] * this.nervousness +
-          this.happyaxis[i + (this.nummarkers * 3 + 1) * 2] * this.happiness) *
-          Math.cos(walkertime + phase) +
-        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 3] +
-          this.genderaxis[i + (this.nummarkers * 3 + 1) * 3] * genderval +
-          this.weightaxis[i + (this.nummarkers * 3 + 1) * 3] * this.weight +
-          this.nervousaxis[i + (this.nummarkers * 3 + 1) * 3] * this.nervousness +
-          this.happyaxis[i + (this.nummarkers * 3 + 1) * 3] * this.happiness) *
-          Math.sin(2 * (walkertime + phase)) +
-        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 4] +
-          this.genderaxis[i + (this.nummarkers * 3 + 1) * 4] * genderval +
-          this.weightaxis[i + (this.nummarkers * 3 + 1) * 4] * this.weight +
-          this.nervousaxis[i + (this.nummarkers * 3 + 1) * 4] * this.nervousness +
-          this.happyaxis[i + (this.nummarkers * 3 + 1) * 4] * this.happiness) *
-          Math.cos(2 * (walkertime + phase));
-    } else {
-      motionpos =
-        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1)] * Math.sin(walkertime + phase) +
-        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 2] *
-          Math.cos(walkertime + phase) +
-        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 3] *
-          Math.sin(2 * (walkertime + phase)) +
-        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 4] *
-          Math.cos(2 * (walkertime + phase));
-    }
-
-    if (i >= this.nummarkers * 2 && i < this.nummarkers * 3)
-      motionpos *= this.motion_vertical_scale;
-    else motionpos *= this.motion_horizontal_scale;
-    return initialpos + motionpos;
-  }
-
-  getFrequency() {
-    var speed = this.meanwalker[this.type][this.nummarkers * 3];
-    if (this.type == 0) {
-      speed += this.bodyStructure * this.genderaxis[this.nummarkers * 3];
-      speed += this.weight * this.weightaxis[this.nummarkers * 3];
-      speed += this.nervousness * this.nervousaxis[this.nummarkers * 3];
-      speed += this.happiness * this.happyaxis[this.nummarkers * 3];
-    }
-    //console.log(speed)
-    return speed / this.speed;
-  }
-
-  calcTranslationSpeed() {
-    var tspeed = this.meanwalker[this.type][(this.nummarkers * 3 + 1) * 3 - 1];
-    //tspeed*120 = 1356.168
-    if (this.type == 0) {
-      tspeed += this.bodyStructure * this.genderaxis[(this.nummarkers * 3 + 1) * 3 - 1];
-      tspeed += this.weight * this.weightaxis[(this.nummarkers * 3 + 1) * 3 - 1];
-      tspeed += this.nervousness * this.nervousaxis[(this.nummarkers * 3 + 1) * 3 - 1];
-      tspeed += this.happiness * this.happyaxis[(this.nummarkers * 3 + 1) * 3 - 1];
-    }
-
-    return tspeed * 120;
-  }
-
-  getTranslationSpeed() {
-    return this.speed * (this.walker_translation_speed / 120);
-  }
-
-  calcTime(curtime) {
-    return ((curtime * 2 * Math.PI) / 1000) * (120 / this.getFrequency());
-  }
-}
-
-// Simple Time class
-class BMWTimer {
-  // Constructor
-  constructor() {
-    const d = new Date().valueOf();
-    this.time = d;
-    this.start = d;
-
-    const precision = 10; // 10msec
-    setInterval(
-      function () {
-        this.time += precision;
-      }.bind(this),
-      precision
-    );
-  }
-
-  getTimer() {
-    return this.time - this.start;
-  }
-}
-
-//// Matrix calculation
-class BMWMatrix {
-  constructor() {}
-
-  newMatrix() {
-    const m = [new Array(4), new Array(4), new Array(4), new Array(4)];
-    return m;
-  }
-
-  // Identity matrix
-  newIdentMatrix() {
-    const m = [
-      [1, 0, 0, 0],
-      [0, 1, 0, 0],
-      [0, 0, 1, 0],
-      [0, 0, 0, 1],
-    ];
-    return m;
-  }
-
-  rotateY(angle) {
-    const m = [
-      [Math.cos(angle), 0, Math.sin(angle), 0],
-      [0, 1, 0, 0],
-      [-Math.sin(angle), 0, Math.cos(angle), 0],
-      [0, 0, 0, 1],
-    ];
-    return m;
-  }
-
-  rotateX(angle) {
-    const m = [
-      [1, 0, 0, 0],
-      [0, Math.cos(angle), -Math.sin(angle), 0],
-      [0, Math.sin(angle), Math.cos(angle), 0],
-      [0, 0, 0, 1],
-    ];
-    return m;
-  }
-
-  rotateZ(angle) {
-    const m = [
-      [Math.cos(angle), Math.sin(angle), 0, 0],
-      [-Math.sin(angle), Math.cos(angle), 0, 0],
-      [0, 0, 1, 0],
-      [0, 0, 0, 1],
-    ];
-    return m;
-  }
-
-  perspective(zfar) {
-    const znear = 1;
-    const f = zfar;
-    const m = [
-      [(zfar + znear) / (znear - zfar), (2 * zfar * znear) / (znear - zfar), 0, 0],
-      [0, f, 0, 0],
-      [0, 0, f, 0],
-      [-1, 0, 0, 0],
-    ];
-    return m;
-  }
-
-  translate(tx, ty, tz) {
-    const m = [
-      [1, 0, 0, tx],
-      [0, 1, 0, ty],
-      [0, 0, 1, tz],
-      [0, 0, 0, 1],
-    ];
-    return m;
-  }
-
-  rotateaxis(angle, rx, ry, rz) {
-    const c = Math.cos(angle);
-    const s = Math.sin(angle);
-
-    const len = Math.sqrt(rx * rx + ry * ry + rz * rz);
-    rx = rx / len;
-    ry = ry / len;
-    rz = rz / len;
-    const m = [
-      [rx * rx * (1 - c) + c, rx * ry * (1 - c) - rz * s, rx * rz * (1 - c) + ry * s, 0],
-      [ry * rx * (1 - c) + rz * s, ry * ry * (1 - c) + c, ry * rz * (1 - c) - rx * s, 0],
-      [rz * rx * (1 - c) - ry * s, rz * ry * (1 - c) + rx * s, rz * rz * (1 - c) + c, 0],
-      [0, 0, 0, 1],
-    ];
-    return m;
-  }
-
-  multmatrix(m1, m2) {
-    const m3 = this.newMatrix();
-    let r = 0;
-    let c = 0;
-
-    for (r = 0; r < 4; r++) {
-      for (c = 0; c < 4; c++) {
-        m3[r][c] = 0;
-      }
-    }
-
-    for (r = 0; r < 4; r++) {
-      for (c = 0; c < 4; c++) {
-        for (let i = 0; i < 4; i++) {
-          m3[r][c] += m1[r][i] * m2[i][c];
-        }
-      }
-    }
-    return m3;
-  }
-
-  multmatrixvector(m, v) {
-    const v2 = new Array(4);
-
-    for (let i = 0; i < 4; i++) {
-      v2[i] = 0;
-    }
-
-    for (let r = 0; r < 4; r++) {
-      for (let i = 0; i < 4; i++) {
-        v2[r] += m[r][i] * v[i];
-      }
-    }
-    return v2;
-  }
-
-  multvectormatrix(v, m) {
-    const v2 = new Array(4);
-
-    for (let i = 0; i < 4; i++) {
-      v2[i] = 0;
-    }
-
-    for (let r = 0; r < 4; r++) {
-      for (i = 0; i < 4; i++) {
-        v2[r] += m[i][r] * v[i];
-      }
-    }
-    return v2;
-  }
-
-  dotProd(x1, y1, z1, x2, y2, z2) {
-    return x1 * x2 + y1 * y2 + z1 * z2;
-  }
-
-  angleBetween(x1, y1, z1, x2, y2, z2) {
-    const axislen1 = Math.sqrt(x1 * x1 + y1 * y1 + z1 * z1);
-    // x1 = x1/axislen1;
-    // y1 = y1/axislen1;
-    // z1 = z1/axislen1;
-
-    const axislen2 = Math.sqrt(x2 * x2 + y2 * y2 + z2 * z2);
-    // x2 = x2/axislen2;
-    // y2 = y2/axislen2;
-    // z2 = z2/axislen2;
-
-    const angle = Math.acos(this.dotProd(x1, y1, z1, x2, y2, z2) / (axislen1 * axislen2));
-    //console.log(angle)
-
-    if (Math.abs(angle) < 0.0001) return [0, 0, 1, 0];
-    // if (angle > 180) {
-    //   angle = -(360 - angle);
-    // }
-    if (angle > PI) {
-      angle = -(TAU - angle);
-    }
-
-    //cross product
-    const x3 = y1 * z2 - z1 * y2;
-    const y3 = z1 * x2 - x1 * z2;
-    const z3 = x1 * y2 - y1 * x2;
-
-    return [x3, y3, z3, angle];
   }
 }

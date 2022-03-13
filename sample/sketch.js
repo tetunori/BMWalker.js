@@ -1,9 +1,12 @@
 const W = 720;
 
-let bmw;
+// Biological motion walker instance
+const bmw = new BMWalker();
 
-let dgui;
+// dat GUI instance
+const gui = new dat.GUI({ closeOnTop: true });
 
+// Setting values for dat GUI
 const walkerSettingsDefault = {
   speed: 1.0,
   bodyStructure: 0.0,
@@ -11,22 +14,22 @@ const walkerSettingsDefault = {
   nervousness: 0.0,
   happiness: 0.0,
 };
-let walkerSettings = new Object();
-let walkerFolder;
+const walkerSettings = new Object();
+const walkerFolder = gui.addFolder('Walker');
 
 const cameraSettingsDefault = {
   azimuth: 0.0,
   angularVelocity: 0.0,
   elevation: 0.0,
 };
-let cameraSettings = new Object();
-let cameraFolder;
+const cameraSettings = new Object();
+const cameraFolder = gui.addFolder('Camera');
 
 const translationSettingsDefault = {
   flagTranslation: false,
 };
-let translationSettings = new Object();
-let translationFolder;
+const translationSettings = new Object();
+const translationFolder = gui.addFolder('Translation');
 
 const canvasSettingsDefault = {
   dot: true,
@@ -35,8 +38,8 @@ const canvasSettingsDefault = {
   line: false,
   invert: false,
 };
-let canvasSettings = new Object();
-let canvasFolder;
+const canvasSettings = new Object();
+const canvasFolder = gui.addFolder('Canvas');
 
 const utilities = {
   reset: () => {
@@ -44,18 +47,14 @@ const utilities = {
   },
 };
 
-function setup() {
-  createCanvas(W, W);
-  textAlign(CENTER, CENTER);
-  bmw = new BMWalker();
-  dgui = new dat.GUI({ closeOnTop: true });
-  walkerFolder = dgui.addFolder('Walker');
-  cameraFolder = dgui.addFolder('Camera');
-  translationFolder = dgui.addFolder('Translation');
-  canvasFolder = dgui.addFolder('Canvas');
-
+const prepareDatGUI = () => {
+  // Set initial values
   initializeSettings();
+
+  // Add some settings
   const step = 0.1;
+
+  //  -- Walker
   walkerFolder.add(walkerSettings, 'speed', bmw.minSpeed, bmw.maxSpeed, step);
   walkerFolder.add(
     walkerSettings,
@@ -65,28 +64,25 @@ function setup() {
     step
   );
   walkerFolder.add(walkerSettings, 'weight', bmw.minWeight, bmw.maxWeight, step);
-  walkerFolder.add(
-    walkerSettings,
-    'nervousness',
-    bmw.minNervousness,
-    bmw.maxNervousness,
-    step
-  );
+  walkerFolder.add(walkerSettings, 'nervousness', bmw.minNervousness, bmw.maxNervousness, step);
   walkerFolder.add(walkerSettings, 'happiness', bmw.minHappiness, bmw.maxHappiness, step);
   walkerFolder.open();
 
+  //  -- Camera
   cameraFolder.add(cameraSettings, 'azimuth', -PI, PI, step);
   cameraFolder.add(cameraSettings, 'angularVelocity', -TAU, TAU, step);
   cameraFolder.add(cameraSettings, 'elevation', -PI, PI, step);
   cameraFolder.open();
 
-  translationFolder.add(translationSettings, 'flagTranslation').onFinishChange(function () {
+  //  -- Translation
+  translationFolder.add(translationSettings, 'flagTranslation').onFinishChange(() => {
     if (translationSettings.flagTranslation) {
       bmw.resetTimer();
     }
   });
   translationFolder.open();
 
+  //  -- Canvas
   canvasFolder.add(canvasSettings, 'dot');
   canvasFolder.add(canvasSettings, 'dotSize', 0, 30, 1);
   canvasFolder.add(canvasSettings, 'description');
@@ -94,9 +90,11 @@ function setup() {
   canvasFolder.add(canvasSettings, 'invert');
   canvasFolder.open();
 
-  dgui.add(utilities, 'reset');
-}
+  //  -- Utilities
+  gui.add(utilities, 'reset');
+};
 
+// Initialize with default values
 const initializeSettings = () => {
   walkerSettings.speed = walkerSettingsDefault.speed;
   walkerSettings.bodyStructure = walkerSettingsDefault.bodyStructure;
@@ -112,15 +110,24 @@ const initializeSettings = () => {
   canvasSettings.dotSize = canvasSettingsDefault.dotSize;
   canvasSettings.line = canvasSettingsDefault.line;
   canvasSettings.invert = canvasSettingsDefault.invert;
-  dgui.updateDisplay();
+  gui.updateDisplay();
 };
 
-function draw() {
-  // const spd = map(mouseX, 0, width, -2, 2 )
-  // if(mouseIsPressed){
-  bmw.setSpeed(walkerSettings.speed);
-  // }
+// p5.js Sketch
+function setup() {
+  // On p5.js canvas
+  createCanvas(W, W);
+  textAlign(CENTER, CENTER);
 
+  // Prepare GUI
+  prepareDatGUI();
+}
+
+function draw() {
+  // Set speed
+  bmw.setSpeed(walkerSettings.speed);
+
+  // Set Walker params
   bmw.setWalkerParam(
     walkerSettings.bodyStructure,
     walkerSettings.weight,
@@ -128,29 +135,24 @@ function draw() {
     walkerSettings.happiness
   );
 
+  // Set Camera params
   bmw.setCameraParam(
     cameraSettings.azimuth,
     cameraSettings.angularVelocity,
     cameraSettings.elevation
   );
 
+  // Set Translation params
   bmw.setTranslationParam(translationSettings.flagTranslation);
 
+  // Drawing Part
   const walkerHeight = 300;
   const markers = bmw.getMarkers(walkerHeight);
   translate(200, 200);
 
-  // const idxsArray = bmw.getLineMarkerIndices();
-  // idxsArray.forEach((idxs) => {
-  //   const i0 = idxs[0];
-  //   const i1 = idxs[1];
-
-  //   line(markers[i0].x, markers[i0].y, markers[i1].x, markers[i1].y);
-  // });
-
   // Choose colors
-  let lineColor = 30;
   let bgColor = 220;
+  let lineColor = 30;
   if (canvasSettings.invert) {
     bgColor = 30;
     lineColor = 255;
@@ -171,7 +173,6 @@ function draw() {
     markers.forEach((m, i) => {
       circle(m.x, m.y, canvasSettings.dotSize);
       // text(i, m.x, m.y);
-      // console.log(m.desc);
     });
   }
 
