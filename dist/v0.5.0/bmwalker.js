@@ -44,6 +44,7 @@ class BMWalker {
     this.translation_pos = 0;
 
     this.walker_size = 10;
+    this.walkerHeightRatio = 35;
 
     //graphical stuff
     this.motion_vertical_scale = 1;
@@ -89,9 +90,9 @@ class BMWalker {
 
   // API: Get markers
   getMarkers(walkerHeight, tmsec = undefined) {
-    const markers = [];  // return value
+    const markers = []; // return value
 
-    this.walker_size = walkerHeight / 35;
+    this.walker_size = walkerHeight / this.walkerHeightRatio;
 
     if (tmsec === undefined) {
       tmsec = this.tm.getTimer() - this.starttime;
@@ -149,10 +150,13 @@ class BMWalker {
 
       //nudge up
       const pixelsperdegree = 37;
-      var xpos = (v2[1] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
-      var ypos = -(v2[2] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
-
+      const offsetY = 0.042695445;
+      const xpos = (v2[1] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
+      const ypos =
+        -(v2[2] / this.walkersizefactor) * this.walker_size * pixelsperdegree +
+        offsetY * this.walker_size * this.walkerHeightRatio;
       // console.log(xpos, ypos);
+
       const descs = [
         'Head',
         'Clavicles',

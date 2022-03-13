@@ -8,6 +8,7 @@ const gui = new dat.GUI({ closeOnTop: true });
 
 // Setting values for dat GUI
 const walkerSettingsDefault = {
+  walkerHeight: W / 2,
   speed: 1.0,
   bodyStructure: 0.0,
   weight: 0.0,
@@ -55,6 +56,7 @@ const prepareDatGUI = () => {
   const step = 0.1;
 
   //  -- Walker
+  walkerFolder.add(walkerSettings, 'walkerHeight', 1, W);
   walkerFolder.add(walkerSettings, 'speed', bmw.minSpeed, bmw.maxSpeed, step);
   walkerFolder.add(
     walkerSettings,
@@ -96,6 +98,7 @@ const prepareDatGUI = () => {
 
 // Initialize with default values
 const initializeSettings = () => {
+  walkerSettings.walkerHeight = walkerSettingsDefault.walkerHeight;
   walkerSettings.speed = walkerSettingsDefault.speed;
   walkerSettings.bodyStructure = walkerSettingsDefault.bodyStructure;
   walkerSettings.weight = walkerSettingsDefault.weight;
@@ -146,9 +149,8 @@ function draw() {
   bmw.setTranslationParam(translationSettings.flagTranslation);
 
   // Drawing Part
-  const walkerHeight = W/2;
-  const markers = bmw.getMarkers(walkerHeight);
-  translate(W/2, W/2);
+  const markers = bmw.getMarkers(walkerSettings.walkerHeight);
+  translate(W / 2, W / 2);
 
   // Choose colors
   let bgColor = 220;
@@ -162,7 +164,7 @@ function draw() {
 
   // Draw lines first
   if (canvasSettings.line) {
-    const lineMarkers = bmw.getLineMarkers(walkerHeight);
+    const lineMarkers = bmw.getLineMarkers(walkerSettings.walkerHeight);
     lineMarkers.forEach((m) => {
       line(m[0].x, m[0].y, m[1].x, m[1].y);
     });
@@ -200,12 +202,11 @@ function draw() {
     pop();
   }
 
-  // minY = min(markers[0].y, minY);
-  // maxY = max(markers[11].y, maxY);
-  // maxY = max(markers[14].y, maxY);
-  // console.log(minY, maxY, maxY-minY);
-
+  minY = min(markers[0].y, minY);
+  maxY = max(markers[11].y, maxY);
+  maxY = max(markers[14].y, maxY);
+  console.log(minY, maxY, maxY-minY);
 }
 
-// let minY = 1000;
-// let maxY = 0;
+let minY = 1000;
+let maxY = 0;
