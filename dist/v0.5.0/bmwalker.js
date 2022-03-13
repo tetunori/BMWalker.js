@@ -43,7 +43,7 @@ class BMWalker {
     this.flagTranslation = false;
     this.translation_pos = 0;
 
-    this.walker_size = 10;  // ★
+    this.walker_size = 10;
 
     //graphical stuff
     this.motion_vertical_scale = 1;
@@ -82,74 +82,43 @@ class BMWalker {
     this.axisrot = 0;
     this.nummarkers = 0;
 
-    //marker stuff
     this.markers = [];
-
-    this.head = true;
-    this.clavicles = true;
-    this.rhip = true;
-    this.lhip = true;
-    this.belly = true;
-
-    this.rsh = true;
-    this.re = true;
-    this.rh = true;
-
-    this.lsh = true;
-    this.le = true;
-    this.lh = true;
-
-    this.rknee = true;
-    this.lknee = true;
-
-    this.rankle = true;
-    this.lankle = true;
-
-    ////
 
     this.init();
   }
 
   // API: Get markers
-  getMarkers(wh, tmsec = undefined) {
-    let markers = [];
+  getMarkers(walkerHeight, tmsec = undefined) {
+    const markers = [];  // return value
+
+    this.walker_size = walkerHeight / 35;
 
     if (tmsec === undefined) {
       tmsec = this.tm.getTimer() - this.starttime;
     }
     // console.log(tmsec);
 
-    const curtime = tmsec;
+    let i = 0;
+    let walkertime = 0;
 
-    /////
-
-    const invis = new Array(this.nummarkers);
-    invis.fill(false);
-    var i;
-
-    var walkertime = 0;
     if (this.speed != 0) {
-      walkertime = this.calcTime(curtime);
+      walkertime = this.calcTime(tmsec);
       //console.log(walkertime)
     }
 
-    //translation calculation  // ちょっとよくわかっていない
+    // Translation calculation
     if (this.flagTranslation && this.type === BMW_TYPE_HUMAN) {
-      this.translation_pos = Math.round((this.getTranslationSpeed() * 120 * curtime) / 1000);
-
-      // this.translation_pos =
-      //   (this.translation_pos % (this.translation_end - this.translation_start)) +
-      //   this.translation_start;
+      this.translation_pos = Math.round((this.getTranslationSpeed() * 120 * tmsec) / 1000);
     } else {
       this.translation_pos = 0;
     }
 
-    //CALCULATE MARKER POSITIONS
+    // Calculate marker positions
     for (i = 0; i < this.nummarkers * 3 + 1; i++) {
       this.markers[i] = this.sample(i, walkertime, true);
     }
-    //draw walker, rotating by azimuth, axisrot, elevation and spinmatrix
-    var matrix = this.mtrx.rotateaxis(
+
+    let matrix = this.mtrx.rotateaxis(
       -this.axisrot,
       this.walker_rot_xaxis,
       this.walker_rot_yaxis,
@@ -158,16 +127,14 @@ class BMWalker {
 
     matrix = this.mtrx.multmatrix(this.mtrx.translate(this.translation_pos, 0, 0), matrix);
     matrix = this.mtrx.multmatrix(
-      this.mtrx.rotateaxis(this.azimuth + (curtime * this.angularVelocity) / 1000, 0, 0, 1),
+      this.mtrx.rotateaxis(this.azimuth + (tmsec * this.angularVelocity) / 1000, 0, 0, 1),
       matrix
     );
 
     matrix = this.mtrx.multmatrix(this.mtrx.rotateY(this.elevation), matrix);
 
-    var vectors = new Array(this.nummarkers);
     var vector = new Array(4);
     var v2 = new Array(4);
-    var v3 = new Array(4);
 
     for (i = 0; i < this.nummarkers; i++) {
       vector[0] = this.markers[i] + this.walkerxoff;
@@ -180,83 +147,40 @@ class BMWalker {
       v2[0] -= this.camera_distance;
       v2[3] = 1;
 
-      v3 = v2;
-      
-      
       //nudge up
       const pixelsperdegree = 37;
-      var xpos =
-        (v3[1] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
-      var ypos =
-        - (v3[2] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
-      vectors[i] = v3;
+      var xpos = (v2[1] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
+      var ypos = -(v2[2] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
 
-      // if(this.markers_invisible[i])
-      // {
-      //   invis[i] = 1;
-      // }
-
-      [
-        this.head,
-        this.clavicles,
-        this.lsh,
-        this.le,
-        this.lh,
-        this.rsh,
-        this.re,
-        this.rh,
-        this.belly,
-        this.lhip,
-        this.lknee,
-        this.lankle,
-        this.rhip,
-        this.rknee,
-        this.rankle,
-      ].forEach((e, i) => {
-        if (!e) {
-          invis[i] = true;
-        }
-      });
-
-      if (!invis[i]) {
-        // console.log(xpos, ypos);
-        const descs = [
-          'Head',
-          'Clavicles',
-          'L-Shoulder',
-          'L-Elbow',
-          'L-Hand',
-          'R-Shoulder',
-          'R-Elbow',
-          'R-Hand',
-          'Belly',
-          'L-Hip',
-          'L-Knee',
-          'L-Ankle',
-          'R-Hip',
-          'R-Knee',
-          'R-Ankle',
-        ];
-        markers.push({ x: xpos, y: ypos, desc: descs[i] });
-      }
+      // console.log(xpos, ypos);
+      const descs = [
+        'Head',
+        'Clavicles',
+        'L-Shoulder',
+        'L-Elbow',
+        'L-Hand',
+        'R-Shoulder',
+        'R-Elbow',
+        'R-Hand',
+        'Belly',
+        'L-Hip',
+        'L-Knee',
+        'L-Ankle',
+        'R-Hip',
+        'R-Knee',
+        'R-Ankle',
+      ];
+      markers.push({ x: xpos, y: ypos, desc: descs[i] });
     }
-
-    ////
-
-    // get markers
-    // markers = [
-    //   { x: 0, y: 0, desc: '1' },
-    //   { x: 0, y: wh, desc: '2' },
-    //   { x: wh / 2, y: wh, desc: '3' },
-    //   { x: wh / 2, y: 0, desc: '4' },
-    // ];
 
     return markers;
   }
 
-  // API: Get Indices of markers that make up the line.
-  getLineMarkerIndices() {
-    return [
+  // API: Get markers that make up the line.
+  getLineMarkers(wh) {
+    const markers = this.getMarkers(wh);
+    const lineMarkers = [];
+    const idxsArray = [
       [0, 1],
       [1, 2],
       [2, 3],
@@ -272,22 +196,13 @@ class BMWalker {
       [12, 13],
       [13, 14],
     ];
-  }
-
-  // API: Get markers that make up the line.
-  getLineMarkers(wh) {
-    const markers = this.getMarkers(wh);
-
-    const lineMarkers = [];
-
-    const idxsArray = this.getLineMarkerIndices();
     idxsArray.forEach((idxs) => {
       const i0 = idxs[0];
       const i1 = idxs[1];
 
       lineMarkers.push([
-        { x: markers[i0].x, y: markers[i0].y },
-        { x: markers[i1].x, y: markers[i1].y },
+        { x: markers[i0].x, y: markers[i0].y, i: i0 },
+        { x: markers[i1].x, y: markers[i1].y, i: i1 },
       ]);
     });
 
@@ -314,7 +229,7 @@ class BMWalker {
     // console.log(freq, difffreq, t, this.starttime);
   }
 
-  // API: ...
+  // API: Set parameters on walker
   setWalkerParam(bodyStructure, weight, nervousness, happiness) {
     const freq = this.getFrequency();
 
@@ -348,7 +263,7 @@ class BMWalker {
     this.starttime = t - (t - this.starttime) / difffreq;
   }
 
-  // API: ...
+  // API: Set parameters on camera
   setCameraParam(azimuth, angularVelocity, elevation) {
     // Camera azimuth(rotation) Parameter
     if (azimuth !== undefined) {
@@ -366,20 +281,20 @@ class BMWalker {
     }
   }
 
-  // API: ...
+  // API: Set parameters on translation
   setTranslationParam(flagTranslation) {
     if (flagTranslation !== undefined) {
       this.flagTranslation = flagTranslation;
     }
   }
 
-  // API: ...
+  // API: Reset timer value
   resetTimer() {
     this.starttime = this.tm.getTimer();
     this.init();
   }
 
-  // Internal
+  // ----- Internal methods
   clamp(min, max, val) {
     return Math.min(max, Math.max(min, val));
   }
@@ -393,7 +308,7 @@ class BMWalker {
   }
 
   recalc_angle() {
-    var res = this.mtrx.angleBetween(0, 0, 1, 0, 0, 1);
+    const res = this.mtrx.angleBetween(0, 0, 1, 0, 0, 1);
     this.walker_rot_xaxis = res[0];
     this.walker_rot_yaxis = res[1];
     this.walker_rot_zaxis = res[2];
@@ -426,27 +341,16 @@ class BMWalker {
   } // end of calsize()
 
   sample(i, walkertime, includeStructure) {
-    var phase = 0; //this.walker_scrambling_phases[i % this.nummarkers];
-    var bodyStructureval = this.bodyStructure;
-
-    var initialpos = this.meanwalker[this.type][i];
+    let initialpos = this.meanwalker[this.type][i];
 
     if (includeStructure) {
       if (this.type === BMW_TYPE_HUMAN) {
         initialpos +=
-          this.bodyStructureaxis[i] * bodyStructureval +
+          this.bodyStructureaxis[i] * this.bodyStructure +
           this.weightaxis[i] * this.weight +
           this.nervousaxis[i] * this.nervousness +
           this.happyaxis[i] * this.happiness;
       }
-
-      // if (this.walker_scrambling > 0) {
-      //   if (
-      //     (i >= this.nummarkers * 2 && this.walker_scrambling_vert) ||
-      //     (i < this.nummarkers * 2 && this.walker_scrambling_horiz)
-      //   )
-      //     initialpos = this.scramblewalker[i];
-      // }
 
       //invert or scale structure
       if (i >= this.nummarkers * 2 && i < this.nummarkers * 3)
@@ -457,42 +361,45 @@ class BMWalker {
     }
 
     //motion!
-    var motionpos = 0;
+    let motionpos = 0;
+    const j = this.nummarkers * 3 + 1;
+
     if (this.type === BMW_TYPE_HUMAN) {
+      const b = this.bodyStructure;
+      const w = this.weight;
+      const n = this.nervousness;
+      const h = this.happiness;
       motionpos =
-        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1)] +
-          this.bodyStructureaxis[i + (this.nummarkers * 3 + 1)] * bodyStructureval +
-          this.weightaxis[i + (this.nummarkers * 3 + 1)] * this.weight +
-          this.nervousaxis[i + (this.nummarkers * 3 + 1)] * this.nervousness +
-          this.happyaxis[i + (this.nummarkers * 3 + 1)] * this.happiness) *
-          Math.sin(walkertime + phase) +
-        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 2] +
-          this.bodyStructureaxis[i + (this.nummarkers * 3 + 1) * 2] * bodyStructureval +
-          this.weightaxis[i + (this.nummarkers * 3 + 1) * 2] * this.weight +
-          this.nervousaxis[i + (this.nummarkers * 3 + 1) * 2] * this.nervousness +
-          this.happyaxis[i + (this.nummarkers * 3 + 1) * 2] * this.happiness) *
-          Math.cos(walkertime + phase) +
-        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 3] +
-          this.bodyStructureaxis[i + (this.nummarkers * 3 + 1) * 3] * bodyStructureval +
-          this.weightaxis[i + (this.nummarkers * 3 + 1) * 3] * this.weight +
-          this.nervousaxis[i + (this.nummarkers * 3 + 1) * 3] * this.nervousness +
-          this.happyaxis[i + (this.nummarkers * 3 + 1) * 3] * this.happiness) *
-          Math.sin(2 * (walkertime + phase)) +
-        (this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 4] +
-          this.bodyStructureaxis[i + (this.nummarkers * 3 + 1) * 4] * bodyStructureval +
-          this.weightaxis[i + (this.nummarkers * 3 + 1) * 4] * this.weight +
-          this.nervousaxis[i + (this.nummarkers * 3 + 1) * 4] * this.nervousness +
-          this.happyaxis[i + (this.nummarkers * 3 + 1) * 4] * this.happiness) *
-          Math.cos(2 * (walkertime + phase));
+        (this.meanwalker[this.type][i + j] +
+          this.bodyStructureaxis[i + j] * b +
+          this.weightaxis[i + j] * w +
+          this.nervousaxis[i + j] * n +
+          this.happyaxis[i + j] * h) *
+          Math.sin(walkertime) +
+        (this.meanwalker[this.type][i + j * 2] +
+          this.bodyStructureaxis[i + j * 2] * b +
+          this.weightaxis[i + j * 2] * w +
+          this.nervousaxis[i + j * 2] * n +
+          this.happyaxis[i + j * 2] * h) *
+          Math.cos(walkertime) +
+        (this.meanwalker[this.type][i + j * 3] +
+          this.bodyStructureaxis[i + j * 3] * b +
+          this.weightaxis[i + j * 3] * w +
+          this.nervousaxis[i + j * 3] * n +
+          this.happyaxis[i + j * 3] * h) *
+          Math.sin(2 * walkertime) +
+        (this.meanwalker[this.type][i + j * 4] +
+          this.bodyStructureaxis[i + j * 4] * b +
+          this.weightaxis[i + j * 4] * w +
+          this.nervousaxis[i + j * 4] * n +
+          this.happyaxis[i + j * 4] * h) *
+          Math.cos(2 * walkertime);
     } else {
       motionpos =
-        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1)] * Math.sin(walkertime + phase) +
-        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 2] *
-          Math.cos(walkertime + phase) +
-        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 3] *
-          Math.sin(2 * (walkertime + phase)) +
-        this.meanwalker[this.type][i + (this.nummarkers * 3 + 1) * 4] *
-          Math.cos(2 * (walkertime + phase));
+        this.meanwalker[this.type][i + j] * Math.sin(walkertime) +
+        this.meanwalker[this.type][i + j * 2] * Math.cos(walkertime) +
+        this.meanwalker[this.type][i + j * 3] * Math.sin(2 * walkertime) +
+        this.meanwalker[this.type][i + j * 4] * Math.cos(2 * walkertime);
     }
 
     if (i >= this.nummarkers * 2 && i < this.nummarkers * 3)
@@ -502,25 +409,28 @@ class BMWalker {
   }
 
   getFrequency() {
-    var speed = this.meanwalker[this.type][this.nummarkers * 3];
+    const i = this.nummarkers * 3;
+    let speed = this.meanwalker[this.type][i];
+
     if (this.type === BMW_TYPE_HUMAN) {
-      speed += this.bodyStructure * this.bodyStructureaxis[this.nummarkers * 3];
-      speed += this.weight * this.weightaxis[this.nummarkers * 3];
-      speed += this.nervousness * this.nervousaxis[this.nummarkers * 3];
-      speed += this.happiness * this.happyaxis[this.nummarkers * 3];
+      speed += this.bodyStructure * this.bodyStructureaxis[i];
+      speed += this.weight * this.weightaxis[i];
+      speed += this.nervousness * this.nervousaxis[i];
+      speed += this.happiness * this.happyaxis[i];
     }
-    //console.log(speed)
+
     return speed / this.speed;
   }
 
   calcTranslationSpeed() {
-    var tspeed = this.meanwalker[this.type][(this.nummarkers * 3 + 1) * 3 - 1];
-    //tspeed*120 = 1356.168
+    const i = (this.nummarkers * 3 + 1) * 3 - 1;
+    let tspeed = this.meanwalker[this.type][i];
+
     if (this.type === BMW_TYPE_HUMAN) {
-      tspeed += this.bodyStructure * this.bodyStructureaxis[(this.nummarkers * 3 + 1) * 3 - 1];
-      tspeed += this.weight * this.weightaxis[(this.nummarkers * 3 + 1) * 3 - 1];
-      tspeed += this.nervousness * this.nervousaxis[(this.nummarkers * 3 + 1) * 3 - 1];
-      tspeed += this.happiness * this.happyaxis[(this.nummarkers * 3 + 1) * 3 - 1];
+      tspeed += this.bodyStructure * this.bodyStructureaxis[i];
+      tspeed += this.weight * this.weightaxis[i];
+      tspeed += this.nervousness * this.nervousaxis[i];
+      tspeed += this.happiness * this.happyaxis[i];
     }
 
     return tspeed * 120;

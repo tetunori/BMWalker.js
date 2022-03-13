@@ -146,9 +146,9 @@ function draw() {
   bmw.setTranslationParam(translationSettings.flagTranslation);
 
   // Drawing Part
-  const walkerHeight = 300;
+  const walkerHeight = W/2;
   const markers = bmw.getMarkers(walkerHeight);
-  translate(200, 200);
+  translate(W/2, W/2);
 
   // Choose colors
   let bgColor = 220;
@@ -188,4 +188,24 @@ function draw() {
     }
     pop();
   }
+
+  // Show center for debug
+  const showCenter = true;
+  if (showCenter) {
+    push();
+    {
+      fill('red');
+      circle(0, 0, 10);
+    }
+    pop();
+  }
+
+  // minY = min(markers[0].y, minY);
+  // maxY = max(markers[11].y, maxY);
+  // maxY = max(markers[14].y, maxY);
+  // console.log(minY, maxY, maxY-minY);
+
 }
+
+// let minY = 1000;
+// let maxY = 0;
