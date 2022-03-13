@@ -6,16 +6,11 @@ const BMW_TYPE_BOX = 3; // (maybe for debug)
 class BMWalker {
   // Constructor
   constructor(type = BMW_TYPE_HUMAN) {
-    this.type = type;
 
-    this.tm = new BMWTimer();
-    this.starttime = this.tm.getTimer();
-
-    this.mtrx = new BMWMatrix();
-
+    // External variables
+    // Boundary values
     this.maxSpeed = 2.0;
     this.minSpeed = -2.0;
-
     this.maxBodyStructure = 6.0; // Type A
     this.minBodyStructure = -6.0; // Type B
     this.maxWeight = 6.0; // Heavy
@@ -25,9 +20,16 @@ class BMWalker {
     this.maxHappiness = 6.0; // Happy
     this.minHappiness = -6.0; // Sad
 
-    this.speed = 1.0;
+    // Internal variables
+    this.type = type;
+
+    this.tm = new BMWTimer();
+    this.starttime = this.tm.getTimer();
+
+    this.mtrx = new BMWMatrix();
 
     // Walker Parameters
+    this.speed = 1.0;
     this.bodyStructure = 0;
     this.weight = 0;
     this.nervousness = 0;
@@ -40,19 +42,17 @@ class BMWalker {
 
     // Translation Parameters
     this.flagTranslation = false;
-
-    this.walker_size = 10;
-
-    this.pixelsperdegree = 37;
-
-    // this.flagTranslation = false;
-    this.translation_start = 0; //-1000;
-    this.translation_end = 1000;
     this.translation_pos = 0;
 
-    this.data_offset_x = 0;
-    this.data_offset_y = 0;
-    this.data_offset_z = 0;
+
+
+
+
+
+
+    this.walker_size = 10;
+    this.pixelsperdegree = 37;
+
 
     //graphical stuff
     this.offsety = 0;
@@ -238,12 +238,11 @@ class BMWalker {
     var v3 = new Array(4);
 
     for (i = 0; i < this.nummarkers; i++) {
-      vector[0] = this.markers[i] + this.walkerxoff + this.data_offset_x;
+      vector[0] = this.markers[i] + this.walkerxoff;
       vector[1] =
         this.markers[i + this.nummarkers] +
-        this.walkeryoff * this.structure_vertical_scale +
-        this.data_offset_y;
-      vector[2] = this.markers[i + this.nummarkers * 2] + this.walkerzoff + this.data_offset_z;
+        this.walkeryoff * this.structure_vertical_scale;
+      vector[2] = this.markers[i + this.nummarkers * 2] + this.walkerzoff;
       vector[3] = 1;
 
       v2 = this.mtrx.multmatrixvector(matrix, vector);
@@ -1060,7 +1059,7 @@ class BMWData {
       -12.1435,
       0.0
     );
-    
+
     this.meanwalker[1] = new Array(
       89.06,
       84.511,
@@ -2108,6 +2107,7 @@ class BMWData {
       -0.746,
       0.0
     );
+
     this.nervousaxis = new Array(
       -1.0613,
       -0.821,
@@ -2340,6 +2340,7 @@ class BMWData {
       0.6399,
       0.0
     );
+
     this.happyaxis = new Array(
       -8.6794,
       -1.7747,
