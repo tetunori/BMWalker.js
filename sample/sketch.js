@@ -38,7 +38,6 @@ const canvasSettingsDefault = {
   description: false,
   line: false,
   invert: false,
-  walkerBox: false,
 };
 const canvasSettings = new Object();
 const canvasFolder = gui.addFolder('Canvas');
@@ -91,7 +90,6 @@ const prepareDatGUI = () => {
   canvasFolder.add(canvasSettings, 'description');
   canvasFolder.add(canvasSettings, 'line');
   canvasFolder.add(canvasSettings, 'invert');
-  canvasFolder.add(canvasSettings, 'walkerBox');
   canvasFolder.open();
 
   //  -- Utilities
@@ -115,7 +113,6 @@ const initializeSettings = () => {
   canvasSettings.dotSize = canvasSettingsDefault.dotSize;
   canvasSettings.line = canvasSettingsDefault.line;
   canvasSettings.invert = canvasSettingsDefault.invert;
-  canvasSettings.walkerBox = canvasSettingsDefault.walkerBox;
   gui.updateDisplay();
 };
 
@@ -124,7 +121,6 @@ function setup() {
   // On p5.js canvas
   createCanvas(W, W);
   textAlign(CENTER, CENTER);
-  rectMode(CENTER);
 
   // Prepare GUI
   prepareDatGUI();
@@ -153,6 +149,8 @@ function draw() {
   bmw.setTranslationParam(translationSettings.flagTranslation);
 
   // Drawing Part
+  const markers = bmw.getMarkers(walkerSettings.walkerHeight);
+  translate(W / 2, W / 2);
 
   // Choose colors
   let bgColor = 220;
@@ -163,19 +161,6 @@ function draw() {
   }
   background(bgColor);
   stroke(lineColor);
-
-  if (canvasSettings.walkerBox) {
-    push();
-    {
-      fill('green');
-      noStroke();
-      rect(W / 2, W / 2, walkerSettings.walkerHeight / 2, walkerSettings.walkerHeight);
-    }
-    pop();
-  }
-
-  const markers = bmw.getMarkers(walkerSettings.walkerHeight);
-  translate(W / 2, W / 2);
 
   // Draw lines first
   if (canvasSettings.line) {
@@ -207,7 +192,8 @@ function draw() {
   }
 
   // Show center for debug
-  if (canvasSettings.walkerBox) {
+  const showCenter = true;
+  if (showCenter) {
     push();
     {
       fill('red');
@@ -215,4 +201,12 @@ function draw() {
     }
     pop();
   }
+
+  minY = min(markers[0].y, minY);
+  maxY = max(markers[11].y, maxY);
+  maxY = max(markers[14].y, maxY);
+  console.log(minY, maxY, maxY-minY);
 }
+
+let minY = 1000;
+let maxY = 0;
