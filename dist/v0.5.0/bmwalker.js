@@ -128,8 +128,10 @@ class BMWalker {
     );
 
     matrix = this.mtrx.multmatrix(this.mtrx.translate(this.translation_pos, 0, 0), matrix);
+
+    const angularVelocity = this.flagTranslation ? 0 : this.angularVelocity;
     matrix = this.mtrx.multmatrix(
-      this.mtrx.rotateaxis(this.azimuth + (tmsec * this.angularVelocity) / 1000, 0, 0, 1),
+      this.mtrx.rotateaxis(this.azimuth + (tmsec * angularVelocity) / 1000, 0, 0, 1),
       matrix
     );
 
