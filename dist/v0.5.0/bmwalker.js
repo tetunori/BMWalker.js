@@ -1,7 +1,7 @@
 const BMW_TYPE_HUMAN = 0;
 const BMW_TYPE_CAT = 1;
 const BMW_TYPE_PIGEON = 2;
-const BMW_TYPE_BOX = 3; // (maybe for debug)
+const BMW_TYPE_BOX = 3; // (for debug)
 
 class BMWalker {
   // Constructor
@@ -137,17 +137,15 @@ class BMWalker {
 
     matrix = this.mtrx.multmatrix(this.mtrx.rotateY(this.elevation), matrix);
 
-    var vector = new Array(4);
-    var v2 = new Array(4);
-
     for (i = 0; i < this.nummarkers; i++) {
+      const vector = new Array(4);
       vector[0] = this.markers[i] + this.walkerxoff;
       vector[1] =
         this.markers[i + this.nummarkers] + this.walkeryoff * this.structure_vertical_scale;
       vector[2] = this.markers[i + this.nummarkers * 2] + this.walkerzoff;
       vector[3] = 1;
 
-      v2 = this.mtrx.multmatrixvector(matrix, vector);
+      const v2 = this.mtrx.multmatrixvector(matrix, vector);
       v2[0] -= this.camera_distance;
       v2[3] = 1;
 
