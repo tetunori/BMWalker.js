@@ -192,7 +192,7 @@ function draw() {
   }
 
   // Show center for debug
-  const showCenter = true;
+  const showCenter = false;
   if (showCenter) {
     push();
     {
@@ -201,12 +201,4 @@ function draw() {
     }
     pop();
   }
-
-  minY = min(markers[0].y, minY);
-  maxY = max(markers[11].y, maxY);
-  maxY = max(markers[14].y, maxY);
-  console.log(minY, maxY, maxY-minY);
 }
-
-let minY = 1000;
-let maxY = 0;

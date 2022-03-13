@@ -44,8 +44,9 @@ class BMWalker {
     this.translation_pos = 0;
 
     this.walker_size = 10;
-    this.walkerHeightRatio = 35;
 
+    // 35 is the exactly correct ratio but need offsetY in this case.
+    this.walkerHeightRatio = 40; 
     //graphical stuff
     this.motion_vertical_scale = 1;
     this.motion_horizontal_scale = 1;
@@ -150,11 +151,8 @@ class BMWalker {
 
       //nudge up
       const pixelsperdegree = 37;
-      const offsetY = 0.042695445;
       const xpos = (v2[1] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
-      const ypos =
-        -(v2[2] / this.walkersizefactor) * this.walker_size * pixelsperdegree +
-        offsetY * this.walker_size * this.walkerHeightRatio;
+      const ypos = -(v2[2] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
       // console.log(xpos, ypos);
 
       const descs = [
