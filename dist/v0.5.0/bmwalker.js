@@ -6,7 +6,6 @@ const BMW_TYPE_BOX = 3; // (maybe for debug)
 class BMWalker {
   // Constructor
   constructor(type = BMW_TYPE_HUMAN) {
-
     // External variables
     // Boundary values
     this.maxSpeed = 2.0;
@@ -44,35 +43,15 @@ class BMWalker {
     this.flagTranslation = false;
     this.translation_pos = 0;
 
-
-
-
-
-
-
-    this.walker_size = 10;
-    this.pixelsperdegree = 37;
-
+    this.walker_size = 10;  // ★
 
     //graphical stuff
-    this.offsety = 0;
-    this.offsetz = 0;
-
-    this.left = 0;
-    this.right = 0;
-    this.top = 0;
-    this.bottom = 0;
-    this.spinmatrix = this.mtrx.newIdentMatrix();
-    this.dotsize = 3;
-
     this.motion_vertical_scale = 1;
     this.motion_horizontal_scale = 1;
     this.structure_vertical_scale = 1;
     this.structure_horizontal_scale = 1;
 
-    // this.dotShapes = [];
-    // this.linesdrawn = false;
-
+    // Each data
     const walkerData = new BMWData();
     this.meanwalker = walkerData.meanwalker;
     this.bodyStructureaxis = walkerData.bodyStructureaxis;
@@ -80,44 +59,14 @@ class BMWalker {
     this.nervousaxis = walkerData.nervousaxis;
     this.happyaxis = walkerData.happyaxis;
 
-    this.bodyStructure = 0;
-    this.weight = 0;
-    this.nervousness = 0;
-    this.happiness = 0;
-
-    //camera iables
-    // this.azimuth = 0;
-    // this.elevation = 0;
+    //camera variables
     this.camera_distance = 1000;
-    // this.angularVelocity = 0;
-    this.walker_xaxis = 0;
-    this.walker_yaxis = 0;
-    this.walker_zaxis = 1;
 
     this.walker_rot_xaxis = 0;
     this.walker_rot_yaxis = 0;
     this.walker_rot_zaxis = 0;
 
-    //general stuff
-    // this.walker_initphase = 0;
-    // this.walker_speed = 1;
-    this.walker_sticks = true;
-
-    // this.walker_scrambling = 0;
-    // this.flicker_ontime = 100;
-    // this.flicker_duration = 1;
-    // this.flicker_randomness = 0;
-    this.camera_perspective = 0;
-    // this.walker_scrambling_horiz = true;
-    // this.walker_scrambling_vert = true;
-    // this.walker_scrambling_phase = 0;
-
-    // this.markers_invisible = null;
-
-    //fun stuff
     this.walker_translation_speed = 0;
-
-    //--------------INTERNAL IABLES--------------------
 
     this.walkerxmin = 0;
     this.walkerymin = 0;
@@ -132,22 +81,6 @@ class BMWalker {
 
     this.axisrot = 0;
     this.nummarkers = 0;
-    // this.durationstd = 0;
-    // this.dotsonratio = 0;
-    // this.dotduration = 0;
-    // this.durationon = 0;
-    // this.durationoff = 0;
-
-    //arrays of stuff
-    // this.scramblewalker = [];
-    // this.scramblewalkerinit = [];
-    this.catwalker = [];
-    this.pigeonwalker = [];
-    // this.walker_scrambling_phases = [];
-
-    //flicker stuff
-    // this.dottime = [];
-    // this.dotstats = [];
 
     //marker stuff
     this.markers = [];
@@ -229,7 +162,6 @@ class BMWalker {
       matrix
     );
 
-    matrix = this.mtrx.multmatrix(this.spinmatrix, matrix);
     matrix = this.mtrx.multmatrix(this.mtrx.rotateY(this.elevation), matrix);
 
     var vectors = new Array(this.nummarkers);
@@ -240,8 +172,7 @@ class BMWalker {
     for (i = 0; i < this.nummarkers; i++) {
       vector[0] = this.markers[i] + this.walkerxoff;
       vector[1] =
-        this.markers[i + this.nummarkers] +
-        this.walkeryoff * this.structure_vertical_scale;
+        this.markers[i + this.nummarkers] + this.walkeryoff * this.structure_vertical_scale;
       vector[2] = this.markers[i + this.nummarkers * 2] + this.walkerzoff;
       vector[3] = 1;
 
@@ -249,27 +180,15 @@ class BMWalker {
       v2[0] -= this.camera_distance;
       v2[3] = 1;
 
-      if (this.camera_perspective > 0) {
-        var persp = this.mtrx.perspective(this.camera_distance);
-        v3 = this.mtrx.multmatrixvector(persp, v2);
-        v3[0] = v3[0] / v3[3];
-        v3[1] = v3[1] / v3[3];
-        v3[2] = v3[2] / v3[3];
-
-        if (v2[0] > 0 || v3[3] == 0) {
-          invis[i] = true;
-        }
-      } else {
-        v3 = v2;
-      }
-      // this.currentmatrix[i] = v3;
-
-      // console.log(v3)
+      v3 = v2;
+      
+      
       //nudge up
+      const pixelsperdegree = 37;
       var xpos =
-        this.offsety + (v3[1] / this.walkersizefactor) * this.walker_size * this.pixelsperdegree;
+        (v3[1] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
       var ypos =
-        this.offsetz - (v3[2] / this.walkersizefactor) * this.walker_size * this.pixelsperdegree;
+        - (v3[2] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
       vectors[i] = v3;
 
       // if(this.markers_invisible[i])
@@ -321,26 +240,6 @@ class BMWalker {
         markers.push({ x: xpos, y: ypos, desc: descs[i] });
       }
     }
-
-    if (this.walker_sticks) {
-      if (this.type === BMW_TYPE_HUMAN) {
-        // ★
-        // this.drawLineX(vectors, 0, 1, invis);
-        // this.drawLineX(vectors, 1, 2, invis);
-        // this.drawLineX(vectors, 2, 3, invis);
-        // this.drawLineX(vectors, 3, 4, invis);
-        // this.drawLineX(vectors, 1, 5, invis);
-        // this.drawLineX(vectors, 5, 6, invis);
-        // this.drawLineX(vectors, 6, 7, invis);
-        // this.drawLineX(vectors, 1, 8, invis);
-        // this.drawLineX(vectors, 8, 9, invis);
-        // this.drawLineX(vectors, 9, 10, invis);
-        // this.drawLineX(vectors, 10, 11, invis);
-        // this.drawLineX(vectors, 8, 12, invis);
-        // this.drawLineX(vectors, 12, 13, invis);
-        // this.drawLineX(vectors, 13, 14, invis);
-      }
-    } // temporary
 
     ////
 
