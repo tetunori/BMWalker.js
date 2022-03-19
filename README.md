@@ -198,7 +198,7 @@ Parameters:
 | ---- | ---- |
 |  `speed`   | `Number`: Walking speed of the 'Walker'. Set values between `minSpeed` and `maxSpeed`(automtically clamped). Default value is `1.0`. Setting `0` means stop walking. Walk backward when negative values are set. |
 
-Example3-1:
+Example 3-1:
 ```javascript
 // Create Biological motion walker instance
 const bmw = new BMWalker();
@@ -223,15 +223,17 @@ Parameters:
 |  `nervousness`   | `Number`: Adjust parameters on nervousness. Set values between `minNervousness` and `maxNervousness`(automtically clamped). Default value is `0`(means neutral). Positive values are nervous and negative values are relaxed. |
 |  `happiness`   | `Number`: Adjust parameters on happiness. Set values between `minHappiness` and `maxHappiness`(automtically clamped). Default value is `0`(means neutral). Positive values are happy and negative values are sad.|
 
-Example4-1:
+Example 4-1:
 ```javascript
-
 // Create Biological motion walker instance
 const bmw = new BMWalker();
 
-// Set speed with mouseX coordinate.
-const spd = map(mouseX, 0, width, bmw.minSpeed, bmw.maxSpeed);
-bmw.setSpeed(spd);
+// Set walker parameters.
+const bodyStructure = 1.0;
+const weight = -0.2;
+const nervousness = 0.0;
+const happiness = 3.1;
+bmw.setWalkerParam(bodyStructure, weight, nervousness, happiness);
 ```
 
 
