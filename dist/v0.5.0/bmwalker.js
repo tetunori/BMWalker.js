@@ -2,9 +2,9 @@
 // BMWalker.js
 // Biological Motion 'Walker' library for Javascript.
 
-// LINCENSE
+// LICENSE
 // Attribution-NonCommercial-ShareAlike 4.0 International
-// Copyright (c) 2022 Tetsunori NAKAYAMA and Nikolaus Troje.
+// Copyright (c) 2022 Tetsunori Nakayama and Nikolaus Troje.
 // For commercial use, please contact us.
 
 // This library is based on the results of BIO-MOTION-LAB's researches in York University.
