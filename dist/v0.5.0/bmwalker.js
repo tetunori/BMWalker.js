@@ -192,8 +192,8 @@ class BMWalker {
   }
 
   // API: Get markers that make up the line.
-  getLineMarkers(wh) {
-    const markers = this.getMarkers(wh);
+  getLineMarkers(walkerHeight, tmsec = undefined) {
+    const markers = this.getMarkers(walkerHeight, tmsec);
     const lineMarkers = [];
     const idxsArray = [
       [0, 1],
