@@ -38,7 +38,7 @@ So we can draw gotton markers like below.
 ```javascript
 // Draw each markers
 markers.forEach((m) => {
-  circle(m.x, m.y, 10);
+  circle(m.x, m.y, 6);
 });
 ```
 ### p5.js sample-01: Basic Usage
@@ -48,72 +48,87 @@ markers.forEach((m) => {
  - ['Sample-01: Basic Usage' On OpenProcessing](https://openprocessing.org/sketch/1338726)
 
 # API Specification
-<details><summary>CLICK ME</summary>
-<p>
+<!-- <details><summary>CLICK ME</summary> -->
+<!-- <p> -->
 
-## Constructors
-### constructor
+## API List
+- [Constructor](#Constructor)
+- Methods
+  - [getMarkers](#getMarkers)
+
+## Constructor
 ```javascript
-new mPSS([sideLength: Number])
+new BMWalker()
 ```
-Parameters:
-|  name  |  note  |
-| ---- | ---- |
-|  [`sideLength`]   | `Number`: Size of the outline (biggest)square. Optional.  |
 
 Returns:
-mPSS instance.
-
-## Properties
-### Transform type ID
-```javascript
-// Number
-mPSS.tfTypeIdOriginal;
-mPSS.tfTypeIdRotate90;
-mPSS.tfTypeIdRotate180;
-mPSS.tfTypeIdRotate270;
-mPSS.tfTypeIdMirror;
-mPSS.tfTypeIdMirrorRotate90;
-mPSS.tfTypeIdMirrorRotate180;
-mPSS.tfTypeIdMirrorRotate270;
-```
+BMWalker instance.
 
 ## Methods
-### getSquares
+### getMarkers
 ```javascript
-getSquares([transformTypeIndex: Number])
+getMarkers(walkerHeight: Number, [tmsec: Number])
 ```
+
 Parameters:
 |  name  |  note  |
 | ---- | ---- |
-|  [`transformTypeIndex`]   | `Number`: Specify `mPSS.tfTypeId*`. Default value is `mPSS.tfTypeIdOriginal` Optional. |
+|  [`walkerHeight`]   | `Number`: Height size of the Walker. This method returns the coordinates as the height of 'Walker' fits into this value. |
+|  [`tmsec`]  | Optional. `Number`: Specify the time in msec for which you would like to get markers. If unspecified, this method returns current marker coordinates. |
 
 Returns:
-Array of the square data. Each data has properties below.
+Array of the marker data `Object` at specified time. Each data `Object` has properties below.
 |  name  |  note  |
 | ---- | ---- |
-|  `x`  |  `Number`: x-coordinate of the square.  |
-|  `y`  |  `Number`: y-coordinate of the square.  |
-|  `size`  |  `Number`: side size of the square.  |
-|  `centerX`  |  `Number`: x-coordinate of the center of the square.  |
-|  `centerY`  |  `Number`: y-coordinate of the center of the square.  |
-|  `originalSize`  |  `Number`: side size of the square before transformed. If you do not specify the size in the Constructor, this is the same as `size` property.  |
-
-### getSmallestSizeSquares
+|  `x`  |  `Number`: x-coordinate of the marker.  |
+|  `y`  |  `Number`: y-coordinate of the marker.  |
+|  `desc`  |  `String`: Description of the marker like `'Head'`, `'Clavicles'` and so on.  |
 ```javascript
-getSmallestSizeSquares([squareTypeIndex: Number], [transformTypeIndex: Number]) {
+// Example of Return value of getMarkers()
+[
+  { x:  3.18, y: -170.70, desc: "Head" },
+  { x:  2.74, y: -115.11, desc: "Clavicles" },
+  { x: 40.24, y: -121.91, desc: "L-Shoulder" },
+  ...
+]
 ```
-Parameters:
-|  name  |  note  |
-| ---- | ---- |
-|  [`squareTypeIndex`]   | `Number`: Specify square type index `0`, `1` or `2`. Default value is `0`. Optional. |
-|  [`transformTypeIndex`]   | `Number`: Specify `mPSS.tfTypeId*`. Default value is `mPSS.tfTypeIdOriginal` Optional. |
 
-Returns:
-Array of the square data. See `getSquares()` section.
 
-</p>
-</details>
+Example1-1:
+```javascript
+// Create Biological motion walker instance
+const bmw = new BMWalker();
+
+// Get array of the current marker coordinates 
+const walkerHeight = 100;
+const markers = bmw.getMarkers(walkerHeight);
+
+// Draw each markers
+markers.forEach((m) => {
+  circle(m.x, m.y, 6);
+});
+
+```
+
+Example1-2:
+```javascript
+// Create Biological motion walker instance
+const bmw = new BMWalker();
+
+// Get array of the marker coordinates with bigger size and specified time. 
+const walkerHeight = 300;
+const specifiedTime = 500;
+const markers = bmw.getMarkers(walkerHeight, specifiedTime);
+
+// Draw each markers with descriptions
+markers.forEach((m) => {
+  circle(m.x, m.y, 6);
+  text(m.desc, m.x, m.y + 20);
+});
+```
+
+<!-- </p> -->
+<!-- </details> -->
 
 # License
 Attribution-NonCommercial-ShareAlike 4.0 International  
