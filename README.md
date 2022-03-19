@@ -55,6 +55,7 @@ markers.forEach((m) => {
 - [Constructor](#Constructor)
 - Methods
   - [getMarkers](#getMarkers)
+  - [getLineMarkers](#getLineMarkers)
 
 ## Constructor
 ```javascript
@@ -76,7 +77,7 @@ Get all markers that make up 'Walker'.
 Parameters:
 |  name  |  note  |
 | ---- | ---- |
-|  [`walkerHeight`]   | `Number`: Height size of the Walker. This method returns the coordinates as the height of 'Walker' fits into this value. |
+|  `walkerHeight`   | `Number`: Height size of the 'Walker'. This method returns the coordinates as the height of 'Walker' fits into this value. |
 |  [`tmsec`]  | Optional. `Number`: Specify the time in msec for which you would like to get markers. If unspecified, this method returns current marker coordinates. |
 
 Returns:
@@ -130,7 +131,7 @@ markers.forEach((m) => {
 });
 ```
 
-### getMarkers
+### getLineMarkers
 ```javascript
 getLineMarkers(walkerHeight: Number, [tmsec: Number])
 ```
@@ -140,7 +141,7 @@ Get combinations of marker coordinates for both ends of all lines that make up '
 Parameters:
 |  name  |  note  |
 | ---- | ---- |
-|  [`walkerHeight`]   | `Number`: Height size of the Walker. This method returns as the height of 'Walker' fits into this value. |
+|  `walkerHeight`   | `Number`: Height size of the 'Walker'. This method returns as the height of 'Walker' fits into this value. |
 |  [`tmsec`]  | Optional. `Number`: Specify the time in msec for which you would like to get. If unspecified, this method returns with current time. |
 
 Returns:
@@ -184,6 +185,29 @@ lineMarkers.forEach((m) => {
   line(m[0].x, m[0].y, m[1].x, m[1].y);
 });
 ```
+
+### setSpeed
+```javascript
+setSpeed(speed: Number)
+```
+Overview:  
+Set walking speed.
+
+Parameters:
+|  name  |  note  |
+| ---- | ---- |
+|  `speed`   | `Number`: Walking speed of the 'Walker'. Set values between `minSpeed` and `maxSpeed`(automtically clamped). Default value is `1.0`. Setting `0` means stop walking. Walk backward when negative values are set. |
+
+Example3-1:
+```javascript
+// Create Biological motion walker instance
+const bmw = new BMWalker();
+
+// Set speed with mouseX coordinate.
+const spd = map(mouseX, 0, width, bmw.minSpeed, bmw.maxSpeed);
+bmw.setSpeed(spd);
+```
+
 
 <!-- </p> -->
 <!-- </details> -->
