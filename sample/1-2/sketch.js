@@ -14,6 +14,7 @@ function draw() {
 
   // Get array of the marker coordinates with bigger size and specified time.
   const walkerHeight = 350;
+  // const specifiedTime = 500;
   const specifiedTime = 100 + frameCount * 30;
   const markers = bmw.getMarkers(walkerHeight, specifiedTime);
 

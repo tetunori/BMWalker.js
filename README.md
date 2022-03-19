@@ -70,6 +70,9 @@ BMWalker instance.
 getMarkers(walkerHeight: Number, [tmsec: Number])
 ```
 
+Overview:  
+Get all markers that make up 'Walker'.
+
 Parameters:
 |  name  |  note  |
 | ---- | ---- |
@@ -116,7 +119,7 @@ Example1-2:
 const bmw = new BMWalker();
 
 // Get array of the marker coordinates with bigger size and specified time. 
-const walkerHeight = 300;
+const walkerHeight = 350;
 const specifiedTime = 500;
 const markers = bmw.getMarkers(walkerHeight, specifiedTime);
 
@@ -124,6 +127,61 @@ const markers = bmw.getMarkers(walkerHeight, specifiedTime);
 markers.forEach((m) => {
   circle(m.x, m.y, 6);
   text(m.desc, m.x, m.y + 20);
+});
+```
+
+### getMarkers
+```javascript
+getLineMarkers(walkerHeight: Number, [tmsec: Number])
+```
+Overview:  
+Get combinations of marker coordinates for both ends of all lines that make up 'Walker'.
+
+Parameters:
+|  name  |  note  |
+| ---- | ---- |
+|  [`walkerHeight`]   | `Number`: Height size of the Walker. This method returns as the height of 'Walker' fits into this value. |
+|  [`tmsec`]  | Optional. `Number`: Specify the time in msec for which you would like to get. If unspecified, this method returns with current time. |
+
+Returns:
+Array of the combination of 2 marker `Object`s. Each marker `Object` has properties below.
+|  name  |  note  |
+| ---- | ---- |
+|  `x`  |  `Number`: x-coordinate of the marker.  |
+|  `y`  |  `Number`: y-coordinate of the marker.  |
+|  `i`  |  `Number`: Index value of the marker.  |
+
+```javascript
+// Example of Return value of getLineMarkers()
+[
+  [
+    { // Marker 0
+      x: -0.95,
+      y: -47.4,
+      i: 0,
+    },
+    { // Marker 1
+      x: -0.76,
+      y: -31.95,
+      i: 1,
+    },
+  ],
+  ...
+]
+```
+
+Example2-1:
+```javascript
+// Create Biological motion walker instance
+const bmw = new BMWalker();
+
+// Get array of the current line markers
+const walkerHeight = 300;
+const lineMarkers = bmw.getLineMarkers(walkerHeight);
+
+// Draw lines
+lineMarkers.forEach((m) => {
+  line(m[0].x, m[0].y, m[1].x, m[1].y);
 });
 ```
 
