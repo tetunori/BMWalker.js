@@ -208,6 +208,32 @@ const spd = map(mouseX, 0, width, bmw.minSpeed, bmw.maxSpeed);
 bmw.setSpeed(spd);
 ```
 
+### setWalkerParam
+```javascript
+setWalkerParam(bodyStructure: Number, weight: Number, nervousness: Number, happiness: Number)
+```
+Overview:  
+Set parameters on the motion of 'Walker'.
+
+Parameters:
+|  name  |  note  |
+| ---- | ---- |
+|  `bodyStructure`   | `Number`: Adjust parameters on body structure. Set values between `minBodyStructure` and `maxBodyStructure`(automtically clamped). Default value is `0`(means neutral). |
+|  `weight`   | `Number`: Adjust parameters on weight. Set values between `minWeight` and `maxWeight`(automtically clamped). Default value is `0`(means neutral). Positive values are heavy and negative values are light. |
+|  `nervousness`   | `Number`: Adjust parameters on nervousness. Set values between `minNervousness` and `maxNervousness`(automtically clamped). Default value is `0`(means neutral). Positive values are nervous and negative values are relaxed. |
+|  `happiness`   | `Number`: Adjust parameters on happiness. Set values between `minHappiness` and `maxHappiness`(automtically clamped). Default value is `0`(means neutral). Positive values are happy and negative values are sad.|
+
+Example4-1:
+```javascript
+
+// Create Biological motion walker instance
+const bmw = new BMWalker();
+
+// Set speed with mouseX coordinate.
+const spd = map(mouseX, 0, width, bmw.minSpeed, bmw.maxSpeed);
+bmw.setSpeed(spd);
+```
+
 
 <!-- </p> -->
 <!-- </details> -->
