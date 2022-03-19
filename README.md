@@ -19,7 +19,7 @@ Just new `BMWalker()` and you can get an marker coordinates via `getMarkers()` m
 const bmw = new BMWalker();
 
 // Get array of the current marker coordinates 
-const walkerHeight = 100;
+const walkerHeight = 200;
 const markers = bmw.getMarkers(walkerHeight);
 ```
 Received array consists of objects as below.
@@ -27,9 +27,9 @@ Received array consists of objects as below.
 ```javascript
 // Return value of getMarkers()
 [
-  { x:  3.18, y: -170.70, desc: "Head" },
-  { x:  2.74, y: -115.11, desc: "Clavicles" },
-  { x: 40.24, y: -121.91, desc: "L-Shoulder" },
+  { x:  3.18, y: -170.70, desc: 'Head' },
+  { x:  2.74, y: -115.11, desc: 'Clavicles' },
+  { x: 40.24, y: -121.91, desc: 'L-Shoulder' },
   ...
 ]
 ```
