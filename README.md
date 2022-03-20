@@ -53,7 +53,7 @@ markers.forEach((m) => {
 
 ## API List
 - [Constructor](#Constructor)
-- Methods
+- [Methods](#Methods)
   - [getMarkers](#getMarkers)
   - [getLineMarkers](#getLineMarkers)
   - [setSpeed](#setSpeed)
