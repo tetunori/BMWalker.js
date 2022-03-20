@@ -2,25 +2,25 @@
 
 **BMWalker.js** is a simple `JavaScript` `Class` supplying the marker information of the [Biological motion](https://en.wikipedia.org/wiki/Biological_motion) 'Walker'.  
 Now, you can draw it without difficulty!  
-<img src="https://tetunori.github.io/BMWalker/images/keyvisual.png" alt="logo" width="640px">  
+<img src="./images/keyvisual.png" alt="logo" width="640px">  
 moive...
 
 Now, the latest version is `0.5.0`(alpha release).  
 
 ## Demos
 ### Full function demo
-- [Full function Demo On GitHub](https://tetunori.github.io/BMWalker/sample/fullFunction/index.html)
+- [Full function Demo On GitHub](./sample/fullFunction/index.html)
 - [Full function Demo On OpenProcessing](https://openprocessing.org/user/213060)
 
 ### Application demos
-- [Application Demos On GitHub](https://tetunori.github.io/BMWalker/application/index.html)
+- [Application Demos On GitHub](./application/index.html)
 - [Application Demos On OpenProcessing](https://openprocessing.org/user/213060)
 
 
 # Usage
 ## Import Data
 ```html 
-<script src="https://tetunori.github.io/BMWalker/dist/v0.5.0/bmwalker.js"></script>
+<script src="./dist/v0.5.0/bmwalker.js"></script>
 ```
 ## Basic Usage
 Just new `BMWalker()` and you can get an marker coordinates via `getMarkers()` method.
@@ -52,15 +52,15 @@ markers.forEach((m) => {
   circle(m.x, m.y, 6);
 });
 ```
-### p5.js sample-01: Basic Usage
-<img src="https://tetunori.github.io/BMWalker/images/sample01.png" alt="Sample-01: Basic Usage" width="360px"> 
+### Example: Basic Usage
+<img src="./images/ex0-1.png" alt="Example 0-1: Basic Usage" width="360px"> 
 
- - ['Sample-01: Basic Usage' On GitHub](https://tetunori.github.io/BMWalker/samples/01/)
- - ['Sample-01: Basic Usage' On OpenProcessing](https://openprocessing.org/sketch/1338726)
+ - ['Example 0-1: Basic Usage' On GitHub](./sample/ex0-1/)
+ - ['Example 0-1: Basic Usage' On OpenProcessing](https://openprocessing.org/sketch/1338726)
 
 # API Specification
-<!-- <details><summary>CLICK ME</summary> -->
-<!-- <p> -->
+<details><summary>CLICK ME</summary>
+<p>
 
 ## API List
 - [Constructor](#Constructor)
@@ -127,8 +127,12 @@ const markers = bmw.getMarkers(walkerHeight);
 markers.forEach((m) => {
   circle(m.x, m.y, 6);
 });
-
 ```
+<img src="./images/ex1-1.png" alt="Example 1-1: getMarkers Example 1" width="360px"> 
+
+ - ['Example 1-1: getMarkers Example 1' On GitHub](./sample/ex1-1/)
+ - ['Example 1-1: getMarkers Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
+
 
 Example1-2:
 ```javascript
@@ -146,6 +150,10 @@ markers.forEach((m) => {
   text(m.desc, m.x, m.y + 20);
 });
 ```
+<img src="./images/ex1-2.png" alt="Example 1-2: getMarkers Example 2" width="360px"> 
+
+ - ['Example 1-2: getMarkers Example 2' On GitHub](./sample/ex1-2/)
+ - ['Example 1-2: getMarkers Example 2' On OpenProcessing](https://openprocessing.org/sketch/1338726)
 
 ### getLineMarkers
 ```javascript
@@ -202,6 +210,12 @@ lineMarkers.forEach((m) => {
 });
 ```
 
+<img src="./images/ex2-1.png" alt="Example 2-1: getLineMarkers Example 1" width="360px"> 
+
+ - ['Example 2-1: getLineMarkers Example 1' On GitHub](./sample/ex2-1/)
+ - ['Example 2-1: getLineMarkers Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
+
+
 ### setSpeed
 ```javascript
 setSpeed(speed: Number)
@@ -223,6 +237,11 @@ const bmw = new BMWalker();
 const spd = map(mouseX, 0, width, bmw.minSpeed, bmw.maxSpeed);
 bmw.setSpeed(spd);
 ```
+<img src="./images/ex3-1.png" alt="Example 3-1: setSpeed Example 1" width="360px"> 
+
+ - ['Example 3-1: setSpeed Example 1' On GitHub](./sample/ex2-1/)
+ - ['Example 3-1: setSpeed Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
+
 
 ### setWalkerParam
 ```javascript
@@ -251,6 +270,11 @@ const nervousness = 0.0;
 const happiness = 3.1;
 bmw.setWalkerParam(bodyStructure, weight, nervousness, happiness);
 ```
+<img src="./images/ex4-1.png" alt="Example 4-1: setWalkerParam Example 1" width="360px"> 
+
+ - ['Example 4-1: setWalkerParam Example 1' On GitHub](./sample/ex2-1/)
+ - ['Example 4-1: setWalkerParam Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
+
 
 ### setCameraParam
 ```javascript
@@ -277,6 +301,11 @@ const angularVelocity = 0;
 const elevation = Math.PI / 4;
 bmw.setCameraParam(azimuth, angularVelocity, elevation);
 ```
+<img src="./images/ex5-1.png" alt="Example 5-1: setCameraParam Example 1" width="360px"> 
+
+ - ['Example 5-1: setCameraParam Example 1' On GitHub](./sample/ex2-1/index.html)
+ - ['Example 5-1: setCameraParam Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
+
 
 Example 5-2:
 ```javascript
@@ -289,6 +318,11 @@ const angularVelocity = Math.PI / 4;
 const elevation = Math.PI / 4;
 bmw.setCameraParam(azimuth, angularVelocity, elevation);
 ```
+<img src="./images/ex5-2.png" alt="Example 5-2: setCameraParam Example 2" width="360px"> 
+
+ - ['Example 5-2: setCameraParam Example 2' On GitHub](./sample/ex2-1/)
+ - ['Example 5-2: setCameraParam Example 2' On OpenProcessing](https://openprocessing.org/sketch/1338726)
+
 
 ### setTranslationParam
 ```javascript
@@ -311,6 +345,11 @@ const bmw = new BMWalker();
 const enableTranslation = true;
 bmw.setTranslationParam(enableTranslation);
 ```
+<img src="./images/ex6-1.png" alt="Example 6-1: setTranslationParam Example 1" width="360px"> 
+
+ - ['Example 6-1: setTranslationParam Example 1' On GitHub](./sample/ex2-1/)
+ - ['Example 6-1: setTranslationParam Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
+
 
 ### resetTimer
 ```javascript
@@ -319,8 +358,8 @@ resetTimer()
 Overview:  
 Reset 'Walker' timer(set at constructor). It is recommended that `resetTimer()` be called in advance when `flagTranslation` is enabled.
 
-<!-- </p> -->
-<!-- </details> -->
+</p>
+</details>
 
 # License
 Attribution-NonCommercial-ShareAlike 4.0 International  
