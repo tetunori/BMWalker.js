@@ -1,6 +1,6 @@
 # Description 🚶‍♀️🚶
 
-**BMWalker.js** is a simple `JavaScript` `Class` supplying the marker information of the [Biological motion](https://en.wikipedia.org/wiki/Biological_motion) 'Walker'.  
+**BMWalker.js** is a simple JavaScript library supplying the marker information of the [biological motion](https://en.wikipedia.org/wiki/Biological_motion) 'Walker'.  
 Now, you can draw it without difficulty!  
 <img src="./images/keyvisual.webp" alt="logo" width="640px">  
 moive...
@@ -9,6 +9,8 @@ Now, the latest version is `0.5.0`(alpha release).
 
 ## Demos
 ### Full function demo
+<img src="./images/ffdemo.png" alt="Full function demo" width="640px"> 
+
 - [Full function Demo On GitHub](https://tetunori.github.io/BMWalker/sample/fullFunction/index.html)
 - [Full function Demo On OpenProcessing](https://openprocessing.org/user/213060)
 
@@ -18,7 +20,7 @@ Now, the latest version is `0.5.0`(alpha release).
 
 
 # Usage
-## Import Data
+## Import
 ```html 
 <script src="https://tetunori.github.io/BMWalker/dist/v0.5.0/bmwalker.js"></script>
 ```
@@ -26,7 +28,7 @@ Now, the latest version is `0.5.0`(alpha release).
 Just new `BMWalker()` and you can get an marker coordinates via `getMarkers()` method.
 
 ```javascript
-// Create Biological motion walker instance
+// Create biological motion walker instance
 const bmw = new BMWalker();
 
 // Get array of the current marker coordinates 
@@ -116,7 +118,7 @@ Array of the marker data `Object` at specified time. Each data `Object` has prop
 
 Example1-1:
 ```javascript
-// Create Biological motion walker instance
+// Create biological motion walker instance
 const bmw = new BMWalker();
 
 // Get array of the current marker coordinates 
@@ -136,7 +138,7 @@ markers.forEach((m) => {
 
 Example1-2:
 ```javascript
-// Create Biological motion walker instance
+// Create biological motion walker instance
 const bmw = new BMWalker();
 
 // Get array of the marker coordinates with bigger size and specified time. 
@@ -197,7 +199,7 @@ Array of the combination of 2 marker `Object`s. Each marker `Object` has propert
 
 Example2-1:
 ```javascript
-// Create Biological motion walker instance
+// Create biological motion walker instance
 const bmw = new BMWalker();
 
 // Get array of the current line markers
@@ -230,7 +232,7 @@ Parameters:
 
 Example 3-1:
 ```javascript
-// Create Biological motion walker instance
+// Create biological motion walker instance
 const bmw = new BMWalker();
 
 // Set speed with mouseX coordinate.
@@ -260,7 +262,7 @@ Parameters:
 
 Example 4-1:
 ```javascript
-// Create Biological motion walker instance
+// Create biological motion walker instance
 const bmw = new BMWalker();
 
 // Set walker parameters.
@@ -293,7 +295,7 @@ Parameters:
 
 Example 5-1:
 ```javascript
-// Create Biological motion walker instance
+// Create biological motion walker instance
 const bmw = new BMWalker();
 
 // Set walker parameters.
@@ -310,7 +312,7 @@ bmw.setCameraParam(azimuth, angularVelocity, elevation);
 
 Example 5-2:
 ```javascript
-// Create Biological motion walker instance
+// Create biological motion walker instance
 const bmw = new BMWalker();
 
 // Set walker parameters.
@@ -339,7 +341,7 @@ Parameters:
 
 Example 6-1:
 ```javascript
-// Create Biological motion walker instance
+// Create biological motion walker instance
 const bmw = new BMWalker();
 
 // Set params on translation.
