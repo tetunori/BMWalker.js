@@ -2,7 +2,7 @@
 
 **BMWalker.js** is a simple `JavaScript` `Class` supplying the marker information of the [Biological motion](https://en.wikipedia.org/wiki/Biological_motion) 'Walker'.  
 Now, you can draw it without difficulty!  
-<img src="https://tetunori.github.io/BMWalker/images/keyvisual.png" alt="logo" width="640px">  
+<img src="./images/keyvisual.webp" alt="logo" width="640px">  
 moive...
 
 Now, the latest version is `0.5.0`(alpha release).  
@@ -128,7 +128,7 @@ markers.forEach((m) => {
   circle(m.x, m.y, 6);
 });
 ```
-<img src="https://tetunori.github.io/BMWalker/images/ex1-1.png" alt="Example 1-1: getMarkers Example 1" width="360px"> 
+<img src="./images/ex1-1.webp" alt="Example 1-1: getMarkers Example 1" width="360px"> 
 
  - ['Example 1-1: getMarkers Example 1' On GitHub](https://tetunori.github.io/BMWalker/sample/ex1-1/)
  - ['Example 1-1: getMarkers Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
@@ -150,7 +150,7 @@ markers.forEach((m) => {
   text(m.desc, m.x, m.y + 20);
 });
 ```
-<img src="https://tetunori.github.io/BMWalker/images/ex1-2.png" alt="Example 1-2: getMarkers Example 2" width="360px"> 
+<img src="./images/ex1-2.webp" alt="Example 1-2: getMarkers Example 2" width="360px"> 
 
  - ['Example 1-2: getMarkers Example 2' On GitHub](https://tetunori.github.io/BMWalker/sample/ex1-2/)
  - ['Example 1-2: getMarkers Example 2' On OpenProcessing](https://openprocessing.org/sketch/1338726)
@@ -210,7 +210,7 @@ lineMarkers.forEach((m) => {
 });
 ```
 
-<img src="https://tetunori.github.io/BMWalker/images/ex2-1.png" alt="Example 2-1: getLineMarkers Example 1" width="360px"> 
+<img src="./images/ex2-1.webp" alt="Example 2-1: getLineMarkers Example 1" width="360px"> 
 
  - ['Example 2-1: getLineMarkers Example 1' On GitHub](https://tetunori.github.io/BMWalker/sample/ex2-1/)
  - ['Example 2-1: getLineMarkers Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
@@ -237,7 +237,7 @@ const bmw = new BMWalker();
 const spd = map(mouseX, 0, width, bmw.minSpeed, bmw.maxSpeed);
 bmw.setSpeed(spd);
 ```
-<img src="https://tetunori.github.io/BMWalker/images/ex3-1.png" alt="Example 3-1: setSpeed Example 1" width="360px"> 
+<img src="./images/ex3-1.webp" alt="Example 3-1: setSpeed Example 1" width="360px"> 
 
  - ['Example 3-1: setSpeed Example 1' On GitHub](https://tetunori.github.io/BMWalker/sample/ex2-1/)
  - ['Example 3-1: setSpeed Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
@@ -270,7 +270,8 @@ const nervousness = 0.0;
 const happiness = 3.1;
 bmw.setWalkerParam(bodyStructure, weight, nervousness, happiness);
 ```
-<img src="https://tetunori.github.io/BMWalker/images/ex4-1.png" alt="Example 4-1: setWalkerParam Example 1" width="360px"> 
+<img src="./images/ex4-1-1.webp" alt="Example 4-1-1: setWalkerParam Example 1-1" width="360px"> 
+<img src="./images/ex4-1-2.webp" alt="Example 4-1-2: setWalkerParam Example 1-2" width="360px"> 
 
  - ['Example 4-1: setWalkerParam Example 1' On GitHub](https://tetunori.github.io/BMWalker/sample/ex2-1/)
  - ['Example 4-1: setWalkerParam Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
@@ -301,7 +302,7 @@ const angularVelocity = 0;
 const elevation = Math.PI / 4;
 bmw.setCameraParam(azimuth, angularVelocity, elevation);
 ```
-<img src="https://tetunori.github.io/BMWalker/images/ex5-1.png" alt="Example 5-1: setCameraParam Example 1" width="360px"> 
+<img src="./images/ex5-1.webp" alt="Example 5-1: setCameraParam Example 1" width="360px"> 
 
  - ['Example 5-1: setCameraParam Example 1' On GitHub](https://tetunori.github.io/BMWalker/sample/ex2-1/index.html)
  - ['Example 5-1: setCameraParam Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
@@ -318,7 +319,7 @@ const angularVelocity = Math.PI / 4;
 const elevation = Math.PI / 4;
 bmw.setCameraParam(azimuth, angularVelocity, elevation);
 ```
-<img src="https://tetunori.github.io/BMWalker/images/ex5-2.png" alt="Example 5-2: setCameraParam Example 2" width="360px"> 
+<img src="./images/ex5-2.webp" alt="Example 5-2: setCameraParam Example 2" width="360px"> 
 
  - ['Example 5-2: setCameraParam Example 2' On GitHub](https://tetunori.github.io/BMWalker/sample/ex2-1/)
  - ['Example 5-2: setCameraParam Example 2' On OpenProcessing](https://openprocessing.org/sketch/1338726)
@@ -345,7 +346,7 @@ const bmw = new BMWalker();
 const enableTranslation = true;
 bmw.setTranslationParam(enableTranslation);
 ```
-<img src="https://tetunori.github.io/BMWalker/images/ex6-1.png" alt="Example 6-1: setTranslationParam Example 1" width="360px"> 
+<img src="./images/ex6-1.webp" alt="Example 6-1: setTranslationParam Example 1" width="360px"> 
 
  - ['Example 6-1: setTranslationParam Example 1' On GitHub](https://tetunori.github.io/BMWalker/sample/ex2-1/)
  - ['Example 6-1: setTranslationParam Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
