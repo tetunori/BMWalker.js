@@ -1,0 +1,1 @@
+for f in ./*.webm; do ffmpeg.exe -i "$f" "${f%.webm}.webp"; done
