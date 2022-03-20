@@ -53,7 +53,7 @@ markers.forEach((m) => {
 });
 ```
 ### Example: Basic Usage
-<img src="https://tetunori.github.io/BMWalker/images/ex0-1.png" alt="Example 0-1: Basic Usage" width="360px"> 
+<img src="https://tetunori.github.io/BMWalker/images/ex0-1.webp" alt="Example 0-1: Basic Usage" width="360px"> 
 
  - ['Example 0-1: Basic Usage' On GitHub](https://tetunori.github.io/BMWalker/sample/ex0-1/)
  - ['Example 0-1: Basic Usage' On OpenProcessing](https://openprocessing.org/sketch/1338726)
