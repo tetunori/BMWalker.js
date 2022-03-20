@@ -1,10 +1,21 @@
-# Description 📐
+# Description 🚶‍♀️🚶
 
-**BMWalker.js** is a simple class supplying the marker information of the [Biological motion](https://en.wikipedia.org/wiki/Biological_motion) 'Walker'.  
+**BMWalker.js** is a simple `JavaScript` `Class` supplying the marker information of the [Biological motion](https://en.wikipedia.org/wiki/Biological_motion) 'Walker'.  
 Now, you can draw it without difficulty!  
 <img src="https://tetunori.github.io/BMWalker/images/keyvisual.png" alt="logo" width="640px">  
+moive...
 
 Now, the latest version is `0.5.0`(alpha release).  
+
+## Demos
+### Full function demo
+- [Full function Demo On GitHub](https://tetunori.github.io/BMWalker/sample/fullFunction/index.html)
+- [Full function Demo On OpenProcessing](https://openprocessing.org/user/213060)
+
+### Application demos
+- [Application Demos On GitHub](https://tetunori.github.io/BMWalker/application/index.html)
+- [Application Demos On OpenProcessing](https://openprocessing.org/user/213060)
+
 
 # Usage
 ## Import Data
@@ -30,7 +41,7 @@ Received array consists of objects as below.
   { x:  3.18, y: -170.70, desc: 'Head' },
   { x:  2.74, y: -115.11, desc: 'Clavicles' },
   { x: 40.24, y: -121.91, desc: 'L-Shoulder' },
-  ...
+  // ...
 ]
 ```
 
