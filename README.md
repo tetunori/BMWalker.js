@@ -56,6 +56,11 @@ markers.forEach((m) => {
 - Methods
   - [getMarkers](#getMarkers)
   - [getLineMarkers](#getLineMarkers)
+  - [setSpeed](#setSpeed)
+  - [setWalkerParam](#setWalkerParam)
+  - [setCameraParam](#setCameraParam)
+  - [setTranslationParam](#setTranslationParam)
+  - [resetTimer](#resetTimer)
 
 ## Constructor
 ```javascript
@@ -273,6 +278,35 @@ const angularVelocity = Math.PI / 4;
 const elevation = Math.PI / 4;
 bmw.setCameraParam(azimuth, angularVelocity, elevation);
 ```
+
+### setTranslationParam
+```javascript
+setTranslationParam(flagTranslation: Boolean)
+```
+Overview:  
+Set parameters on translation. It is recommended that `resetTimer()` be called in advance when `flagTranslation` is enabled. See [resetTimer()](#resetTimer).
+
+Parameters:
+|  name  |  note  |
+| ---- | ---- |
+|  `flagTranslation`   | `Boolean`: Whether translation should be enabled or disabled. Default value is `false`. When this flag is enabled, `angularVelocity` setting will be ignored. |
+
+Example 6-1:
+```javascript
+// Create Biological motion walker instance
+const bmw = new BMWalker();
+
+// Set params on translation.
+const enableTranslation = true;
+bmw.setTranslationParam(enableTranslation);
+```
+
+### resetTimer
+```javascript
+resetTimer()
+```
+Overview:  
+Reset 'Walker' timer(set at constructor). It is recommended that `resetTimer()` be called in advance when `flagTranslation` is enabled.
 
 <!-- </p> -->
 <!-- </details> -->
