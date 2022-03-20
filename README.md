@@ -236,6 +236,43 @@ const happiness = 3.1;
 bmw.setWalkerParam(bodyStructure, weight, nervousness, happiness);
 ```
 
+### setCameraParam
+```javascript
+setCameraParam(azimuth: Number, angularVelocity: Number, elevation: Number)
+```
+Overview:  
+Set parameters on the camera.
+
+Parameters:
+|  name  |  note  |
+| ---- | ---- |
+|  `azimuth`   | `Number`: The rotation(in radians) of the 'Walker' around the vertical axis. Set values from `-PI` to `PI`. Default value is `0`. |
+|  `angularVelocity`   | `Number`: The rotation speed(**radians/sec**) of the 'Walker'. `0` would mean the 'Walker' that does not rotate over a trial. Default value is `0` and recommendation settings are from `-2*PI` to `2*PI`. |
+|  `elevation`   | `Number`: The elevation of the camera with respect to the 'Walker'. Essentially a rotation(in radians) around the horizontal axis. Set values from `-PI` to `PI`. Default value is `0`. |
+
+Example 5-1:
+```javascript
+// Create Biological motion walker instance
+const bmw = new BMWalker();
+
+// Set walker parameters.
+const azimuth = Math.PI / 4;
+const angularVelocity = 0;
+const elevation = Math.PI / 4;
+bmw.setCameraParam(azimuth, angularVelocity, elevation);
+```
+
+Example 5-2:
+```javascript
+// Create Biological motion walker instance
+const bmw = new BMWalker();
+
+// Set walker parameters.
+const azimuth = 0;
+const angularVelocity = Math.PI / 4;
+const elevation = Math.PI / 4;
+bmw.setCameraParam(azimuth, angularVelocity, elevation);
+```
 
 <!-- </p> -->
 <!-- </details> -->
