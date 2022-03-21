@@ -98,7 +98,7 @@ Parameters:
 |  `walkerHeight`   | `Number`: Height size of the 'Walker'. This method returns the coordinates as the height of 'Walker' fits into this value. |
 |  [`tmsec`]  | Optional. `Number`: Specify the time in msec for which you would like to get markers. If unspecified, this method returns current marker coordinates. |
 
-Returns:
+Returns:  
 Array of the marker data `Object` at specified time. Each data `Object` has properties below.
 |  name  |  note  |
 | ---- | ---- |
@@ -111,12 +111,12 @@ Array of the marker data `Object` at specified time. Each data `Object` has prop
   { x:  3.18, y: -170.70, desc: "Head" },
   { x:  2.74, y: -115.11, desc: "Clavicles" },
   { x: 40.24, y: -121.91, desc: "L-Shoulder" },
-  ...
+  // ...
 ]
 ```
 
 
-Example1-1:
+Example1-1: getMarkers Example 1
 ```javascript
 // Create biological motion walker instance
 const bmw = new BMWalker();
@@ -136,7 +136,7 @@ markers.forEach((m) => {
  - ['Example 1-1: getMarkers Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
 
 
-Example1-2:
+Example1-2: getMarkers Example 2
 ```javascript
 // Create biological motion walker instance
 const bmw = new BMWalker();
@@ -149,10 +149,10 @@ const markers = bmw.getMarkers(walkerHeight, specifiedTime);
 // Draw each markers with descriptions
 markers.forEach((m) => {
   circle(m.x, m.y, 6);
-  text(m.desc, m.x, m.y + 20);
+  text(m.desc, m.x, m.y + 15);
 });
 ```
-<img src="./images/ex1-2.webp" alt="Example 1-2: getMarkers Example 2" width="360px"> 
+<img src="./images/ex1-2.png" alt="Example 1-2: getMarkers Example 2" width="360px"> 
 
  - ['Example 1-2: getMarkers Example 2' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex1-2/)
  - ['Example 1-2: getMarkers Example 2' On OpenProcessing](https://openprocessing.org/sketch/1338726)
