@@ -181,7 +181,7 @@ Array of the combination of 2 marker `Object`s. Each marker `Object` has propert
 ```javascript
 // Example of Return value of getLineMarkers()
 [
-  [
+  [ // Line 0
     { // Marker 0
       x: -0.95,
       y: -47.4,
@@ -193,11 +193,12 @@ Array of the combination of 2 marker `Object`s. Each marker `Object` has propert
       i: 1,
     },
   ],
-  ...
+  [ // Line 1
+  // ...
 ]
 ```
 
-Example2-1:
+Example2-1: getLineMarkers Example
 ```javascript
 // Create biological motion walker instance
 const bmw = new BMWalker();
@@ -212,10 +213,10 @@ lineMarkers.forEach((m) => {
 });
 ```
 
-<img src="./images/ex2-1.webp" alt="Example 2-1: getLineMarkers Example 1" width="360px"> 
+<img src="./images/ex2-1.webp" alt="Example 2-1: getLineMarkers Example" width="360px"> 
 
- - ['Example 2-1: getLineMarkers Example 1' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex2-1/)
- - ['Example 2-1: getLineMarkers Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
+ - ['Example 2-1: getLineMarkers Example' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex2-1/)
+ - ['Example 2-1: getLineMarkers Example' On OpenProcessing](https://openprocessing.org/sketch/1338726)
 
 
 ### setSpeed
@@ -230,7 +231,7 @@ Parameters:
 | ---- | ---- |
 |  `speed`   | `Number`: Walking speed of the 'Walker'. Set values between `minSpeed` and `maxSpeed`(automtically clamped). Default value is `1.0`. Setting `0` means stop walking. Walk backward when negative values are set. |
 
-Example 3-1:
+Example 3-1: setSpeed Example
 ```javascript
 // Create biological motion walker instance
 const bmw = new BMWalker();
@@ -239,10 +240,10 @@ const bmw = new BMWalker();
 const spd = map(mouseX, 0, width, bmw.minSpeed, bmw.maxSpeed);
 bmw.setSpeed(spd);
 ```
-<img src="./images/ex3-1.webp" alt="Example 3-1: setSpeed Example 1" width="360px"> 
+<img src="./images/ex3-1.webp" alt="Example 3-1: setSpeed Example" width="360px"> 
 
- - ['Example 3-1: setSpeed Example 1' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex2-1/)
- - ['Example 3-1: setSpeed Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
+ - ['Example 3-1: setSpeed Example' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex3-1/)
+ - ['Example 3-1: setSpeed Example' On OpenProcessing](https://openprocessing.org/sketch/1338726)
 
 
 ### setWalkerParam
@@ -260,7 +261,7 @@ Parameters:
 |  `nervousness`   | `Number`: Adjust parameters on nervousness. Set values between `minNervousness` and `maxNervousness`(automtically clamped). Default value is `0`(means neutral). Positive values are nervous and negative values are relaxed. |
 |  `happiness`   | `Number`: Adjust parameters on happiness. Set values between `minHappiness` and `maxHappiness`(automtically clamped). Default value is `0`(means neutral). Positive values are happy and negative values are sad.|
 
-Example 4-1:
+Example 4-1: setWalkerParam Example
 ```javascript
 // Create biological motion walker instance
 const bmw = new BMWalker();
@@ -275,8 +276,8 @@ bmw.setWalkerParam(bodyStructure, weight, nervousness, happiness);
 <img src="./images/ex4-1-1.webp" alt="Example 4-1-1: setWalkerParam Example 1-1" width="360px"> 
 <img src="./images/ex4-1-2.webp" alt="Example 4-1-2: setWalkerParam Example 1-2" width="360px"> 
 
- - ['Example 4-1: setWalkerParam Example 1' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex2-1/)
- - ['Example 4-1: setWalkerParam Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
+ - ['Example 4-1: setWalkerParam Example' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex4-1/)
+ - ['Example 4-1: setWalkerParam Example' On OpenProcessing](https://openprocessing.org/sketch/1338726)
 
 
 ### setCameraParam
@@ -289,11 +290,11 @@ Set parameters on the camera.
 Parameters:
 |  name  |  note  |
 | ---- | ---- |
-|  `azimuth`   | `Number`: The rotation(in radians) of the 'Walker' around the vertical axis. Set values from `-PI` to `PI`. Default value is `0`. |
+|  `azimuth`   | `Number`: The rotation angle(in radians) of the 'Walker' around the vertical axis. Set values from `-PI` to `PI`. Default value is `0`. |
 |  `angularVelocity`   | `Number`: The rotation speed(**radians/sec**) of the 'Walker'. `0` would mean the 'Walker' that does not rotate over a trial. Default value is `0` and recommendation settings are from `-2*PI` to `2*PI`. |
-|  `elevation`   | `Number`: The elevation of the camera with respect to the 'Walker'. Essentially a rotation(in radians) around the horizontal axis. Set values from `-PI` to `PI`. Default value is `0`. |
+|  `elevation`   | `Number`: The elevation of the camera with respect to the 'Walker'. Essentially a rotation angle(in radians) around the horizontal axis. Set values from `-PI` to `PI`. Default value is `0`. |
 
-Example 5-1:
+Example 5-1: setCameraParam Example 1
 ```javascript
 // Create biological motion walker instance
 const bmw = new BMWalker();
@@ -306,11 +307,11 @@ bmw.setCameraParam(azimuth, angularVelocity, elevation);
 ```
 <img src="./images/ex5-1.webp" alt="Example 5-1: setCameraParam Example 1" width="360px"> 
 
- - ['Example 5-1: setCameraParam Example 1' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex2-1/index.html)
+ - ['Example 5-1: setCameraParam Example 1' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex5-1/index.html)
  - ['Example 5-1: setCameraParam Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
 
 
-Example 5-2:
+Example 5-2: setCameraParam Example 2
 ```javascript
 // Create biological motion walker instance
 const bmw = new BMWalker();
@@ -323,7 +324,7 @@ bmw.setCameraParam(azimuth, angularVelocity, elevation);
 ```
 <img src="./images/ex5-2.webp" alt="Example 5-2: setCameraParam Example 2" width="360px"> 
 
- - ['Example 5-2: setCameraParam Example 2' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex2-1/)
+ - ['Example 5-2: setCameraParam Example 2' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex5-2/)
  - ['Example 5-2: setCameraParam Example 2' On OpenProcessing](https://openprocessing.org/sketch/1338726)
 
 
@@ -339,7 +340,7 @@ Parameters:
 | ---- | ---- |
 |  `flagTranslation`   | `Boolean`: Whether translation should be enabled or disabled. Default value is `false`. When this flag is enabled, `angularVelocity` setting will be ignored. |
 
-Example 6-1:
+Example 6-1: setTranslationParam Example
 ```javascript
 // Create biological motion walker instance
 const bmw = new BMWalker();
@@ -348,10 +349,10 @@ const bmw = new BMWalker();
 const enableTranslation = true;
 bmw.setTranslationParam(enableTranslation);
 ```
-<img src="./images/ex6-1.webp" alt="Example 6-1: setTranslationParam Example 1" width="360px"> 
+<img src="./images/ex6-1.webp" alt="Example 6-1: setTranslationParam Example" width="360px"> 
 
- - ['Example 6-1: setTranslationParam Example 1' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex2-1/)
- - ['Example 6-1: setTranslationParam Example 1' On OpenProcessing](https://openprocessing.org/sketch/1338726)
+ - ['Example 6-1: setTranslationParam Example' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex6-1/)
+ - ['Example 6-1: setTranslationParam Example' On OpenProcessing](https://openprocessing.org/sketch/1338726)
 
 
 ### resetTimer
@@ -359,7 +360,7 @@ bmw.setTranslationParam(enableTranslation);
 resetTimer()
 ```
 Overview:  
-Reset 'Walker' timer(set at constructor). It is recommended that `resetTimer()` be called in advance when `flagTranslation` is enabled.
+Reset 'Walker' timer(set at constructor). It is recommended that `resetTimer()` be called in advance when `flagTranslation` is enabled. See [setTranslationParam](#setTranslationParam).
 
 </p>
 </details>
