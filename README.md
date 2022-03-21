@@ -25,7 +25,7 @@ Now, the latest version is `0.5.0`(alpha release).
 <script src="https://tetunori.github.io/BMWalker/dist/v0.5.0/bmwalker.js"></script>
 ```
 ## Basic Usage
-Just new `BMWalker()` and you can get an marker coordinates via `getMarkers()` method.
+Just new `BMWalker()` and you can get marker coordinates via `getMarkers()` method.
 
 ```javascript
 // Create biological motion walker instance
@@ -366,7 +366,7 @@ Reset 'Walker' timer(set at constructor). It is recommended that `resetTimer()` 
 
 # License
 Attribution-NonCommercial-ShareAlike 4.0 International  
-Copyright (c) 2022 Tetsunori Nakayama and Nikolaus Troje.
+Copyright (c) 2022 [Tetsunori Nakayama](https://twitter.com/tetunori_lego) and [Nikolaus Troje](https://www.biomotionlab.ca/niko-troje/).
 For commercial use, please contact us.
 
 This library is based on the results of BIO-MOTION-LAB's researches in York University.  
