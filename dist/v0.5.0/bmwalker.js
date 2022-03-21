@@ -1,3 +1,16 @@
+
+// BMWalker.js
+// Biological Motion 'Walker' library for Javascript.
+
+// LICENSE
+// Attribution-NonCommercial-ShareAlike 4.0 International
+// Copyright (c) 2022 Tetsunori Nakayama and Nikolaus Troje.
+// For commercial use, please contact us.
+
+// This library is based on the results of BIO-MOTION-LAB's researches in York University.
+// See the URL below in detail.
+// https://www.biomotionlab.ca/
+
 const BMW_TYPE_HUMAN = 0;
 const BMW_TYPE_CAT = 1;
 const BMW_TYPE_PIGEON = 2;
@@ -179,8 +192,8 @@ class BMWalker {
   }
 
   // API: Get markers that make up the line.
-  getLineMarkers(wh) {
-    const markers = this.getMarkers(wh);
+  getLineMarkers(walkerHeight, tmsec = undefined) {
+    const markers = this.getMarkers(walkerHeight, tmsec);
     const lineMarkers = [];
     const idxsArray = [
       [0, 1],
