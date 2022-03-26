@@ -22,6 +22,7 @@ const cameraSettingsDefault = {
   azimuth: 0.0,
   angularVelocity: 0.0,
   elevation: 0.0,
+  roll: 0.0,
 };
 const cameraSettings = new Object();
 const cameraFolder = gui.addFolder('Camera');
@@ -74,6 +75,7 @@ const prepareDatGUI = () => {
   cameraFolder.add(cameraSettings, 'azimuth', -PI, PI, step);
   cameraFolder.add(cameraSettings, 'angularVelocity', -TAU, TAU, step);
   cameraFolder.add(cameraSettings, 'elevation', -PI, PI, step);
+  cameraFolder.add(cameraSettings, 'roll', -PI, PI, step);
   cameraFolder.open();
 
   //  -- Translation
@@ -107,6 +109,7 @@ const initializeSettings = () => {
   cameraSettings.azimuth = cameraSettingsDefault.azimuth;
   cameraSettings.angularVelocity = cameraSettingsDefault.angularVelocity;
   cameraSettings.elevation = cameraSettingsDefault.elevation;
+  cameraSettings.roll = cameraSettingsDefault.roll;
   translationSettings.flagTranslation = translationSettingsDefault.flagTranslation;
   canvasSettings.dot = canvasSettingsDefault.dot;
   canvasSettings.description = canvasSettingsDefault.description;
@@ -142,7 +145,8 @@ function draw() {
   bmw.setCameraParam(
     cameraSettings.azimuth,
     cameraSettings.angularVelocity,
-    cameraSettings.elevation
+    cameraSettings.elevation,
+    cameraSettings.roll
   );
 
   // Set Translation params

@@ -52,6 +52,7 @@ class BMWalker {
     this.azimuth = 0; // rad
     this.angularVelocity = 0; // rad/sec
     this.elevation = 0; // rad
+    this.roll = 0; // rad
 
     // Translation Parameters
     this.flagTranslation = false;
@@ -150,6 +151,7 @@ class BMWalker {
     );
 
     matrix = this.mtrx.multmatrix(this.mtrx.rotateY(this.elevation), matrix);
+    matrix = this.mtrx.multmatrix(this.mtrx.rotateX(this.roll), matrix);
 
     for (i = 0; i < this.nummarkers; i++) {
       const vector = new Array(4);
@@ -280,7 +282,7 @@ class BMWalker {
   }
 
   // API: Set parameters on camera
-  setCameraParam(azimuth, angularVelocity, elevation) {
+  setCameraParam(azimuth, angularVelocity, elevation, roll) {
     // Camera azimuth(rotation) Parameter
     if (azimuth !== undefined) {
       this.azimuth = azimuth;
@@ -294,6 +296,11 @@ class BMWalker {
     // Camera elevation Parameter
     if (elevation !== undefined) {
       this.elevation = elevation;
+    }
+
+    // Camera roll Parameter
+    if (roll !== undefined) {
+      this.roll = roll;
     }
   }
 

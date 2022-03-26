@@ -282,7 +282,7 @@ bmw.setWalkerParam(bodyStructure, weight, nervousness, happiness);
 
 ### setCameraParam
 ```javascript
-setCameraParam(azimuth: Number, angularVelocity: Number, elevation: Number)
+setCameraParam(azimuth: Number, angularVelocity: Number, elevation: Number, roll: Number)
 ```
 Overview:  
 Set parameters on the camera.
@@ -293,6 +293,7 @@ Parameters:
 |  `azimuth`   | `Number`: The rotation angle(in radians) of the 'Walker' around the vertical axis. Set values from `-PI` to `PI`. Default value is `0`. |
 |  `angularVelocity`   | `Number`: The rotation speed(**radians/sec**) of the 'Walker'. `0` would mean the 'Walker' that does not rotate over a trial. Default value is `0` and recommendation settings are from `-2*PI` to `2*PI`. |
 |  `elevation`   | `Number`: The elevation of the camera with respect to the 'Walker'. Essentially a rotation angle(in radians) around the horizontal axis. Set values from `-PI` to `PI`. Default value is `0`. |
+|  `roll`   | `Number`: The roll angle of the camera. Set values from `-PI` to `PI`. Default value is `0`. |
 
 Example 5-1: setCameraParam Example 1
 ```javascript
