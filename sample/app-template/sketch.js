@@ -24,8 +24,8 @@ function setup() {
 
   prepareTexture(width, height);
 
-  myP5MovRec = new P5MovRec(); // P5MovRec.codecId.vp9 is selected by default.
-  myP5MovRec.startRec();
+  // myP5MovRec = new P5MovRec(); // P5MovRec.codecId.vp9 is selected by default.
+  // myP5MovRec.startRec();
 }
 
 function draw() {
