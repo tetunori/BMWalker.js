@@ -1,4 +1,4 @@
-// Inspired by the book '差分'
+// Inspired by the book '差分'(by 佐藤雅彦　菅俊一　石川将也)
 // https://bijutsu.press/books/2508/
 
 let myP5MovRec;

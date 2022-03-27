@@ -1,3 +1,6 @@
+// Inspired by 'Hull Body'(by Yugo Nakamura)
+// https://youtu.be/kbJcNROxpGM?t=1004
+
 let myP5MovRec;
 
 // Color picking
