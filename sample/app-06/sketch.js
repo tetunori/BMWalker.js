@@ -25,6 +25,8 @@ function setup() {
   createCanvas(W, W);
   fill(colors[2]);
   stroke(colors[2]);
+  textAlign(LEFT, CENTER);
+  textSize(20);
 
   gp = new MyGamepad();
   gp.setColors(colors[1], colors[0], colors[2]);
@@ -57,6 +59,12 @@ function draw() {
 
   // Draw walker
   drawWalker();
+
+  // Draw text
+  push();
+  noStroke();
+  text('Operate with a gamepad or mouse.', 20, W-30);
+  pop();
 
   // Draw texture
   image(textureGfx, 0, 0);
