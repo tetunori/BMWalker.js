@@ -1,13 +1,14 @@
 
 // BMWalker.js
-// Biological Motion 'Walker' library for Javascript.
+// Biological Motion 'Walker' library for JavaScript.
 
 // LICENSE
 // Attribution-NonCommercial-ShareAlike 4.0 International
-// Copyright (c) 2022 Tetsunori Nakayama and Nikolaus Troje.
+// Copyright (c) 2022 Tetsunori Nakayama(https://twitter.com/tetunori_lego)
+//   and Nikolaus Troje(https://www.biomotionlab.ca/niko-troje/).
 // For commercial use, please contact us.
 
-// This library is based on the results of BIO-MOTION-LAB's researches in York University.
+// This library is based on the results of BioMotion Lab's researches in York University.
 // See the URL below in detail.
 // https://www.biomotionlab.ca/
 
@@ -51,6 +52,7 @@ class BMWalker {
     this.azimuth = 0; // rad
     this.angularVelocity = 0; // rad/sec
     this.elevation = 0; // rad
+    this.roll = 0; // rad
 
     // Translation Parameters
     this.flagTranslation = false;
@@ -149,6 +151,7 @@ class BMWalker {
     );
 
     matrix = this.mtrx.multmatrix(this.mtrx.rotateY(this.elevation), matrix);
+    matrix = this.mtrx.multmatrix(this.mtrx.rotateX(this.roll), matrix);
 
     for (i = 0; i < this.nummarkers; i++) {
       const vector = new Array(4);
@@ -279,7 +282,7 @@ class BMWalker {
   }
 
   // API: Set parameters on camera
-  setCameraParam(azimuth, angularVelocity, elevation) {
+  setCameraParam(azimuth, angularVelocity, elevation, roll) {
     // Camera azimuth(rotation) Parameter
     if (azimuth !== undefined) {
       this.azimuth = azimuth;
@@ -293,6 +296,11 @@ class BMWalker {
     // Camera elevation Parameter
     if (elevation !== undefined) {
       this.elevation = elevation;
+    }
+
+    // Camera roll Parameter
+    if (roll !== undefined) {
+      this.roll = roll;
     }
   }
 
