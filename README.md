@@ -15,8 +15,48 @@ Now, the latest version is `0.5.0`(alpha release).
 - [Full function Demo On OpenProcessing](https://openprocessing.org/user/213060)
 
 ### Application demos
-- [Application Demos On GitHub](https://tetunori.github.io/BMWalker.js/application/index.html)
-- [Application Demos On OpenProcessing](https://openprocessing.org/user/213060)
+<img src="./images/applications.png" alt="Applications" width="640px"> 
+<details><summary>CLICK ME to show apps</summary>
+<p>
+
+#### Application 01
+<img src="./images/app1.png" alt="Application 01" width="360px"> 
+
+- [Application 01 Demo On GitHub](https://tetunori.github.io/BMWalker.js/sample/app-01/index.html)
+- [Application 01 Demo On OpenProcessing](https://openprocessing.org/user/213060)
+
+<img src="./images/app2.png" alt="Application 02" width="360px"> 
+
+#### Application 02
+- [Application 02 Demo On GitHub](https://tetunori.github.io/BMWalker.js/sample/app-02/index.html)
+- [Application 02 Demo On OpenProcessing](https://openprocessing.org/user/213060)
+
+#### Application 03
+<img src="./images/app3.png" alt="Application 03" width="360px"> 
+
+- [Application 03 Demo On GitHub](https://tetunori.github.io/BMWalker.js/sample/app-03/index.html)
+- [Application 03 Demo On OpenProcessing](https://openprocessing.org/user/213060)
+
+#### Application 04
+<img src="./images/app4.png" alt="Application 04" width="360px"> 
+
+- [Application 04 Demo On GitHub](https://tetunori.github.io/BMWalker.js/sample/app-04/index.html)
+- [Application 04 Demo On OpenProcessing](https://openprocessing.org/user/213060)
+
+#### Application 05
+<img src="./images/app5.png" alt="Application 05" width="360px"> 
+
+- [Application 05 Demo On GitHub](https://tetunori.github.io/BMWalker.js/sample/app-05/index.html)
+- [Application 05 Demo On OpenProcessing](https://openprocessing.org/user/213060)
+
+#### Application 06
+<img src="./images/app6.png" alt="Application 06" width="360px"> 
+
+- [Application 06 Demo On GitHub](https://tetunori.github.io/BMWalker.js/sample/app-06/index.html)
+- [Application 06 Demo On OpenProcessing](https://openprocessing.org/user/213060)
+
+</p>
+</details>
 
 
 # Usage
