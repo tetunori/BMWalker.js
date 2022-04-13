@@ -1,6 +1,6 @@
 const W = 720;
 
-let myP5MovRec;
+// let myP5MovRec;
 let startTime;
 let walkerParamMatrix = [];
 
@@ -102,20 +102,20 @@ const drawWalkerMarkers = (offsetY, walkerHeight, tmsec = undefined) => {
   });
 };
 
-function keyPressed() {
-  switch (keyCode) {
-    case 49: //1: Start record
-      myP5MovRec.startRec();
-      break;
-    case 50: //2: set webm, stop
-      // myP5MovRec.setMovType(P5MovRec.movTypeId.webm); // webm is default value
-      myP5MovRec.stopRec();
-      break;
-    case 51: //3: set mp4, stop
-      myP5MovRec.setMovType(P5MovRec.movTypeId.mp4); // for mp4 container
-      myP5MovRec.stopRec();
-      break;
-    default:
-      break;
-  }
-}
+// function keyPressed() {
+//   switch (keyCode) {
+//     case 49: //1: Start record
+//       myP5MovRec.startRec();
+//       break;
+//     case 50: //2: set webm, stop
+//       // myP5MovRec.setMovType(P5MovRec.movTypeId.webm); // webm is default value
+//       myP5MovRec.stopRec();
+//       break;
+//     case 51: //3: set mp4, stop
+//       myP5MovRec.setMovType(P5MovRec.movTypeId.mp4); // for mp4 container
+//       myP5MovRec.stopRec();
+//       break;
+//     default:
+//       break;
+//   }
+// }
