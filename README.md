@@ -2,7 +2,8 @@
 
 **BMWalker.js** is a simple JavaScript library supplying the marker information of the [biological motion](https://en.wikipedia.org/wiki/Biological_motion) 'Walker'.  
 Now, you can draw it without difficulty!  
-<a href="https://www.youtube.com/watch?v=dC20G0TBt6w"><img src="./images/keyvisual_play.png" alt="logo" width="640px" >  </a>
+<a href="https://www.youtube.com/watch?v=dC20G0TBt6w"><img src="./images/keyvisual_play.png" alt="KeyVisual" width="640px" target="_blank" rel="noopener"></a>  
+[Concept movie.](https://www.youtube.com/watch?v=dC20G0TBt6w)
 
 Now, the latest version is `0.5.0`(alpha release).  
 
@@ -343,7 +344,8 @@ const bmw = new BMWalker();
 const azimuth = Math.PI / 4;
 const angularVelocity = 0;
 const elevation = Math.PI / 4;
-bmw.setCameraParam(azimuth, angularVelocity, elevation);
+const roll = 0;
+bmw.setCameraParam(azimuth, angularVelocity, elevation, roll);
 ```
 <img src="./images/ex5-1.webp" alt="Example 5-1: setCameraParam Example 1" width="360px"> 
 
@@ -360,7 +362,8 @@ const bmw = new BMWalker();
 const azimuth = 0;
 const angularVelocity = Math.PI / 4;
 const elevation = Math.PI / 4;
-bmw.setCameraParam(azimuth, angularVelocity, elevation);
+const roll = 0;
+bmw.setCameraParam(azimuth, angularVelocity, elevation, roll);
 ```
 <img src="./images/ex5-2.webp" alt="Example 5-2: setCameraParam Example 2" width="360px"> 
 
