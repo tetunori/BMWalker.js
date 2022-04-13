@@ -2,7 +2,7 @@
 
 **BMWalker.js** is a simple JavaScript library supplying the marker information of the [biological motion](https://en.wikipedia.org/wiki/Biological_motion) 'Walker'.  
 Now, you can draw it without difficulty!  
-<a href="https://www.youtube.com/watch?v=dC20G0TBt6w"><img src="./images/keyvisual_play.png" alt="KeyVisual" width="640px" target="_blank" rel="noopener"></a>  
+<a href="https://www.youtube.com/watch?v=dC20G0TBt6w"><img src="./images/keyvisual_play.png" alt="KeyVisual" width="640px"></a>  
 [Concept movie.](https://www.youtube.com/watch?v=dC20G0TBt6w)
 
 Now, the latest version is `0.5.0`(alpha release).  
