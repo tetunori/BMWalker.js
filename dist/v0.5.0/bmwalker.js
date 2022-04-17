@@ -124,7 +124,7 @@ class BMWalker {
     }
 
     // Translation calculation
-    if (this.flagTranslation && this.type === BMW_TYPE_HUMAN) {
+    if (this.flagTranslation) {
       this.translation_pos = Math.round((this.getTranslationSpeed() * 120 * tmsec) / 1000);
     } else {
       this.translation_pos = 0;
@@ -1273,7 +1273,7 @@ class BMWData {
       4.879,
       6.195,
       -8.376,
-      0.0,
+      5.0, // 0.0,
       17.762,
       17.735,
       17.988,
