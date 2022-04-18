@@ -1,4 +1,3 @@
-
 // BMWalker.js
 // Biological Motion 'Walker' library for JavaScript.
 
@@ -61,7 +60,7 @@ class BMWalker {
     this.walker_size = 10;
 
     // 35 is the exactly correct ratio but need offsetY in this case.
-    this.walkerHeightRatio = 40; 
+    this.walkerHeightRatio = 40;
     //graphical stuff
     this.motion_vertical_scale = 1;
     this.motion_horizontal_scale = 1;
