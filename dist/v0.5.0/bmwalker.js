@@ -172,23 +172,44 @@ class BMWalker {
       // console.log(xpos, ypos);
 
       const descs = [
-        'Head',
-        'Clavicles',
-        'L-Shoulder',
-        'L-Elbow',
-        'L-Hand',
-        'R-Shoulder',
-        'R-Elbow',
-        'R-Hand',
-        'Belly',
-        'L-Hip',
-        'L-Knee',
-        'L-Ankle',
-        'R-Hip',
-        'R-Knee',
-        'R-Ankle',
+        [
+          'Head',
+          'Clavicles',
+          'L-Shoulder',
+          'L-Elbow',
+          'L-Hand',
+          'R-Shoulder',
+          'R-Elbow',
+          'R-Hand',
+          'Belly',
+          'L-Hip',
+          'L-Knee',
+          'L-Ankle',
+          'R-Hip',
+          'R-Knee',
+          'R-Ankle',
+        ],
+        [
+          // cat
+        ],
+        [
+          'Head-C',
+          'Head-R',
+          'Head-L',
+          'Body-1',
+          'Body-2',
+          'Body-3',
+          'Body-4',
+          'R-Foot-Front',
+          'R-Foot-Rear',
+          'L-Foot-Front',
+          'L-Foot-Rear',
+        ],
+        [
+          // box
+        ],
       ];
-      markers.push({ x: xpos, y: ypos, desc: descs[i] });
+      markers.push({ x: xpos, y: ypos, desc: descs[this.type][i] });
     }
 
     return markers;
