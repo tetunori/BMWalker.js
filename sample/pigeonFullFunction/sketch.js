@@ -10,10 +10,6 @@ const gui = new dat.GUI({ closeOnTop: true });
 const walkerSettingsDefault = {
   walkerHeight: W / 3,
   speed: 1.0,
-  bodyStructure: 0.0,
-  weight: 0.0,
-  nervousness: 0.0,
-  happiness: 0.0,
 };
 const walkerSettings = new Object();
 const walkerFolder = gui.addFolder('Walker');
@@ -59,16 +55,6 @@ const prepareDatGUI = () => {
   //  -- Walker
   walkerFolder.add(walkerSettings, 'walkerHeight', 1, W);
   walkerFolder.add(walkerSettings, 'speed', bmw.minSpeed, bmw.maxSpeed, step);
-  walkerFolder.add(
-    walkerSettings,
-    'bodyStructure',
-    bmw.minBodyStructure,
-    bmw.maxBodyStructure,
-    step
-  );
-  walkerFolder.add(walkerSettings, 'weight', bmw.minWeight, bmw.maxWeight, step);
-  walkerFolder.add(walkerSettings, 'nervousness', bmw.minNervousness, bmw.maxNervousness, step);
-  walkerFolder.add(walkerSettings, 'happiness', bmw.minHappiness, bmw.maxHappiness, step);
   walkerFolder.open();
 
   //  -- Camera
@@ -102,10 +88,6 @@ const prepareDatGUI = () => {
 const initializeSettings = () => {
   walkerSettings.walkerHeight = walkerSettingsDefault.walkerHeight;
   walkerSettings.speed = walkerSettingsDefault.speed;
-  walkerSettings.bodyStructure = walkerSettingsDefault.bodyStructure;
-  walkerSettings.weight = walkerSettingsDefault.weight;
-  walkerSettings.nervousness = walkerSettingsDefault.nervousness;
-  walkerSettings.happiness = walkerSettingsDefault.happiness;
   cameraSettings.azimuth = cameraSettingsDefault.azimuth;
   cameraSettings.angularVelocity = cameraSettingsDefault.angularVelocity;
   cameraSettings.elevation = cameraSettingsDefault.elevation;
@@ -132,14 +114,6 @@ function setup() {
 function draw() {
   // Set speed
   bmw.setSpeed(walkerSettings.speed);
-
-  // Set Walker params
-  bmw.setWalkerParam(
-    walkerSettings.bodyStructure,
-    walkerSettings.weight,
-    walkerSettings.nervousness,
-    walkerSettings.happiness
-  );
 
   // Set Camera params
   bmw.setCameraParam(
