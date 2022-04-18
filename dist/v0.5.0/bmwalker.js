@@ -1,3 +1,4 @@
+
 // BMWalker.js
 // Biological Motion 'Walker' library for JavaScript.
 
@@ -60,7 +61,7 @@ class BMWalker {
     this.walker_size = 10;
 
     // 35 is the exactly correct ratio but need offsetY in this case.
-    this.walkerHeightRatio = 40;
+    this.walkerHeightRatio = 40; 
     //graphical stuff
     this.motion_vertical_scale = 1;
     this.motion_horizontal_scale = 1;
@@ -123,7 +124,7 @@ class BMWalker {
     }
 
     // Translation calculation
-    if (this.flagTranslation) {
+    if (this.flagTranslation && this.type === BMW_TYPE_HUMAN) {
       this.translation_pos = Math.round((this.getTranslationSpeed() * 120 * tmsec) / 1000);
     } else {
       this.translation_pos = 0;
@@ -171,44 +172,23 @@ class BMWalker {
       // console.log(xpos, ypos);
 
       const descs = [
-        [
-          'Head',
-          'Clavicles',
-          'L-Shoulder',
-          'L-Elbow',
-          'L-Hand',
-          'R-Shoulder',
-          'R-Elbow',
-          'R-Hand',
-          'Belly',
-          'L-Hip',
-          'L-Knee',
-          'L-Ankle',
-          'R-Hip',
-          'R-Knee',
-          'R-Ankle',
-        ],
-        [
-          // cat
-        ],
-        [
-          'Head-C',
-          'Head-R',
-          'Head-L',
-          'Body-1',
-          'Body-2',
-          'Body-3',
-          'Body-4',
-          'R-Foot-Front',
-          'R-Foot-Rear',
-          'L-Foot-Front',
-          'L-Foot-Rear',
-        ],
-        [
-          // box
-        ],
+        'Head',
+        'Clavicles',
+        'L-Shoulder',
+        'L-Elbow',
+        'L-Hand',
+        'R-Shoulder',
+        'R-Elbow',
+        'R-Hand',
+        'Belly',
+        'L-Hip',
+        'L-Knee',
+        'L-Ankle',
+        'R-Hip',
+        'R-Knee',
+        'R-Ankle',
       ];
-      markers.push({ x: xpos, y: ypos, desc: descs[this.type][i] });
+      markers.push({ x: xpos, y: ypos, desc: descs[i] });
     }
 
     return markers;
@@ -1293,7 +1273,7 @@ class BMWData {
       4.879,
       6.195,
       -8.376,
-      5.0, // 0.0,
+      0.0,
       17.762,
       17.735,
       17.988,
