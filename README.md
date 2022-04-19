@@ -5,7 +5,7 @@ Now, you can draw it without difficulty!
 <a href="https://www.youtube.com/watch?v=dC20G0TBt6w"><img src="./images/keyvisual_play.png" alt="KeyVisual" width="640px"></a>  
 [Concept movie.](https://www.youtube.com/watch?v=dC20G0TBt6w)
 
-Now, the latest version is `0.5.0`(alpha release).  
+Now, the latest version is `0.6.0`(alpha-2 release).  
 
 ## Demos
 ### Full function demo
@@ -55,6 +55,13 @@ Now, the latest version is `0.5.0`(alpha release).
 - [Application 06 Demo On GitHub](https://tetunori.github.io/BMWalker.js/sample/app-06/index.html), [Source code On GitHub](https://github.com/tetunori/BMWalker.js/tree/main/sample/app-06)
 - [Application 06 Demo On OpenProcessing](https://openprocessing.org/sketch/1543503)
 
+#### Pigeon full function 
+<img src="./images/pigeonffdemo.png" alt="Pigeon full function" width="360px"> 
+
+- [Pigeon full function Demo On GitHub](https://tetunori.github.io/BMWalker.js/sample/pigeonFullFunction/index.html), [Source code On GitHub](https://github.com/tetunori/BMWalker.js/tree/main/sample/pigeonFullFunction)
+- [Pigeon full function Demo On OpenProcessing](https://openprocessing.org/sketch/1548125)
+
+
 </p>
 </details>
 
@@ -62,7 +69,7 @@ Now, the latest version is `0.5.0`(alpha release).
 # Usage
 ## Import
 ```html 
-<script src="https://tetunori.github.io/BMWalker.js/dist/v0.5.0/bmwalker.js"></script>
+<script src="https://tetunori.github.io/BMWalker.js/dist/v0.6.0/bmwalker.js"></script>
 ```
 ## Basic Usage
 Just new `BMWalker()` and you can get marker coordinates via `getMarkers()` method.
@@ -120,8 +127,23 @@ markers.forEach((m) => {
 new BMWalker()
 ```
 
+Parameters:
+|  name  |  note  |
+| ---- | ---- |
+|  [`type`]  | Optional. `Number`: Specify `BMW_TYPE_HUMAN` or `BMW_TYPE_PIGEON`. If unspecified, `BMW_TYPE_HUMAN` is selected automatically. |
+
 Returns:
 BMWalker instance.
+
+ExampleP-1: Constructor Example P
+```javascript
+// Create biological motion walker instance
+const bmw = new BMWalker(BMW_TYPE_PIGEON);
+```
+<img src="./images/exP-1.webp" alt="Example P-1: Pigeon Basic Example" width="360px"> 
+
+ - ['Example P-1: Pigeon Basic Example' On GitHub](https://tetunori.github.io/BMWalker.js/sample/exP-1/), [Source code On GitHub](https://github.com/tetunori/BMWalker.js/tree/main/sample/exP-1)
+ - ['Example P-1: Pigeon Basic Example' On OpenProcessing](https://openprocessing.org/sketch/1548115)
 
 ## Methods
 ### getMarkers
@@ -291,7 +313,7 @@ bmw.setSpeed(spd);
 setWalkerParam(bodyStructure: Number, weight: Number, nervousness: Number, happiness: Number)
 ```
 Overview:  
-Set parameters on the motion of 'Walker'.
+Set parameters on the motion of 'Walker'. Valid if the type is `BMW_TYPE_HUMAN` only.
 
 Parameters:
 |  name  |  note  |
