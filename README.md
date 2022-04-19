@@ -124,7 +124,7 @@ markers.forEach((m) => {
 
 ## Constructor
 ```javascript
-new BMWalker()
+new BMWalker([type: Number])
 ```
 
 Parameters:
