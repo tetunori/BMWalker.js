@@ -219,22 +219,39 @@ class BMWalker {
     const markers = this.getMarkers(walkerHeight, tmsec);
     const lineMarkers = [];
     const idxsArray = [
-      [0, 1],
-      [1, 2],
-      [2, 3],
-      [3, 4],
-      [1, 5],
-      [5, 6],
-      [6, 7],
-      [1, 8],
-      [8, 9],
-      [9, 10],
-      [10, 11],
-      [8, 12],
-      [12, 13],
-      [13, 14],
+      [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 4],
+        [1, 5],
+        [5, 6],
+        [6, 7],
+        [1, 8],
+        [8, 9],
+        [9, 10],
+        [10, 11],
+        [8, 12],
+        [12, 13],
+        [13, 14],
+      ],
+      [
+        // cat
+      ],
+      [
+        [0, 1],
+        [0, 2],
+        [3, 5],
+        [4, 5],
+        [5, 6],
+        [7, 8],
+        [9, 10],
+      ],
+      [
+        // box
+      ],
     ];
-    idxsArray.forEach((idxs) => {
+    idxsArray[this.type].forEach((idxs) => {
       const i0 = idxs[0];
       const i1 = idxs[1];
 
