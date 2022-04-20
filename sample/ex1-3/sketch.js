@@ -25,4 +25,13 @@ function draw() {
     }
     pop();
   });
+
+  const lineMarkers = bmw.getLineMarkers(walkerHeight);
+  // console.log(lineMarkers);
+
+  // Draw lines
+  lineMarkers.forEach((m) => {
+    line(m[0].x, m[0].y, m[0].z, m[1].x, m[1].y, m[1].z );
+  });
+
 }
