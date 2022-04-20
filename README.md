@@ -55,16 +55,21 @@ Now, the latest version is `0.6.0`(alpha-2 release).
 - [Application 06 Demo On GitHub](https://tetunori.github.io/BMWalker.js/sample/app-06/index.html), [Source code On GitHub](https://github.com/tetunori/BMWalker.js/tree/main/sample/app-06)
 - [Application 06 Demo On OpenProcessing](https://openprocessing.org/sketch/1543503)
 
+</p>
+</details>
+
+### Other demos
+<details><summary>CLICK ME to show other demos</summary>
+<p>
+
 #### Pigeon full function 
 <img src="./images/pigeonffdemo.png" alt="Pigeon full function" width="360px"> 
 
 - [Pigeon full function Demo On GitHub](https://tetunori.github.io/BMWalker.js/sample/pigeonFullFunction/index.html), [Source code On GitHub](https://github.com/tetunori/BMWalker.js/tree/main/sample/pigeonFullFunction)
 - [Pigeon full function Demo On OpenProcessing](https://openprocessing.org/sketch/1548125)
 
-
 </p>
 </details>
-
 
 # Usage
 ## Import
@@ -166,6 +171,7 @@ Array of the marker data `Object` at specified time. Each data `Object` has prop
 | ---- | ---- |
 |  `x`  |  `Number`: x-coordinate of the marker.  |
 |  `y`  |  `Number`: y-coordinate of the marker.  |
+|  `z`  |  `Number`: z-coordinate of the marker.  |
 |  `desc`  |  `String`: Description of the marker like `'Head'`, `'Clavicles'` and so on.  |
 ```javascript
 // Example of Return value of getMarkers()
@@ -218,6 +224,57 @@ markers.forEach((m) => {
 
  - ['Example 1-2: getMarkers Example 2' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex1-2/), [Source code On GitHub](https://github.com/tetunori/BMWalker.js/tree/main/sample/ex1-2)
  - ['Example 1-2: getMarkers Example 2' On OpenProcessing](https://openprocessing.org/sketch/1543506)
+
+Example1-3: getMarkers Example 3
+```javascript
+// Create biological motion walker instance
+const bmw = new BMWalker();
+
+// Get current markers
+const walkerHeight = 200;
+const markers = bmw.getMarkers(walkerHeight);
+
+// Draw markers with z-position in WEBGL
+markers.forEach((m) => {
+  push();
+  {
+    translate(m.x, m.y, m.z);
+    sphere(2);
+  }
+  pop();
+});
+```
+<img src="./images/ex1-3.png" alt="Example 1-3: getMarkers Example 3" width="360px"> 
+
+ - ['Example 1-3: getMarkers Example 3' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex1-3/), [Source code On GitHub](https://github.com/tetunori/BMWalker.js/tree/main/sample/ex1-3)
+ - ['Example 1-3: getMarkers Example 3' On OpenProcessing](https://openprocessing.org/sketch/1549258)
+
+Example1-4: getMarkers Example 4
+```javascript
+// Create biological motion walker instance
+const bmw = new BMWalker();
+
+// Get array of the current marker coordinates
+const walkerHeight = 200;
+const markers = bmw.getMarkers(walkerHeight);
+
+// Sort with z-position value
+markers.sort( (a, b) => {
+  if (a.z < b.z) return -1;
+  if (a.z > b.z) return 1;
+  return 0;
+});
+
+// Draw markers
+markers.forEach((m) => {
+  circle(m.x, m.y, 30);
+});
+```
+<img src="./images/ex1-4.png" alt="Example 1-4: getMarkers Example 4" width="360px"> 
+
+ - ['Example 1-4: getMarkers Example 4' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex1-4/), [Source code On GitHub](https://github.com/tetunori/BMWalker.js/tree/main/sample/ex1-4)
+ - ['Example 1-4: getMarkers Example 4' On OpenProcessing](https://openprocessing.org/sketch/1549260)
+
 
 ### getLineMarkers
 ```javascript
