@@ -14,7 +14,7 @@ function draw() {
   // Get array of the current marker coordinates
   const walkerHeight = 200;
   const markers = bmw.getMarkers(walkerHeight);
-  markers.sort(function (a, b) {
+  markers.sort( (a, b) => {
     if (a.z < b.z) return -1;
     if (a.z > b.z) return 1;
     return 0;

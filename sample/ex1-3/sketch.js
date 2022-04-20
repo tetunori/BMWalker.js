@@ -22,7 +22,7 @@ function draw() {
     {
       translate(m.x, m.y, m.z);
       sphere(2);
-      pop();
     }
+    pop();
   });
 }
