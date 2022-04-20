@@ -258,7 +258,7 @@ const bmw = new BMWalker();
 const walkerHeight = 200;
 const markers = bmw.getMarkers(walkerHeight);
 
-// Sort with z-position value
+// Sort with z-position value to avoid overlapping
 markers.sort( (a, b) => {
   if (a.z < b.z) return -1;
   if (a.z > b.z) return 1;
