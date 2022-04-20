@@ -161,14 +161,14 @@ class BMWalker {
       vector[3] = 1;
 
       const v2 = this.mtrx.multmatrixvector(matrix, vector);
-      v2[0] -= this.camera_distance;
       v2[3] = 1;
 
       //nudge up
       const pixelsperdegree = 37;
       const xpos = (v2[1] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
       const ypos = -(v2[2] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
-      // console.log(xpos, ypos);
+      const zpos = -(v2[0] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
+      // console.log(xpos, ypos, zpos);
 
       const descs = [
         [
@@ -208,7 +208,7 @@ class BMWalker {
           // box
         ],
       ];
-      markers.push({ x: xpos, y: ypos, desc: descs[this.type][i] });
+      markers.push({ x: xpos, y: ypos, z: zpos, desc: descs[this.type][i] });
     }
 
     return markers;
