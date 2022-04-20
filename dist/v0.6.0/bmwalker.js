@@ -256,8 +256,8 @@ class BMWalker {
       const i1 = idxs[1];
 
       lineMarkers.push([
-        { x: markers[i0].x, y: markers[i0].y, i: i0 },
-        { x: markers[i1].x, y: markers[i1].y, i: i1 },
+        { x: markers[i0].x, y: markers[i0].y, z: markers[i0].z, i: i0 },
+        { x: markers[i1].x, y: markers[i1].y, z: markers[i1].z, i: i1 },
       ]);
     });
 
