@@ -140,7 +140,7 @@ Parameters:
 Returns:
 BMWalker instance.
 
-ExampleP-1: Constructor Example P
+ExampleP-1: Constructor Example Pigeon
 ```javascript
 // Create biological motion walker instance
 const bmw = new BMWalker(BMW_TYPE_PIGEON);
@@ -295,6 +295,7 @@ Array of the combination of 2 marker `Object`s. Each marker `Object` has propert
 | ---- | ---- |
 |  `x`  |  `Number`: x-coordinate of the marker.  |
 |  `y`  |  `Number`: y-coordinate of the marker.  |
+|  `z`  |  `Number`: z-coordinate of the marker.  |
 |  `i`  |  `Number`: Index value of the marker.  |
 
 ```javascript
