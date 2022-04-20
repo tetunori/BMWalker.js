@@ -167,7 +167,7 @@ class BMWalker {
       const pixelsperdegree = 37;
       const xpos = (v2[1] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
       const ypos = -(v2[2] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
-      const zpos = -(v2[0] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
+      const zpos = (v2[0] / this.walkersizefactor) * this.walker_size * pixelsperdegree;
       // console.log(xpos, ypos, zpos);
 
       const descs = [
