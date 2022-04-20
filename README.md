@@ -258,7 +258,7 @@ const bmw = new BMWalker();
 const walkerHeight = 200;
 const markers = bmw.getMarkers(walkerHeight);
 
-// Sort with z-position value to avoid overlapping
+// Sort with z-position value to avoid inappropriate overlapping
 markers.sort( (a, b) => {
   if (a.z < b.z) return -1;
   if (a.z > b.z) return 1;
@@ -270,7 +270,7 @@ markers.forEach((m) => {
   circle(m.x, m.y, 30);
 });
 ```
-<img src="./images/ex1-4.png" alt="Example 1-4: getMarkers Example 4" width="360px"> 
+<img src="./images/ex1-4.webp" alt="Example 1-4: getMarkers Example 4" width="360px"> 
 
  - ['Example 1-4: getMarkers Example 4' On GitHub](https://tetunori.github.io/BMWalker.js/sample/ex1-4/), [Source code On GitHub](https://github.com/tetunori/BMWalker.js/tree/main/sample/ex1-4)
  - ['Example 1-4: getMarkers Example 4' On OpenProcessing](https://openprocessing.org/sketch/1549260)
