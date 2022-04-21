@@ -176,9 +176,9 @@ Array of the marker data `Object` at specified time. Each data `Object` has prop
 ```javascript
 // Example of Return value of getMarkers()
 [
-  { x:  3.18, y: -170.70, desc: "Head" },
-  { x:  2.74, y: -115.11, desc: "Clavicles" },
-  { x: 40.24, y: -121.91, desc: "L-Shoulder" },
+  { x:  3.18, y: -170.70, z: 10.9, desc: "Head" },
+  { x:  2.74, y: -115.11, z: 8.2, desc: "Clavicles" },
+  { x: 40.24, y: -121.91, z: 9.1, desc: "L-Shoulder" },
   // ...
 ]
 ```
@@ -305,11 +305,13 @@ Array of the combination of 2 marker `Object`s. Each marker `Object` has propert
     { // Marker 0
       x: -0.95,
       y: -47.4,
+      z: -7.3,
       i: 0,
     },
     { // Marker 1
       x: -0.76,
       y: -31.95,
+      z: 5.6,
       i: 1,
     },
   ],
