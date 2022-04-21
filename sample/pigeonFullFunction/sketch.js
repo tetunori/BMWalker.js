@@ -128,6 +128,14 @@ function draw() {
 
   // Drawing Part
   const markers = bmw.getMarkers(walkerSettings.walkerHeight);
+
+  // Sort with z-position value to avoid inappropriate overlapping
+  markers.sort( (a, b) => {
+    if (a.z < b.z) return -1;
+    if (a.z > b.z) return 1;
+    return 0;
+  });
+
   translate(W / 2, W / 2);
 
   // Choose colors
