@@ -92,10 +92,10 @@ Received array consists of objects as below.
 ```javascript
 // Return value of getMarkers()
 [
-  { x:  3.18, y: -170.70, desc: 'Head' },
-  { x:  2.74, y: -115.11, desc: 'Clavicles' },
-  { x: 40.24, y: -121.91, desc: 'L-Shoulder' },
-  // ...
+  { x:  3.18, y: -170.70, z: 10.9, desc: 'Head' },
+  { x:  2.74, y: -115.11, z:  8.2, desc: 'Clavicles' },
+  { x: 40.24, y: -121.91, z:  9.1, desc: 'L-Shoulder' },
+  // ... 
 ]
 ```
 
@@ -177,8 +177,8 @@ Array of the marker data `Object` at specified time. Each data `Object` has prop
 // Example of Return value of getMarkers()
 [
   { x:  3.18, y: -170.70, z: 10.9, desc: "Head" },
-  { x:  2.74, y: -115.11, z: 8.2, desc: "Clavicles" },
-  { x: 40.24, y: -121.91, z: 9.1, desc: "L-Shoulder" },
+  { x:  2.74, y: -115.11, z:  8.2, desc: "Clavicles" },
+  { x: 40.24, y: -121.91, z:  9.1, desc: "L-Shoulder" },
   // ...
 ]
 ```
