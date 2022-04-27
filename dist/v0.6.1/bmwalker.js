@@ -503,6 +503,11 @@ class BMWalker {
   calcTime(curtime) {
     return ((curtime * 2 * Math.PI) / 1000) * (120 / this.getFrequency());
   }
+  
+  getPeriod() {
+    return 1000 * this.getFrequency() / 120;
+  }
+
 }
 
 // Simple Timer class
