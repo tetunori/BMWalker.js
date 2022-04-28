@@ -354,6 +354,11 @@ class BMWalker {
     this.init();
   }
 
+  // API: Get loop period in mesec
+  getPeriod() {
+    return 1000 * this.getFrequency() / 120;
+  }
+  
   // ----- Internal methods
   clamp(min, max, val) {
     return Math.min(max, Math.max(min, val));
@@ -502,10 +507,6 @@ class BMWalker {
 
   calcTime(curtime) {
     return ((curtime * 2 * Math.PI) / 1000) * (120 / this.getFrequency());
-  }
-  
-  getPeriod() {
-    return 1000 * this.getFrequency() / 120;
   }
 
 }

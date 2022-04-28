@@ -5,7 +5,7 @@ Now, you can draw it without difficulty!
 <a href="https://www.youtube.com/watch?v=dC20G0TBt6w"><img src="./images/keyvisual_play.png" alt="KeyVisual" width="640px"></a>  
 [Concept movie.](https://www.youtube.com/watch?v=dC20G0TBt6w)
 
-Now, the latest version is `0.6.0`(alpha-2 release).  
+Now, the latest version is `0.6.1`(alpha-3 release).  
 
 ## Demos
 ### Full function demo
@@ -74,7 +74,7 @@ Now, the latest version is `0.6.0`(alpha-2 release).
 # Usage
 ## Import
 ```html 
-<script src="https://tetunori.github.io/BMWalker.js/dist/v0.6.0/bmwalker.js"></script>
+<script src="https://tetunori.github.io/BMWalker.js/dist/v0.6.1/bmwalker.js"></script>
 ```
 ## Basic Usage
 Just new `BMWalker()` and you can get marker coordinates via `getMarkers()` method.
@@ -126,6 +126,7 @@ markers.forEach((m) => {
   - [setCameraParam](#setCameraParam)
   - [setTranslationParam](#setTranslationParam)
   - [resetTimer](#resetTimer)
+  - [getPeriod](#getPeriod)
 
 ## Constructor
 ```javascript
@@ -486,6 +487,16 @@ resetTimer()
 ```
 Overview:  
 Reset 'Walker' timer(set at constructor). It is recommended that `resetTimer()` be called in advance when `flagTranslation` is enabled. See [setTranslationParam](#setTranslationParam).
+
+### getPeriod
+```javascript
+getPeriod()
+```
+Overview:  
+Get Loop period of 'Walker' in msec. It depends on speed setting of the 'Walker'. See [setSpeed](#setSpeed).
+
+Returns:  
+Loop period in msec as `Number`.
 
 </p>
 </details>
